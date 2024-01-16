@@ -4,7 +4,7 @@ exports.getSample = (req, res, next) => {
 
 exports.getSampleById = (req, res, next) => {
     const id = req.params.id;
-    res.status(200).json({ message: `Hello World! ${id}` });
+    res.status(200).json({ message: `Hello World!!! ${id}` });
 }
 
 exports.postSample = (req, res, next) => {
