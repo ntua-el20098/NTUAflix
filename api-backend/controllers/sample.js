@@ -48,3 +48,33 @@ exports.getTitlesByGenre = async(req, res, next) => {
         });
     });
 }
+
+
+// pws kserw oti epistrefei lista apo obj
+// morfopoihsh listas nameTitles sto nameObject
+exports.getSearchPersonByName = async (req, res, next) => {
+    let limit = undefined;
+    if (req.query.limit) {
+        limit = Number(req.query.limit);
+        if (!Number.isInteger(limit)) return res.status(400).json({ message: 'Limit query param should be an integer' });
+    }
+
+    const namePart = req.body.nqueryObject;
+
+    const query = `
+    SELECT p.nconst, p.primaryName, p.img_url_asset, p.birthYear, p.deathYear, pr.profession
+    FROM people p
+    JOIN profession pr ON p.nconst = pr.nconst
+    WHERE p.primaryName LIKE "%?%"`+ (limit ? ' LIMIT ?' : '');
+
+    const queryParams = [namePart, limit].filter(param => param !== undefined);
+    
+    pool.getConnection((err, connection) => {
+        connection.query(query, queryParams, (err, rows) => {
+            connection.release();
+            if (err) return res.status(500).json({ message: 'Internal server error' });
+
+            return res.status(200).json(rows);
+        });
+    });
+};
