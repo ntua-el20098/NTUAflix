@@ -179,13 +179,14 @@ exports.getSearchByTitle = async (req, res, next) => {
         if (!Number.isInteger(limit)) return res.status(400).json({ message: 'Limit query param should be an integer' });
     }
 
-    const titlePart = req.body.tqueryObject.titlePart;
+    const titlePart = req.body.titlePart;
 
     const query = `
     SELECT t.tconst, t.titleType, t.primaryTitle, t.originalTitle, t.isAdult, t.startYear, t.endYear, t.runtimeMinutes, t.img_url_asset
     FROM Title t
     WHERE t.originalTitle LIKE "%${titlePart}%"
     `;
+    
     const queryParams = [titlePart, limit].filter(param => param !== undefined);
 
     pool.getConnection((err, connection) => {
