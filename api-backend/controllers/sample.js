@@ -170,6 +170,40 @@ exports.getSearchPersonByName = async (req, res, next) => {
         });
     });
 };
+exports.getSearchByTitle = async (req, res, next) => {
+    const titlePart = req.query.titlePart; // Assuming it's a GET request and titlePart is a query parameter
+
+    const query = `
+    SELECT *
+    FROM title t
+    WHERE t.originalTitle LIKE ?
+    `;
+
+    const searchPattern = `%${titlePart}%`;
+
+    pool.getConnection((err, connection) => {
+        if (err) {
+            return res.status(500).json({ message: 'Error in connection to the database' });
+        }
+
+        connection.query(query, [searchPattern], (err, results) => {
+            connection.release();
+
+            if (err) {
+                return res.status(500).json({ message: 'Error in executing the query' });
+            }
+
+            res.status(200).json(results);
+        });
+    });
+};
+
+
+
+
+
+
+
 
 //admin
 /*exports.healthcheckController = async (req, res, next) => {
