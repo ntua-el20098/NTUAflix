@@ -127,7 +127,7 @@ function processResults(results) {
         }
     };
 
-  // Process genres
+    // Process genres
     const uniqueGenres = new Set(results.map(result => result.genreTitle));
     formattedResponse.genres = [...uniqueGenres].map(genreTitle => ({ genreTitle }));
 
@@ -158,14 +158,16 @@ exports.getSearchPersonByName = async (req, res, next) => {
     SELECT p.nconst, p.primaryName, p.img_url_asset, p.birthYear, p.deathYear, pr.profession
     FROM people p
     JOIN profession pr ON p.nconst = pr.nconst
-    WHERE p.primaryName LIKE "%?%"`+ (limit ? ' LIMIT ?' : '');
+    WHERE p.primaryName LIKE "%?%"` + (limit ? ' LIMIT ?' : '');
 
     const queryParams = [namePart, limit].filter(param => param !== undefined);
 
     pool.getConnection((err, connection) => {
+        if (err) return res.status(500).json({ message: 'Database connection ERROR' });
+
         connection.query(query, queryParams, (err, rows) => {
             connection.release();
-            if (err) return res.status(500).json({ message: 'Internal server error' });
+            if (err) return res.status(500).json({ message: 'Query execution ERROR' });
 
             return res.status(200).json(rows);
         });
