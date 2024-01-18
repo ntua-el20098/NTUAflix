@@ -238,8 +238,8 @@ exports.getSearchByTitle = async (req, res, next) => {
     });
 };
 
-//admin
-exports.healthcheckController = async (req, res, next) => {
+//admin 1
+exports.healthcheck = async (req, res, next) => {
     try {
         const [rows, fields] = await pool.promise().query('SELECT 1');
         res.json({
@@ -254,3 +254,33 @@ exports.healthcheckController = async (req, res, next) => {
         });
     }
 };
+
+//admin 2
+exports.upload_titlebasics = async (req, res, next) => {
+
+    console.log(req.body.src);
+
+    try {
+      // Ensure that the request body has the 'tsv_data' field
+      if (!req.body || !req.body.tsv_data) {
+        return res.status(400).json({ error: 'Missing TSV data in the request body' });
+      }
+  
+      // Read TSV data from the request body
+      const tsvData = req.body.tsv_data;
+  
+      // Process the TSV data (for example, you can insert it into your database)
+      // Implement your database logic here...
+  
+      // For demonstration purposes, let's assume we save the TSV data to a file
+      const filePath = path.join(__dirname, 'uploaded_data.tsv');
+      fs.writeFileSync(filePath, tsvData, 'utf-8');
+  
+      // Respond with a success message (modify as needed)
+      res.status(200).json({ message: 'TSV data uploaded successfully', filePath });
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  };
+
