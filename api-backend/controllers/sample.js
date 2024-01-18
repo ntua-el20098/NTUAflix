@@ -172,18 +172,19 @@ exports.getSearchPersonByName = async (req, res, next) => {
 };
 
 //admin
-/*exports.healthcheckController = async (req, res, next) => {
+exports.healthcheckController = async (req, res, next) => {
     try {
-      await Database.checkConnection();
-      res.json({
-        status: 'OK',
-        dataconnection: ['connection string'],
-      });
+        const [rows, fields] = await pool.promise().query('SELECT 1');
+        //const queryResult = await pool.query('SELECT 1');
+        res.json({
+            status: 'OK',
+            dataconnection: ['connection string'],
+        });
     } catch (error) {
-      res.json({
-        status: 'failed',
-        dataconnection: ['connection string'],
-      });
+        console.error(error);
+        res.json({
+            status: 'failed',
+            dataconnection: ['connection string'],
+        });
     }
-  };
-*/
+};
