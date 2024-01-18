@@ -172,7 +172,7 @@ exports.getSearchPersonByName = async (req, res, next) => {
 };
 
 exports.getSearchByTitle = async (req, res, next) => {
-    const titlePart = `%${req.params.titlePart}%`;
+    const titlePart = `%${req.body.titlePart}%`;
 
     const query = `
         SELECT *
