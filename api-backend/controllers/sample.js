@@ -21,7 +21,7 @@ exports.getTitlesByGenre = async (req, res, next) => {
         return res.status(400).json({ message: 'Too many attributes' });
     }
 
-    const query = `SELECT t.tconst
+    const query = `SELECT t.tconst, t.titleType, t.primaryTitle, t.originalTitle, t.isAdult, t.startYear, t.endYear, t.runtimeMinutes, t.img_url_asset
     FROM Title t
     JOIN Genre g ON t.tconst = g.tconst
     JOIN Rating r ON t.tconst = r.tconst
