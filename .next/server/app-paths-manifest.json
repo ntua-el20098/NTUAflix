@@ -1,0 +1,6 @@
+{
+  "/titles/searchbyrating/page": "app/titles/searchbyrating/page.js",
+  "/page": "app/page.js",
+  "/titles/searchbygenre/page": "app/titles/searchbygenre/page.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js"
+}
