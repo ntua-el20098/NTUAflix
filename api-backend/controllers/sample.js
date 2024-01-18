@@ -79,4 +79,4 @@ exports.getSearchPersonByName = async (req, res, next) => {
     });
 };
 
-exports.getPersonDetails = async ()
+//exports.getPersonDetails = async ()

@@ -11,6 +11,6 @@ router.post('/:id', sampleController.postSample);
 router.get('/bygenre', sampleController.getTitlesByGenre);
 router.get('/searchname', sampleController.getSearchPersonByName);
 
-router.get('/name/:nameID', sampleController.getPersonDetails);
+//router.get('/name/:nameID', sampleController.getPersonDetails);
 
 module.exports = router;
