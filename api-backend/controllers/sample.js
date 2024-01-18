@@ -170,6 +170,7 @@ exports.getSearchPersonByName = async (req, res, next) => {
         });
     });
 };
+
 exports.getSearchByTitle = async (req, res, next) => {
     const titlePart = req.query.titlePart; // Assuming it's a GET request and titlePart is a query parameter
 
@@ -197,13 +198,6 @@ exports.getSearchByTitle = async (req, res, next) => {
         });
     });
 };
-
-
-
-
-
-
-
 
 //admin
 exports.healthcheckController = async (req, res, next) => {
