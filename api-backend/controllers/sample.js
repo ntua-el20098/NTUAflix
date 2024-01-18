@@ -172,9 +172,8 @@ exports.getSearchPersonByName = async (req, res, next) => {
     });
 };
 
-exports.searchTitle = async (req, res, next) => {
+exports.getSearchByTitle = async (req, res, next) => {
     const titlePart = req.body.tqueryObject.titlePart;
-
     const query = `
     SELECT t.tconst, t.titleType, t.primaryTitle, t.originalTitle, t.isAdult, t.startYear, t.endYear, t.runtimeMinutes, t.img_url_asset
     FROM Title t
