@@ -66,7 +66,6 @@ exports.getTitleDetails = async (req, res, next) => {
     }
 
     const titleID = req.params.titleID;
-    console.log(titleID);
 
     const query = `
         
@@ -154,25 +153,15 @@ exports.getSearchPersonByName = async (req, res, next) => {
     const namePart = req.body.nqueryObject.namePart;
 
     const query = `
-    SELECT 
-        p.nconst, 
-        p.primaryName, 
-        p.img_url_asset, 
-        p.birthYear, 
-        p.deathYear,
-        pr.profession,
-        pr.titleID,
+    SELECT p.nconst, p.primaryName, p.img_url_asset, p.birthYear, p.deathYear, pr.profession
+    FROM people p
+    JOIN profession pr ON p.nconst = pr.nconst
+    WHERE p.primaryName LIKE "%?%"`+ (limit ? ' LIMIT ?' : '');
 
-    FROM 
-        people p
-        JOIN profession pr ON p.nconst = pr.nconst,
-        JOIN knownfortitles kft ON p.nconst = kft.nconst,
-        JOIN title t ON kft.tconst = t.tconst,
-
-    WHERE p.primaryName LIKE "%?%"` 
-    + (limit ? ' LIMIT ?' : '');
-
-    const queryParams = [namePart, limit].filter(param => param !== undefined);
+            // Add the limit parameter to the queryParams if it's provided
+            if (limit !== undefined) {
+                queryParams.push(limit);
+            }
 
     pool.getConnection((err, connection) => {
         if (err) return res.status(500).json({ message: 'Database connection ERROR' });
@@ -218,15 +207,19 @@ exports.getSearchByTitle = async (req, res, next) => {
         if (!Number.isInteger(limit)) return res.status(400).json({ message: 'Limit query param should be an integer' });
     }
 
-    const titlePart = req.body.titlePart;
+    const titlePart = req.body.tqueryObject.titlePart;
 
     const query = `
     SELECT t.tconst, t.titleType, t.primaryTitle, t.originalTitle, t.isAdult, t.startYear, t.endYear, t.runtimeMinutes, t.img_url_asset
     FROM Title t
-    WHERE t.originalTitle LIKE "%${titlePart}%"
-    `;
-    
-    const queryParams = [titlePart, limit].filter(param => param !== undefined);
+    WHERE t.originalTitle LIKE "%${titlePart}%"`+ (limit ? ' LIMIT ?' : '');
+
+    const queryParams = [titlePart];
+
+        // Add the limit parameter to the queryParams if it's provided
+        if (limit !== undefined) {
+            queryParams.push(limit);
+        }
 
     pool.getConnection((err, connection) => {
         if (err) {
