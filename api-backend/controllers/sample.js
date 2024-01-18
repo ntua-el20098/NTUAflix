@@ -1,19 +1,4 @@
-exports.getSample = (req, res, next) => {
-    res.status(200).json({ message: 'Hello World!' });
-}
-
-exports.getSampleById = (req, res, next) => {
-    const id = req.params.id;
-    res.status(200).json({ message: `Hello World!${id}` });
-}
-
-exports.postSample = (req, res, next) => {
-    const id = req.params.id;
-    const body = req.body;
-    
-    if (!body.name) return res.status(400).json({ message: 'Name body param is required' });
-    res.status(200).json({ message: `Hello World! ${id}`, body });
-}
+const { pool } = require('../utils/database');
 
 exports.getTitlesByGenre = async(req, res, next) => {
     let limit = undefined;
@@ -28,17 +13,33 @@ exports.getTitlesByGenre = async(req, res, next) => {
         return res.status(400).json({ message: 'Invalid or missing input parameters' });
     }
 
-    const query = `
-    SELECT t.tconst, t.titleType, t.primaryTitle, t.originalTitle, t.isAdult, t.startYear, t.endYear, t.runtimeMinutes, t.img_url_asset
+    const query = `SELECT t.tconst, t.titleType, t.primaryTitle, t.originalTitle, t.isAdult, t.startYear, t.endYear, t.runtimeMinutes, t.img_url_asset
     FROM Title t
     JOIN Genre g ON t.tconst = g.tconst
     JOIN Rating r ON t.tconst = r.tconst
     WHERE g.genre = ?
       AND r.averageRating >= ?
-      AND (t.startYear BETWEEN ? AND ? OR ? IS NULL OR ? IS NULL)`+ (limit ? ' LIMIT ?' : '');
+      ${yrFrom !== undefined ? 'AND t.startYear >= ?' : ''}
+      ${yrTo !== undefined ? 'AND t.startYear <= ?' : ''}
+  ` + (limit ? ' LIMIT ?' : '');
 
-    const queryParams = [qgenre, minrating, yrFrom, yrTo, yrFrom, yrTo, limit].filter(param => param !== undefined);
+    const queryParams = [qgenre, minrating];
+
+    // Add the yrFrom parameter to the queryParams if it's provided
+    if (yrFrom !== undefined) {
+        queryParams.push(yrFrom);
+    }
     
+    // Add the yrTo parameter to the queryParams if it's provided
+    if (yrTo !== undefined) {
+        queryParams.push(yrTo);
+    }
+    
+    // Add the limit parameter to the queryParams if it's provided
+    if (limit !== undefined) {
+        queryParams.push(limit);
+    }
+        
     pool.getConnection((err, connection) => {
         connection.query(query, queryParams, (err, rows) => {
             connection.release();
