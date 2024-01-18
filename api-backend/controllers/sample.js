@@ -203,7 +203,6 @@ exports.getSearchByTitle = async (req, res, next) => {
 exports.healthcheckController = async (req, res, next) => {
     try {
         const [rows, fields] = await pool.promise().query('SELECT 1');
-        //const queryResult = await pool.query('SELECT 1');
         res.json({
             status: 'OK',
             dataconnection: ['connection string'],
