@@ -171,5 +171,19 @@ exports.getSearchPersonByName = async (req, res, next) => {
     });
 };
 
-
-//exports.getPersonDetails = async ()
+//admin
+/*exports.healthcheckController = async (req, res, next) => {
+    try {
+      await Database.checkConnection();
+      res.json({
+        status: 'OK',
+        dataconnection: ['connection string'],
+      });
+    } catch (error) {
+      res.json({
+        status: 'failed',
+        dataconnection: ['connection string'],
+      });
+    }
+  };
+*/
