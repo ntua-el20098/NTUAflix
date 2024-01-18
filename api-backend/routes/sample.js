@@ -9,5 +9,7 @@ router.get('/bygenre', sampleController.getTitlesByGenre);
 router.get('/searchname', sampleController.getSearchPersonByName);
 
 //router.get('/name/:nameID', sampleController.getPersonDetails);
+//admin
+router.get('/admin/healthcheck', healthcheckController);
 
 module.exports = router;
