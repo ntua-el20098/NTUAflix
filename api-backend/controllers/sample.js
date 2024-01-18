@@ -1,4 +1,5 @@
 const { pool } = require('../utils/database');
+const {body} = require("express/lib/request");
 
 exports.getTitlesByGenre = async (req, res, next) => {
     let limit = undefined;
@@ -171,15 +172,13 @@ exports.getSearchPersonByName = async (req, res, next) => {
     });
 };
 
-exports.getSearchByTitle = async (req, res, next) => {
-    const titlePart = `%${req.body.titlePart}%`;
-
-    console.log(titlePart)
+exports.searchTitle = async (req, res, next) => {
+    const titlePart = req.body.tqueryObject.titlePart;
 
     const query = `
-        SELECT *
-        FROM title t
-        WHERE t.originalTitle LIKE ?
+    SELECT t.tconst, t.titleType, t.primaryTitle, t.originalTitle, t.isAdult, t.startYear, t.endYear, t.runtimeMinutes, t.img_url_asset
+    FROM Title t
+    WHERE t.originalTitle LIKE "%${titlePart}%"
     `;
 
     pool.getConnection((err, connection) => {
@@ -187,7 +186,7 @@ exports.getSearchByTitle = async (req, res, next) => {
             return res.status(500).json({ message: 'Error in connection to the database' });
         }
 
-        connection.query(query, [titlePart], (err, results) => {
+        connection.query(query, (err, results) => {
             connection.release();
 
             if (err) {
@@ -198,7 +197,6 @@ exports.getSearchByTitle = async (req, res, next) => {
         });
     });
 };
-
 
 //admin
 /*exports.healthcheckController = async (req, res, next) => {
