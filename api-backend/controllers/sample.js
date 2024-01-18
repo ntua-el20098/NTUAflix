@@ -13,6 +13,13 @@ exports.getTitlesByGenre = async(req, res, next) => {
         return res.status(400).json({ message: 'Invalid or missing input parameters' });
     }
 
+    // Check for duplicate attributes in the gqueryObject
+    const attributes = [qgenre, minrating, yrFrom, yrTo];
+    const hasDuplicates = new Set(attributes).size !== attributes.filter(attr => attr !== undefined).length;
+    if (hasDuplicates) {
+        return res.status(400).json({ message: 'Too many attributes' });
+    }
+
     const query = `SELECT t.tconst, t.titleType, t.primaryTitle, t.originalTitle, t.isAdult, t.startYear, t.endYear, t.runtimeMinutes, t.img_url_asset
     FROM Title t
     JOIN Genre g ON t.tconst = g.tconst
@@ -49,7 +56,6 @@ exports.getTitlesByGenre = async(req, res, next) => {
         });
     });
 }
-
 
 // pws kserw oti epistrefei lista apo obj
 // morfopoihsh listas nameTitles sto nameObject
