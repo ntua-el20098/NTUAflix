@@ -143,8 +143,7 @@ function processResults(results) {
     
 };
 
-// pws kserw oti epistrefei lista apo obj
-// morfopoihsh listas nameTitles sto nameObject
+// no table correlation between titles, people and category
 exports.getSearchPersonByName = async (req, res, next) => {
     let limit = undefined;
     if (req.query.limit) {
@@ -152,13 +151,26 @@ exports.getSearchPersonByName = async (req, res, next) => {
         if (!Number.isInteger(limit)) return res.status(400).json({ message: 'Limit query param should be an integer' });
     }
 
-    const namePart = req.body.nqueryObject;
+    const namePart = req.body.nqueryObject.namePart;
 
     const query = `
-    SELECT p.nconst, p.primaryName, p.img_url_asset, p.birthYear, p.deathYear, pr.profession
-    FROM people p
-    JOIN profession pr ON p.nconst = pr.nconst
-    WHERE p.primaryName LIKE "%?%"` + (limit ? ' LIMIT ?' : '');
+    SELECT 
+        p.nconst, 
+        p.primaryName, 
+        p.img_url_asset, 
+        p.birthYear, 
+        p.deathYear,
+        pr.profession,
+        pr.titleID,
+
+    FROM 
+        people p
+        JOIN profession pr ON p.nconst = pr.nconst,
+        JOIN knownfortitles kft ON p.nconst = kft.nconst,
+        JOIN title t ON kft.tconst = t.tconst,
+
+    WHERE p.primaryName LIKE "%?%"` 
+    + (limit ? ' LIMIT ?' : '');
 
     const queryParams = [namePart, limit].filter(param => param !== undefined);
 
@@ -167,11 +179,36 @@ exports.getSearchPersonByName = async (req, res, next) => {
 
         connection.query(query, queryParams, (err, rows) => {
             connection.release();
+
             if (err) return res.status(500).json({ message: 'Query execution ERROR' });
 
-            return res.status(200).json(rows);
+            const formattedResponse = format_getSearchPersonByName(rows);
+            return res.status(200).json(formattedResponse);
         });
     });
+};
+
+function format_getSearchPersonByName(results) {
+    const formattedResponse = {
+        nameObject: {
+            nameID: results[0].nameID,
+            name: results[0].name,
+            namePoster: results[0].namePoster,
+            birthYr: results[0].birthYr,
+            deathYr: results[0].deathYr,
+            profession: results[0].profession,
+            nameTitles: [],
+            titleID: results[0].titleID,
+            category: results[0].category
+        }
+    };
+
+    // Process nameTitles
+    const uniqueNameTitles = new Set(results.map(result => JSON.stringify({ titleID: result.titleID, category: result.category })));
+    formattedResponse.nameObject.nameTitles = [...uniqueNameTitles].map(nameTitle => JSON.parse(nameTitle));
+
+    return formattedResponse;
+    
 };
 
 exports.getSearchByTitle = async (req, res, next) => {
