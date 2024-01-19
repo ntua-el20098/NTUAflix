@@ -91,7 +91,6 @@ exports.getTitleDetails = async (req, res, next) => {
     }
 
     const titleID = req.params.titleID;
-    console.log(titleID);
 
     const query = `
         
@@ -157,7 +156,7 @@ function processResults(results) {
         }
     };
 
-  // Process genres
+    // Process genres
     const uniqueGenres = new Set(results.map(result => result.genreTitle));
     formattedResponse.genres = [...uniqueGenres].map(genreTitle => ({ genreTitle }));
 
@@ -174,8 +173,7 @@ function processResults(results) {
 };
 
 
-// pws kserw oti epistrefei lista apo obj
-// morfopoihsh listas nameTitles sto nameObject
+// no table correlation between titles, people and category
 exports.getSearchPersonByName = async (req, res, next) => {
     let limit = undefined;
     if (req.query.limit) {
@@ -183,7 +181,7 @@ exports.getSearchPersonByName = async (req, res, next) => {
         if (!Number.isInteger(limit)) return res.status(400).json({ message: 'Limit query param should be an integer' });
     }
 
-    const namePart = req.body.nqueryObject;
+    const namePart = req.body.nqueryObject.namePart;
 
     const query = `
     SELECT p.nconst, p.primaryName, p.img_url_asset, p.birthYear, p.deathYear, pr.profession
@@ -191,16 +189,46 @@ exports.getSearchPersonByName = async (req, res, next) => {
     JOIN profession pr ON p.nconst = pr.nconst
     WHERE p.primaryName LIKE "%?%"`+ (limit ? ' LIMIT ?' : '');
 
-    const queryParams = [namePart, limit].filter(param => param !== undefined);
+            // Add the limit parameter to the queryParams if it's provided
+            if (limit !== undefined) {
+                queryParams.push(limit);
+            }
 
     pool.getConnection((err, connection) => {
+        if (err) return res.status(500).json({ message: 'Database connection ERROR' });
+
         connection.query(query, queryParams, (err, rows) => {
             connection.release();
-            if (err) return res.status(500).json({ message: 'Internal server error' });
 
-            return res.status(200).json(rows);
+            if (err) return res.status(500).json({ message: 'Query execution ERROR' });
+
+            const formattedResponse = format_getSearchPersonByName(rows);
+            return res.status(200).json(formattedResponse);
         });
     });
+};
+
+function format_getSearchPersonByName(results) {
+    const formattedResponse = {
+        nameObject: {
+            nameID: results[0].nameID,
+            name: results[0].name,
+            namePoster: results[0].namePoster,
+            birthYr: results[0].birthYr,
+            deathYr: results[0].deathYr,
+            profession: results[0].profession,
+            nameTitles: [],
+            titleID: results[0].titleID,
+            category: results[0].category
+        }
+    };
+
+    // Process nameTitles
+    const uniqueNameTitles = new Set(results.map(result => JSON.stringify({ titleID: result.titleID, category: result.category })));
+    formattedResponse.nameObject.nameTitles = [...uniqueNameTitles].map(nameTitle => JSON.parse(nameTitle));
+
+    return formattedResponse;
+    
 };
 
 exports.getSearchByTitle = async (req, res, next) => {
@@ -210,15 +238,19 @@ exports.getSearchByTitle = async (req, res, next) => {
         if (!Number.isInteger(limit)) return res.status(400).json({ message: 'Limit query param should be an integer' });
     }
 
-    const titlePart = req.body.titlePart;
+    const titlePart = req.body.tqueryObject.titlePart;
 
     const query = `
     SELECT t.tconst, t.titleType, t.primaryTitle, t.originalTitle, t.isAdult, t.startYear, t.endYear, t.runtimeMinutes, t.img_url_asset
     FROM Title t
-    WHERE t.originalTitle LIKE "%${titlePart}%"
-    `;
-    
-    const queryParams = [titlePart, limit].filter(param => param !== undefined);
+    WHERE t.originalTitle LIKE "%${titlePart}%"`+ (limit ? ' LIMIT ?' : '');
+
+    const queryParams = [titlePart];
+
+        // Add the limit parameter to the queryParams if it's provided
+        if (limit !== undefined) {
+            queryParams.push(limit);
+        }
 
     pool.getConnection((err, connection) => {
         if (err) {
@@ -237,8 +269,8 @@ exports.getSearchByTitle = async (req, res, next) => {
     });
 };
 
-//admin
-exports.healthcheckController = async (req, res, next) => {
+//admin 1
+exports.healthcheck = async (req, res, next) => {
     try {
         const [rows, fields] = await pool.promise().query('SELECT 1');
         res.json({
@@ -253,3 +285,33 @@ exports.healthcheckController = async (req, res, next) => {
         });
     }
 };
+
+//admin 2
+exports.upload_titlebasics = async (req, res, next) => {
+
+    console.log(req.body.src);
+
+    try {
+      // Ensure that the request body has the 'tsv_data' field
+      if (!req.body || !req.body.tsv_data) {
+        return res.status(400).json({ error: 'Missing TSV data in the request body' });
+      }
+  
+      // Read TSV data from the request body
+      const tsvData = req.body.tsv_data;
+  
+      // Process the TSV data (for example, you can insert it into your database)
+      // Implement your database logic here...
+  
+      // For demonstration purposes, let's assume we save the TSV data to a file
+      const filePath = path.join(__dirname, 'uploaded_data.tsv');
+      fs.writeFileSync(filePath, tsvData, 'utf-8');
+  
+      // Respond with a success message (modify as needed)
+      res.status(200).json({ message: 'TSV data uploaded successfully', filePath });
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  };
+
