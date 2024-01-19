@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 
+
 /* Import routes */
 const sampleRoutes = require('./routes/sample');
 

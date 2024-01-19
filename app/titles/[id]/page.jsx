@@ -1,54 +1,28 @@
-
+"use client";
+import { useEffect, useState } from "react";
 import PeopleCard from "@/components/PeopleCard";
 import MovieCard from "@/components/Card";
+import "bootstrap/scss/bootstrap.scss";
 
-function page() {
-  const movie = {
-    coverImage: 'https://xl.movieposterdb.com/23_06/2023/15398776/xl_oppenheimer-movie-poster_a83f1cbb.jpg?v=2023-11-27%2023:27:53"',
-    title: 'Dummy Movie',
-    description: 'This is a dummy movie summary for development purposes.',
-    director: 'John Doe',
-    genre: 'Action',
-    releaseYear: '2022',
-    rating: '5/5',
-    language: 'English',
-    runtime: '120',
-  };
+function Page() {
+  const [movieData, setMovieData] = useState(null);
 
-  const genres = {
-    genre1: 'Action',
-    genre2: 'Adventure',
-    genre3: 'Drama',
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:3000/api/samples/title/tt0098987"
+        );
+        const data = await response.json();
+        setMovieData(data);
+        console.log(data); // Log the output to the console
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
 
-  const cast = [
-    { name: "SBHSA", photo: "https://www.pentapostagma.gr/sites/default/files/styles/main/public/2021-08/image-77.png?itok=_4JiB9ue" },
-    { name: "Actor Name", photo: "https://www.whitechapelgallery.org/wp-content/uploads/2020/07/blank-head-profile-pic-for-a-man.jpg" },
-    { name: "Actor Name", photo: "https://www.whitechapelgallery.org/wp-content/uploads/2020/07/blank-head-profile-pic-for-a-man.jpg" },
-    { name: "Actor Name", photo: "https://www.whitechapelgallery.org/wp-content/uploads/2020/07/blank-head-profile-pic-for-a-man.jpg" },
-    { name: "Actor Name", photo: "https://www.whitechapelgallery.org/wp-content/uploads/2020/07/blank-head-profile-pic-for-a-man.jpg" },
-    { name: "Actor Name", photo: "https://www.whitechapelgallery.org/wp-content/uploads/2020/07/blank-head-profile-pic-for-a-man.jpg" },
-    { name: "Actor Name", photo: "https://www.whitechapelgallery.org/wp-content/uploads/2020/07/blank-head-profile-pic-for-a-man.jpg" },
-    { name: "Actor Name", photo: "https://www.whitechapelgallery.org/wp-content/uploads/2020/07/blank-head-profile-pic-for-a-man.jpg" },
-    { name: "Actor Name", photo: "https://www.whitechapelgallery.org/wp-content/uploads/2020/07/blank-head-profile-pic-for-a-man.jpg" },
-    { name: "Actor Name", photo: "https://www.whitechapelgallery.org/wp-content/uploads/2020/07/blank-head-profile-pic-for-a-man.jpg" },
-    { name: "Actor Name", photo: "https://www.whitechapelgallery.org/wp-content/uploads/2020/07/blank-head-profile-pic-for-a-man.jpg" },
-    { name: "Actor Name", photo: "https://www.whitechapelgallery.org/wp-content/uploads/2020/07/blank-head-profile-pic-for-a-man.jpg" },
-    { name: "Actor Name", photo: "https://www.whitechapelgallery.org/wp-content/uploads/2020/07/blank-head-profile-pic-for-a-man.jpg" },
-  ];
-
-  const moviePosters = [
-    "https://xl.movieposterdb.com/23_07/2023/10545296/xl_the-hunger-games-the-ballad-of-songbirds-and-snakes-movie-poster_af992b69.jpg?v=2023-11-27%2023:11:24",
-    "https://xl.movieposterdb.com/23_06/2023/15398776/xl_oppenheimer-movie-poster_a83f1cbb.jpg?v=2023-11-27%2023:27:53",
-    "https://xl.movieposterdb.com/23_06/2023/15398776/xl_oppenheimer-movie-poster_a83f1cbb.jpg?v=2023-11-27%2023:27:53",
-    "https://xl.movieposterdb.com/23_06/2023/15398776/xl_oppenheimer-movie-poster_a83f1cbb.jpg?v=2023-11-27%2023:27:53",
-    "https://xl.movieposterdb.com/23_06/2023/15398776/xl_oppenheimer-movie-poster_a83f1cbb.jpg?v=2023-11-27%2023:27:53",
-    "https://xl.movieposterdb.com/23_06/2023/15398776/xl_oppenheimer-movie-poster_a83f1cbb.jpg?v=2023-11-27%2023:27:53",
-    "https://xl.movieposterdb.com/23_06/2023/15398776/xl_oppenheimer-movie-poster_a83f1cbb.jpg?v=2023-11-27%2023:27:53",
-    "https://xl.movieposterdb.com/23_06/2023/15398776/xl_oppenheimer-movie-poster_a83f1cbb.jpg?v=2023-11-27%2023:27:53",
-    "https://xl.movieposterdb.com/23_06/2023/15398776/xl_oppenheimer-movie-poster_a83f1cbb.jpg?v=2023-11-27%2023:27:53",
-    "https://xl.movieposterdb.com/23_06/2023/15398776/xl_oppenheimer-movie-poster_a83f1cbb.jpg?v=2023-11-27%2023:27:53",
-  ];
+    fetchData();
+  }, []);
 
   return (
     <div className="bg-secondary relative px-4 md:px-0">
@@ -56,30 +30,41 @@ function page() {
         <div className="flex-col lg:flex-row flex gap-10 lg:mx-10 py-20">
           <div className="mx-auto flex-none relative">
             <img
-              src={movie.coverImage}
+              src={movieData?.titlePoster.replace(
+                "{width_variable}",
+                "original"
+              )} // Use 'original' as a constant value
               width={700}
               height={700}
               className="w-[300px] object-cover"
-              alt={movie.title}
+              alt={movieData?.originalTitle}
             />
           </div>
           <div className="space-y-6">
-            <div className="uppercase -translate-y-3 text-[26px] md:text-[34px] font-medium pr-4 text-white">
-              {movie.title}
+            <div className="uppercase -translate-y-3 text-[26px] md:text-[34px] font-bold pr-4 text-white">
+              {movieData?.originalTitle}
             </div>
-            <div className="flex gap-4 flex-wrap">
-              {Object.values(genres).join(" / ")}
+            <div className="flex gap-3 flex-wrap">
+              {movieData?.genres.map((genre, index) => (
+                <span key={index} className="badge bg-red-500">
+                  {genre.genreTitle}
+                </span>
+              ))}
             </div>
             <div className="flex flex-col md:flex-row gap-2 md:gap-6">
-              <div>Language: {movie.language}</div>
-              <div>Release: {movie.releaseYear}</div>
-              <div>Runtime: {movie.runtime} MIN.</div>
-              <div>Rating: {movie.rating} ⭐</div>
+              <div>Type: {movieData?.type}</div>
+              <div>Language: English</div>
+              <div>Release: {movieData?.startYear}</div>
+              <div>Runtime: 120 MIN.</div>
+              <div>Rating: {movieData?.rating.avRating} ⭐</div>
             </div>
 
             <div className="pt-14 space-y-2 pr-4">
               <div>OVERVIEW:</div>
-              <div className="lg:line-clamp-4">{movie.description}</div>
+              <div className="lg:line-clamp-4">
+                {" "}
+                Here is the overview for {movieData?.originalTitle}
+              </div>
             </div>
           </div>
         </div>
@@ -87,16 +72,14 @@ function page() {
       <h2>Cast :</h2>
       <div className="container mx-auto min-h-[calc(40vh-77px)] flex items-center relative">
         <div className="overflow-x-auto flex gap-4 py-4">
-          {cast.map((person, index) => (
-            <PeopleCard key={index} name={person.name} image={person.photo} />
-          ))}
-        </div>
-      </div>
-      <h2>Simillar movies :</h2>
-      <div className="container mx-auto min-h-[calc(40vh-77px)] flex items-center relative">
-        <div className="overflow-x-auto flex gap-4 py-4">
-          {moviePosters.map((poster, index) => (
-            <MovieCard key={index} poster={poster} title={`Movie Title ${index}`} id={1} />
+          {movieData?.principals.map((person, index) => (
+            <PeopleCard
+              key={index}
+              id={person.nameID}
+              name={person.name}
+              type={person.category}
+              image={`https://www.hello.cy/wp-content/uploads/gr/2023/07/%CE%92%CE%AF%CE%BA%CF%85-%CE%9A%CE%B1%CE%B3%CE%B9%CE%AC-1.jpg`}
+            />
           ))}
         </div>
       </div>
@@ -104,4 +87,4 @@ function page() {
   );
 }
 
-export default page;
+export default Page;

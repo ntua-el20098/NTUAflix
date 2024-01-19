@@ -32,7 +32,7 @@ const MoviesPage = () => {
     </div>
       <Box sx={{ display: "grid",padding: "3% ", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "30px" }}>
         {moviePosters.map((poster, index) => (
-          <Card key={index} poster={poster} title={`Movie Title ${index}`} id={1}/>
+          <Card key={index} poster={poster} title={`Movie Title ${index}`} id={1} type={"Movie"} rating={"6"}/>
         ))}
       </Box>
       <nav aria-label="Page navigation example">

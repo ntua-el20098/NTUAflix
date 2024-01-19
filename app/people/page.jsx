@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, InputBase, Typography } from "@mui/material";
-import Card from "@/components/PeopleCard";
+import Card from "@/components/allpeoplecard";
 
 const PeoplePage = () => {
 const actorData = [
@@ -29,7 +29,7 @@ return (
     </div>
     <Box sx={{ display: "grid", padding: "3%", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "30px" }}>
       {actorData.map((actor, index) => (
-        <Card key={index} name={actor.name} image={actor.photo} id={1} />
+        <Card key={index} name={actor.name} image={actor.photo} id={1} type={"actor"} />
       ))}
     </Box>
     <nav aria-label="Page navigation example">
