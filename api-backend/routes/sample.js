@@ -11,7 +11,9 @@ router.get('/searchname', sampleController.getSearchPersonByName);
 router.get('/searchtitle', sampleController.getSearchByTitle);
 
 //router.get('/name/:nameID', sampleController.getPersonDetails);
+
 //admin 
-router.get('/admin/healthcheck', sampleController.healthcheckController);
+router.get('/admin/healthcheck', sampleController.healthcheck);
+router.post('/admin/upload/titlebasics', sampleController.upload_titlebasics);
 
 module.exports = router;
