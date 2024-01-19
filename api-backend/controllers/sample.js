@@ -1,6 +1,10 @@
+const mysql = require("mysql2");
 const { pool } = require('../utils/database');
 const {body} = require("express/lib/request");
 const axios = require('axios');
+
+const csv = require('csv-parser'); 
+const fs = require('fs');
 
 exports.getTitlesByGenre = async (req, res, next) => {
     console.log('Entire Request Object:', req);
@@ -91,6 +95,7 @@ exports.getTitleDetails = async (req, res, next) => {
     }
 
     const titleID = req.params.titleID;
+    console.log("test")
 
     const query = `
         
@@ -288,30 +293,60 @@ exports.healthcheck = async (req, res, next) => {
 
 //admin 2
 exports.upload_titlebasics = async (req, res, next) => {
-
-    console.log(req.body.src);
-
     try {
-      // Ensure that the request body has the 'tsv_data' field
-      if (!req.body || !req.body.tsv_data) {
-        return res.status(400).json({ error: 'Missing TSV data in the request body' });
+      if (!req.file) {
+        return res.status(400).send("No CSV file uploaded.");
       }
   
-      // Read TSV data from the request body
-      const tsvData = req.body.tsv_data;
+      // Create a readable stream from the uploaded CSV file
+      const stream = fs.createReadStream("/Users/charalamposk/Desktop/Software Engineering/ntuaflix/api-backend/uploads/test.csv");
   
-      // Process the TSV data (for example, you can insert it into your database)
-      // Implement your database logic here...
+      // Parse the CSV content
+      const csvData = [];
+      stream.pipe(csv())
+        .on('data', (row) => {
+          csvData.push(row);
+        })
+        .on('end', async () => {
+          // Insert the CSV data into the database
+          await insertIntoDatabase(csvData);
   
-      // For demonstration purposes, let's assume we save the TSV data to a file
-      const filePath = path.join(__dirname, 'uploaded_data.tsv');
-      fs.writeFileSync(filePath, tsvData, 'utf-8');
-  
-      // Respond with a success message (modify as needed)
-      res.status(200).json({ message: 'TSV data uploaded successfully', filePath });
+          // Respond with a success message
+          res.status(200).send("CSV data inserted into the database successfully.");
+        })
+        .on('error', (error) => {
+          console.error('Error parsing CSV file:', error);
+          res.status(500).send("Error parsing CSV file.");
+        });
     } catch (error) {
-      console.error('Error:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
+      console.error('Error uploading CSV file:', error);
+      res.status(500).send("Error uploading CSV file.");
     }
   };
-
+  
+  async function insertIntoDatabase(csvData) {
+    // Replace the connection details with your own database connection
+    const connection = await mysql.createConnection({
+      host: 'localhost',
+      user: 'root',
+      password: '',
+      database: 'test'
+    });
+  
+    try {
+        console.log(csvData);
+      // Assuming your CSV has columns like 'column1', 'column2', etc.
+      const insertQuery = 'INSERT INTO dummy (column1, column2) VALUES ?';
+  
+      // Use promise wrapper for the query
+      const values = csvData.map(row => [row.column1, row.column2]);
+      await connection.promise().query(insertQuery, [values]);
+  
+      console.log('CSV data inserted into the database successfully.');
+    } catch (error) {
+      console.error('Error inserting CSV data into the database:', error);
+    } finally {
+      // Close the database connection
+      await connection.end();
+    }
+  }

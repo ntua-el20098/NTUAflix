@@ -1,5 +1,6 @@
 const express = require('express');
 
+const upload = require("../middlewares/upload");
 const sampleController = require('../controllers/sample');
 
 const router = express.Router();
@@ -14,6 +15,6 @@ router.get('/searchtitle', sampleController.getSearchByTitle);
 
 //admin 
 router.get('/admin/healthcheck', sampleController.healthcheck);
-router.post('/admin/upload/titlebasics', sampleController.upload_titlebasics);
+router.post('/admin/upload/titlebasics', upload.single("file"), sampleController.upload_titlebasics);
 
 module.exports = router;
