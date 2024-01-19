@@ -1,27 +1,29 @@
 const { pool } = require('../utils/database');
 const {body} = require("express/lib/request");
+const axios = require('axios');
 
 exports.getTitlesByGenre = async (req, res, next) => {
+    console.log('Entire Request Object:', req);
     let limit = undefined;
     if (req.query.limit) {
         limit = Number(req.query.limit);
         if (!Number.isInteger(limit)) return res.status(400).json({ message: 'Limit query param should be an integer' });
     }
 
-    const { qgenre, minrating, yrFrom, yrTo } = req.body.gqueryObject;
+    const { qgenre, minrating, yrFrom, yrTo } = req.body;
 
     if (!qgenre || !minrating || isNaN(minrating)) {
         return res.status(400).json({ message: 'Invalid or missing input parameters' });
     }
 
-    // Check for duplicate attributes in the gqueryObject
+    // Check for duplicate attributes in the gquery
     const attributes = [qgenre, minrating, yrFrom, yrTo];
     const hasDuplicates = new Set(attributes).size !== attributes.filter(attr => attr !== undefined).length;
     if (hasDuplicates) {
         return res.status(400).json({ message: 'Too many attributes' });
     }
 
-    const query = `SELECT t.tconst, t.titleType, t.primaryTitle, t.originalTitle, t.isAdult, t.startYear, t.endYear, t.runtimeMinutes, t.img_url_asset
+    const query = `SELECT t.tconst
     FROM Title t
     JOIN Genre g ON t.tconst = g.tconst
     JOIN Rating r ON t.tconst = r.tconst
@@ -53,10 +55,33 @@ exports.getTitlesByGenre = async (req, res, next) => {
             connection.release();
             if (err) return res.status(500).json({ message: 'Internal server error' });
 
-            return res.status(200).json(rows);
+            const tconsts = rows.map(row => row.tconst);
+            const titleObjects = [];
+
+            // Use Promise.all to wait for all getTitleDetails requests to complete
+            Promise.all(tconsts.map(tconst => getTitleDetails(tconst)))
+                .then(titleDetailsArray => {
+                    titleObjects.push(...titleDetailsArray);
+                    return res.status(200).json(titleObjects);
+                })
+                .catch(error => {
+                    return res.status(500).json({ message: 'Error processing title details', error });
+                });
         });
     });
 };
+
+// Function to get title details based on titleID using the getTitleDetails endpoint
+async function getTitleDetails(tconst) {
+    try {
+        const response = await axios.get(`http://localhost:3000/api/samples/title/${tconst}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching title details for', tconst, error.message);
+        throw error;
+    }
+}
+
 
 exports.getTitleDetails = async (req, res, next) => {
     let limit = undefined;
@@ -111,6 +136,11 @@ WHERE
 
 // Helper function to process the SQL results and format the response
 function processResults(results) {
+    if (!results || results.length === 0) {
+        // Handle the case when no results are found
+        return { message: 'No results found' };
+    }
+
     const formattedResponse = {
         titleID: results[0].titleID,
         type: results[0].type,
@@ -142,6 +172,7 @@ function processResults(results) {
     return formattedResponse;
     
 };
+
 
 // pws kserw oti epistrefei lista apo obj
 // morfopoihsh listas nameTitles sto nameObject
