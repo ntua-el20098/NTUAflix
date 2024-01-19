@@ -14,7 +14,7 @@ exports.getTitlesByGenre = async (req, res, next) => {
         if (!Number.isInteger(limit)) return res.status(400).json({ message: 'Limit query param should be an integer' });
     }
 
-    const { qgenre, minrating, yrFrom, yrTo } = req.body;
+    const { qgenre, minrating, yrFrom, yrTo } = req.body.gqueryObject;
 
     if (!qgenre || !minrating || isNaN(minrating)) {
         return res.status(400).json({ message: 'Invalid or missing input parameters' });
