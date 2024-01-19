@@ -1,27 +1,33 @@
+const mysql = require("mysql2");
 const { pool } = require('../utils/database');
 const {body} = require("express/lib/request");
+const axios = require('axios');
+
+const csv = require('csv-parser'); 
+const fs = require('fs');
 
 exports.getTitlesByGenre = async (req, res, next) => {
+    console.log('Entire Request Object:', req);
     let limit = undefined;
     if (req.query.limit) {
         limit = Number(req.query.limit);
         if (!Number.isInteger(limit)) return res.status(400).json({ message: 'Limit query param should be an integer' });
     }
 
-    const { qgenre, minrating, yrFrom, yrTo } = req.body.gqueryObject;
+    const { qgenre, minrating, yrFrom, yrTo } = req.body;
 
     if (!qgenre || !minrating || isNaN(minrating)) {
         return res.status(400).json({ message: 'Invalid or missing input parameters' });
     }
 
-    // Check for duplicate attributes in the gqueryObject
+    // Check for duplicate attributes in the gquery
     const attributes = [qgenre, minrating, yrFrom, yrTo];
     const hasDuplicates = new Set(attributes).size !== attributes.filter(attr => attr !== undefined).length;
     if (hasDuplicates) {
         return res.status(400).json({ message: 'Too many attributes' });
     }
 
-    const query = `SELECT t.tconst, t.titleType, t.primaryTitle, t.originalTitle, t.isAdult, t.startYear, t.endYear, t.runtimeMinutes, t.img_url_asset
+    const query = `SELECT t.tconst
     FROM Title t
     JOIN Genre g ON t.tconst = g.tconst
     JOIN Rating r ON t.tconst = r.tconst
@@ -53,10 +59,33 @@ exports.getTitlesByGenre = async (req, res, next) => {
             connection.release();
             if (err) return res.status(500).json({ message: 'Internal server error' });
 
-            return res.status(200).json(rows);
+            const tconsts = rows.map(row => row.tconst);
+            const titleObjects = [];
+
+            // Use Promise.all to wait for all getTitleDetails requests to complete
+            Promise.all(tconsts.map(tconst => getTitleDetails(tconst)))
+                .then(titleDetailsArray => {
+                    titleObjects.push(...titleDetailsArray);
+                    return res.status(200).json(titleObjects);
+                })
+                .catch(error => {
+                    return res.status(500).json({ message: 'Error processing title details', error });
+                });
         });
     });
 };
+
+// Function to get title details based on titleID using the getTitleDetails endpoint
+async function getTitleDetails(tconst) {
+    try {
+        const response = await axios.get(`http://localhost:3000/api/samples/title/${tconst}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching title details for', tconst, error.message);
+        throw error;
+    }
+}
+
 
 exports.getTitleDetails = async (req, res, next) => {
     let limit = undefined;
@@ -67,6 +96,7 @@ exports.getTitleDetails = async (req, res, next) => {
 
     const titleID = req.params.titleID;
     console.log("test")
+
     const query = `
         
     SELECT
@@ -110,6 +140,11 @@ WHERE
 
 // Helper function to process the SQL results and format the response
 function processResults(results) {
+    if (!results || results.length === 0) {
+        // Handle the case when no results are found
+        return { message: 'No results found' };
+    }
+
     const formattedResponse = {
         titleID: results[0].titleID,
         type: results[0].type,
@@ -141,6 +176,7 @@ function processResults(results) {
     return formattedResponse;
     
 };
+
 
 // no table correlation between titles, people and category
 exports.getSearchPersonByName = async (req, res, next) => {
@@ -257,30 +293,63 @@ exports.healthcheck = async (req, res, next) => {
 
 //admin 2
 exports.upload_titlebasics = async (req, res, next) => {
+    try {
+        if (!req.file) {
+            return res.status(400).send("No TSV file uploaded.");
+        }
 
-    console.log(req.body.src);
+        // Get the path of the uploaded file
+        const filePath = req.file.path;
+
+        // Create a readable stream from the uploaded TSV file
+        const stream = fs.createReadStream(filePath);
+
+        // Parse the TSV content
+        const tsvData = [];
+        stream.pipe(csv({ separator: '\t' })) // Set the separator to tab (\t)
+            .on('data', (row) => {
+                tsvData.push(row);
+            })
+            .on('end', async () => {
+                // Insert the TSV data into the database
+                await insertIntoDatabase(tsvData);
+
+                // Respond with a success message
+                res.status(200).send("TSV data inserted into the database successfully.");
+            })
+            .on('error', (error) => {
+                console.error('Error parsing TSV file:', error);
+                res.status(500).send("Error parsing TSV file.");
+            });
+    } catch (error) {
+        console.error('Error uploading TSV file:', error);
+        res.status(500).send("Error uploading TSV file.");
+    }
+};
+
+async function insertIntoDatabase(tsvData) {
+    // Replace the connection details with your own database connection
+    const connection = await mysql.createConnection({
+        host: 'localhost',
+        user: 'root',
+        password: '',
+        database: 'test'
+    });
 
     try {
-      // Ensure that the request body has the 'tsv_data' field
-      if (!req.body || !req.body.tsv_data) {
-        return res.status(400).json({ error: 'Missing TSV data in the request body' });
-      }
-  
-      // Read TSV data from the request body
-      const tsvData = req.body.tsv_data;
-  
-      // Process the TSV data (for example, you can insert it into your database)
-      // Implement your database logic here...
-  
-      // For demonstration purposes, let's assume we save the TSV data to a file
-      const filePath = path.join(__dirname, 'uploaded_data.tsv');
-      fs.writeFileSync(filePath, tsvData, 'utf-8');
-  
-      // Respond with a success message (modify as needed)
-      res.status(200).json({ message: 'TSV data uploaded successfully', filePath });
-    } catch (error) {
-      console.error('Error:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
-  };
+        console.log(tsvData);
+        // Assuming your TSV has columns like 'column1', 'column2', etc.
+        const insertQuery = 'INSERT INTO dummy (column1, column2) VALUES ?';
 
+        // Use promise wrapper for the query
+        const values = tsvData.map(row => [row.column1, row.column2]);
+        await connection.promise().query(insertQuery, [values]);
+
+        console.log('TSV data inserted into the database successfully.');
+    } catch (error) {
+        console.error('Error inserting TSV data into the database:', error);
+    } finally {
+        // Close the database connection
+        await connection.end();
+    }
+}
