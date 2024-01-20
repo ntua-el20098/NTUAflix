@@ -196,6 +196,10 @@ exports.getTitlesByGenre = async (req, res, next) => {
             connection.release();
             if (err) return res.status(500).json({ message: 'Internal server error' });
 
+            if (rows.length === 0) {
+                return res.status(204).send();
+            }
+
             const tconsts = rows.map(row => row.tconst);
             const titleObjects = [];
 
@@ -253,6 +257,10 @@ exports.getSearchByRating = async (req, res, next) => {
             connection.release();
             if (err) return res.status(500).json({ message: 'Internal server error', error: err });
 
+            if (rows.length === 0) {
+                return res.status(204).send();
+            }
+            
             const tconsts = rows.map(row => row.tconst);
             const titleObjects = [];
 
