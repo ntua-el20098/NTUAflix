@@ -1,29 +1,31 @@
 "use client";
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
+import { Box, InputBase } from "@mui/material";
+import Card from "@/components/Card";
 
-function TitleList() {
-  const [titleData, setTitleData] = useState([]);
+const MovieInfo = () => {
+  const [movieData, setMovieData] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/samples/searchbyrating', {
-          method: 'POST',
+        const response = await fetch("http://localhost:3000/api/samples/searchbyrating", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             gqueryObject: {
-              minrating: '0',
-              maxrating: '10',
+              minrating: "0",
+              maxrating: "10",
             },
           }),
         });
-
         const data = await response.json();
-        setTitleData(data);
+        setMovieData(data);
+        console.log(data); // Log the output to the console
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       }
     };
 
@@ -32,34 +34,85 @@ function TitleList() {
 
   return (
     <div>
-      {titleData.map((titleObject, index) => (
-        <div key={index}>
-          {titleObject.titleObject.message === 'No results found' ? (
-            <p>{titleObject.titleObject.message}</p>
-          ) : (
-            <div>
-              <p>Title ID: {titleObject.titleObject.titleID}</p>
-              <p>Type: {titleObject.titleObject.type}</p>
-              <p>Title: {titleObject.titleObject.originalTitle}</p>
-              <img
-                src={titleObject.titleObject.titlePoster.replace('{width_variable}', 'original')}
-                alt={titleObject.titleObject.originalTitle}
-                style={{ width: '100px', height: '150px' }}
-              />
-              {/* Add more details as needed */}
-              <p>Genres:</p>
-              <ul>
-                {titleObject.titleObject.genres.map((genre, genreIndex) => (
-                  <li key={genreIndex}>{genre.genreTitle}</li>
-                ))}
-              </ul>
-              {/* Display other information */}
-            </div>
-          )}
-        </div>
-      ))}
+      <div
+        className="input-group mb-3"
+        style={{ width: "60%", margin: "0 auto", marginTop: "40px" }}
+      >
+        <span className="input-group-text">Search by rating range</span>
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Min"
+          aria-label="Min"
+        />
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Max"
+          aria-label="Max"
+        />
+  
+        <button
+          className="btn btn-outline-secondary"
+          type="button"
+          id="button-addon2"
+        >
+          Search
+        </button>
+      </div>
+      <Box
+        sx={{
+          display: "grid",
+          padding: "3%",
+          gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))",
+          gap: "30px",
+        }}
+      >
+        {movieData?.map?.((titleObject, index) => (
+          <Card
+            key={index}
+            id={titleObject.titleID}
+            type={titleObject.type}
+            title={titleObject.originalTitle}
+            rating={titleObject.rating?.avRating}
+            poster={titleObject.titlePoster?.replace?.('{width_variable}', 'original')}
+          />
+        ))}
+      </Box>
+  
+      <nav aria-label="Page navigation example">
+        <ul className="pagination justify-content-center " data-bs-theme="dark">
+          <li className="page-item disabled">
+            <a className="page-link">Previous</a>
+          </li>
+          <li className="page-item">
+            <a className="page-link" href="#">
+              1
+            </a>
+          </li>
+          <li className="page-item">
+            <a className="page-link" href="#">
+              2
+            </a>
+          </li>
+          <li className="page-item">
+            <a className="page-link" href="#">
+              3
+            </a>
+          </li>
+          <li className="page-item">
+            <a className="page-link" href="#">
+              4
+            </a>
+          </li>
+          <li className="page-item">
+            <a className="page-link" href="#">
+              Next
+            </a>
+          </li>
+        </ul>
+      </nav>
     </div>
-  );
-}
+  );};
 
-export default TitleList;
+export default MovieInfo;
