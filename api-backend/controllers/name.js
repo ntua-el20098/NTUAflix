@@ -138,7 +138,7 @@ function format_getSearchPersonByName(results) {
 // Function to get person details based on nameID using the getPersonDetails endpoint
 async function getPersonDetails(nconst) {
     try {
-        const response = await axios.get(`http://localhost:3000/api/samples/name/${nconst}`);
+        const response = await axios.get(`http://localhost:9876/ntuaflix_api/name/${nconst}`);
         return response.data;
     } catch (error) {
         console.error('Error fetching title details for', nconst, error.message);

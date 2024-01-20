@@ -22,7 +22,7 @@ router.get('/name/:nameID', nameController.getPersonDetails);
 router.get('/admin/healthcheck', adminController.healthcheck);
 router.post('/admin/upload/titlebasics', upload.single("file"), adminController.upload_titlebasics);
 
-//front-end
+//front-end endpoints
 router.post('/bygenre', titleController.getTitlesByGenre);
 router.post('/searchbyrating', titleController.getSearchByRating);
 router.post('/searchname', nameController.getSearchPersonByName);
