@@ -95,6 +95,7 @@ function processResults(results) {
     return formattedResponse;
 };
 
+
 exports.getSearchByTitle = async (req, res, next) => {
     let limit = undefined;
     if (req.query.limit) {
