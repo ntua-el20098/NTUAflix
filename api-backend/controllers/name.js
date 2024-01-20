@@ -44,8 +44,8 @@ WHERE
         connection.query(query, nameID, (err, rows) => {
             connection.release();
             if (err) return res.status(500).json({ message: 'Internal server error' });
-            const formattedResponse = processPersonResults(rows);
-            return res.status(200).json(formattedResponse);
+            const nameObject = processPersonResults(rows);
+            return res.status(200).json({nameObject});
         });
     });
 };
