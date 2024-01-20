@@ -11,7 +11,7 @@ router.get('/bygenre', sampleController.getTitlesByGenre);
 router.get('/searchname', sampleController.getSearchPersonByName);
 router.get('/searchtitle', sampleController.getSearchByTitle);
 
-//router.get('/name/:nameID', sampleController.getPersonDetails);
+router.get('/name/:nameID', sampleController.getPersonDetails);
 
 //admin 
 router.get('/admin/healthcheck', sampleController.healthcheck);
