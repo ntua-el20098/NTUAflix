@@ -15,7 +15,6 @@ exports.getTitleDetails = async (req, res, next) => {
     }
 
     const titleID = req.params.titleID;
-    console.log("test")
 
     const query = `
         
