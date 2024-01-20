@@ -217,7 +217,7 @@ exports.getTitlesByGenre = async (req, res, next) => {
 // Function to get title details based on titleID using the getTitleDetails endpoint
 async function getTitleDetails(tconst) {
     try {
-        const response = await axios.get(`http://localhost:3000/api/samples/title/${tconst}`);
+        const response = await axios.get(`http://localhost:9876/ntuaflix_api/title/${tconst}`);
         return response.data;
     } catch (error) {
         console.error('Error fetching title details for', tconst, error.message);
