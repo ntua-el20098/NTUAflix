@@ -12,6 +12,7 @@ const router = express.Router();
 router.get('/title/:titleID', titleController.getTitleDetails);
 router.get('/bygenre', titleController.getTitlesByGenre);
 router.get('/searchtitle', titleController.getSearchByTitle);
+router.get('/searchbyrating', titleController.getSearchByRating);
 
 //name endpoints
 router.get('/searchname', nameController.getSearchPersonByName);

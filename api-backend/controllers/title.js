@@ -1,6 +1,6 @@
 const mysql = require("mysql2");
 const { pool } = require('../utils/database');
-const {body} = require("express/lib/request");
+const { body } = require("express/lib/request");
 const axios = require('axios');
 
 const csv = require('csv-parser');
@@ -15,7 +15,6 @@ exports.getTitleDetails = async (req, res, next) => {
     }
 
     const titleID = req.params.titleID;
-    console.log("test")
 
     const query = `
         
@@ -52,8 +51,8 @@ WHERE
         connection.query(query, titleID, (err, rows) => {
             connection.release();
             if (err) return res.status(500).json({ message: 'Internal server error' });
-            const formattedResponse = processResults(rows);
-            return res.status(200).json(formattedResponse);
+            const titleObject = processResults(rows);
+            return res.status(200).json({titleObject});
         });
     });
 };
@@ -144,7 +143,6 @@ exports.getSearchByTitle = async (req, res, next) => {
 };
 
 exports.getTitlesByGenre = async (req, res, next) => {
-
     let limit = undefined;
     if (req.query.limit) {
         limit = Number(req.query.limit);
@@ -159,12 +157,10 @@ exports.getTitlesByGenre = async (req, res, next) => {
 
     const attributes = [qgenre, minrating, yrFrom, yrTo].flat().filter(attr => attr !== undefined);
     const uniqueAttributes = [...new Set(attributes)];
-    console.log(attributes.length);
-    console.log(uniqueAttributes.length);
     if (
         (attributes.length === 2 && uniqueAttributes.length !== attributes.length) ||
         (attributes.length === 3 && uniqueAttributes.length > 3) ||
-        (attributes.length === 4 && uniqueAttributes.length > 3 && gqueryObject.yrFrom[0] === gqueryObject.yrTo[0])
+        (attributes.length === 4 && uniqueAttributes.length > 3 && yrFrom === yrTo)
     ) {
         return res.status(400).json({ message: 'Duplicate parameters detected' });
     }
@@ -198,10 +194,13 @@ exports.getTitlesByGenre = async (req, res, next) => {
             connection.release();
             if (err) return res.status(500).json({ message: 'Internal server error' });
 
+            if (rows.length === 0) {
+                return res.status(204).send();
+            }
+
             const tconsts = rows.map(row => row.tconst);
             const titleObjects = [];
 
-            // Use Promise.all to wait for all getTitleDetails requests to complete
             Promise.all(tconsts.map(tconst => getTitleDetails(tconst)))
                 .then(titleDetailsArray => {
                     titleObjects.push(...titleDetailsArray);
@@ -224,3 +223,56 @@ async function getTitleDetails(tconst) {
         throw error;
     }
 }
+
+exports.getSearchByRating = async (req, res, next) => {
+    let limit = undefined;
+    if (req.query.limit) {
+        limit = Number(req.query.limit);
+        if (!Number.isInteger(limit)) return res.status(400).json({ message: 'Limit query param should be an integer' });
+    }
+
+    const { minrating, maxrating } = req.body.gqueryObject;
+
+    if (!minrating || !maxrating || isNaN(minrating) || isNaN(maxrating)) {
+        return res.status(400).json({ message: 'Invalid or missing input parameters' });
+    }
+
+    const query = `
+        SELECT t.tconst
+        FROM title t
+        JOIN rating r ON t.tconst = r.tconst
+        WHERE r.averageRating >= ? AND r.averageRating <= ?
+    ` + (limit ? ' LIMIT ?' : '');
+
+    const queryParams = [minrating, maxrating];
+
+    if (limit !== undefined) {
+        queryParams.push(limit);
+    }
+
+    pool.getConnection((err, connection) => {
+        connection.query(query, queryParams, (err, rows) => {
+            connection.release();
+            if (err) return res.status(500).json({ message: 'Internal server error', error: err });
+
+            if (rows.length === 0) {
+                return res.status(204).send();
+            }
+            
+            const tconsts = rows.map(row => row.tconst);
+            const titleObjects = [];
+
+            Promise.all(tconsts.map(tconst => getTitleDetails(tconst)))
+                .then(titleDetailsArray => {
+                    titleObjects.push(...titleDetailsArray);
+                    return res.status(200).json(titleObjects);
+                })
+                .catch(error => {
+                    return res.status(500).json({ message: 'Error processing title details', error });
+                });
+        });
+    });
+}
+
+
+
