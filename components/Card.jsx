@@ -20,7 +20,6 @@ const Card = ({ poster, title, id, type, rating}) => {
                         <div className="d-flex justify-content-between">
                             <span className="badge bg-secondary">{type}</span>
                             <div>
-                                <span className="badge bg-secondary">Genre</span>
                                 <span style={{ marginLeft: '5px' }} className="badge bg-secondary">{rating} ⭐</span> 
                             </div>
                         </div>

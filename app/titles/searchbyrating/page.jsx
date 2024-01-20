@@ -23,7 +23,7 @@ const MovieInfo = () => {
         });
         const data = await response.json();
         setMovieData(data);
-        console.log(data); // Log the output to the console
+        console.log(data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -68,15 +68,17 @@ const MovieInfo = () => {
           gap: "30px",
         }}
       >
-        {movieData?.map?.((titleObject, index) => (
-          <Card
-            key={index}
-            id={titleObject.titleID}
-            type={titleObject.type}
-            title={titleObject.originalTitle}
-            rating={titleObject.rating?.avRating}
-            poster={titleObject.titlePoster?.replace?.('{width_variable}', 'original')}
-          />
+        {movieData.map((item, index) => (
+          item.titleObject && item.titleObject.rating && (
+            <Card
+              key={index}
+              id={item.titleObject.titleID}
+              type={item.titleObject.type}
+              title={item.titleObject.originalTitle}
+              rating={item.titleObject.rating.avRating}
+              poster={item.titleObject.titlePoster.replace('{width_variable}', 'original')}
+            />
+          )
         ))}
       </Box>
   
