@@ -232,9 +232,9 @@ exports.getSearchByRating = async (req, res, next) => {
         if (!Number.isInteger(limit)) return res.status(400).json({ message: 'Limit query param should be an integer' });
     }
 
-    const { minrating, maxrating } = req.body.gqueryObject;
+    const { minrating} = req.body.gqueryObject;
 
-    if (!minrating || !maxrating || isNaN(minrating) || isNaN(maxrating)) {
+    if (!minrating || isNaN(minrating) ) {
         return res.status(400).json({ message: 'Invalid or missing input parameters' });
     }
 
@@ -242,10 +242,10 @@ exports.getSearchByRating = async (req, res, next) => {
         SELECT t.tconst
         FROM title t
         JOIN rating r ON t.tconst = r.tconst
-        WHERE r.averageRating >= ? AND r.averageRating <= ?
+        WHERE r.averageRating >= ? 
     ` + (limit ? ' LIMIT ?' : '');
 
-    const queryParams = [minrating, maxrating];
+    const queryParams = [minrating];
 
     if (limit !== undefined) {
         queryParams.push(limit);
