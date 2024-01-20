@@ -21,14 +21,5 @@ router.get('/name/:nameID', nameController.getPersonDetails);
 router.get('/admin/healthcheck', adminController.healthcheck);
 router.post('/admin/upload/titlebasics', upload.single("file"), adminController.upload_titlebasics);
 
-<<<<<<< HEAD
-router.get('/name/:nameID', sampleController.getPersonDetails);
-
-//admin 
-router.get('/admin/healthcheck', sampleController.healthcheck);
-router.post('/admin/upload/titlebasics', upload.single("file"), sampleController.upload_titlebasics);
-
 module.exports = router;
-=======
-module.exports = router;
->>>>>>> e9ffd1316943e2a4a0314472254b30949fe32a3c
+

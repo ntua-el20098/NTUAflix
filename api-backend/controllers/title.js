@@ -5,6 +5,7 @@ const axios = require('axios');
 
 const csv = require('csv-parser');
 const fs = require('fs');
+const { unique } = require("next/dist/build/utils");
 
 exports.getTitleDetails = async (req, res, next) => {
     let limit = undefined;
@@ -93,7 +94,6 @@ function processResults(results) {
     formattedResponse.principals = [...uniquePrincipals].map(principal => JSON.parse(principal));
 
     return formattedResponse;
-
 };
 
 exports.getSearchByTitle = async (req, res, next) => {
@@ -143,108 +143,12 @@ exports.getSearchByTitle = async (req, res, next) => {
     });
 };
 
-<<<<<<< HEAD:api-backend/controllers/sample.js
-//nameid
-
-// Function to get person details based on nameID using the getPersonDetails endpoint
-async function getPersonDetails(nconst) {
-    try {
-        const response = await axios.get(`http://localhost:3000/api/samples/name/${nconst}`);
-        return response.data;
-    } catch (error) {
-        console.error('Error fetching title details for', nconst, error.message);
-        throw error;
-    }
-}
-
-
-exports.getPersonDetails = async (req, res, next) => {
-=======
 exports.getTitlesByGenre = async (req, res, next) => {
-    console.log('Entire Request Object:', req);
->>>>>>> e9ffd1316943e2a4a0314472254b30949fe32a3c:api-backend/controllers/title.js
+
     let limit = undefined;
     if (req.query.limit) {
         limit = Number(req.query.limit);
         if (!Number.isInteger(limit)) return res.status(400).json({ message: 'Limit query param should be an integer' });
-<<<<<<< HEAD:api-backend/controllers/sample.js
-    }
-
-    const nameID = req.params.nameID;
-    console.log("test")
-
-    const query = `
-        
-    SELECT
-    p.nconst as nameID, 
-    p.primaryName as name,
-    p.image_url_asset as namePoster
-    p.birthYear as birthYr
-    p.deathYear as deathYr
-    pr.category as category
-    pr.tconst as titleID
-FROM
-    people p
-        JOIN principals pr ON p.nconst = pr.nconst
-WHERE
-    n.nconst = '${nameID}'`;
-
-    if (limit) {
-        query += ` LIMIT ${limit}`;
-    }
-
-    pool.getConnection((err, connection) => {
-        connection.query(query, nameID, (err, rows) => {
-            connection.release();
-            if (err) return res.status(500).json({ message: 'Internal server error' });
-            const formattedResponse = processPersonResults(rows);
-            return res.status(200).json(formattedResponse);
-        });
-    });
-};
-
-// Helper function to process the SQL results and format the response for getPersonDetails
-function processPersonResults(results) {
-    if (!results || results.length === 0) {
-        // Handle the case when no results are found
-        return { message: 'No results found' };
-    }
-
-    const formattedResponse = {
-        nameID: results[0].nameID,
-        name: results[0].name,
-        namePoster: results[0].namePoster,
-        birthYr: results[0].birthYr,
-        deathYr: results[0].deathYr,
-        nameTitles: []
-    };
-
-    // Process nameTitles
-    const uniquenameTitles = new Set(results.map(result => JSON.stringify({ titleID: result.titleID, category: result.category })));
-    formattedResponse.nameTitles = [...uniquenameTitles].map(nameTitle => JSON.parse(nameTitle));
-
-    return formattedResponse;
-    
-};
-
-
-
-//admin 1
-exports.healthcheck = async (req, res, next) => {
-    try {
-        const [rows, fields] = await pool.promise().query('SELECT 1');
-        res.json({
-            status: 'OK',
-            dataconnection: ['connection string'],
-        });
-    } catch (error) {
-        console.error(error);
-        res.json({
-            status: 'failed',
-            dataconnection: ['connection string'],
-        });
-=======
->>>>>>> e9ffd1316943e2a4a0314472254b30949fe32a3c:api-backend/controllers/title.js
     }
 
     const { qgenre, minrating, yrFrom, yrTo } = req.body.gqueryObject;
@@ -253,11 +157,16 @@ exports.healthcheck = async (req, res, next) => {
         return res.status(400).json({ message: 'Invalid or missing input parameters' });
     }
 
-    // Check for duplicate attributes in the gquery
-    const attributes = [qgenre, minrating, yrFrom, yrTo];
-    const hasDuplicates = new Set(attributes).size !== attributes.filter(attr => attr !== undefined).length;
-    if (hasDuplicates) {
-        return res.status(400).json({ message: 'Too many attributes' });
+    const attributes = [qgenre, minrating, yrFrom, yrTo].flat().filter(attr => attr !== undefined);
+    const uniqueAttributes = [...new Set(attributes)];
+    console.log(attributes.length);
+    console.log(uniqueAttributes.length);
+    if (
+        (attributes.length === 2 && uniqueAttributes.length !== attributes.length) ||
+        (attributes.length === 3 && uniqueAttributes.length > 3) ||
+        (attributes.length === 4 && uniqueAttributes.length > 3 && gqueryObject.yrFrom[0] === gqueryObject.yrTo[0])
+    ) {
+        return res.status(400).json({ message: 'Duplicate parameters detected' });
     }
 
     const query = `SELECT t.tconst
@@ -272,21 +181,18 @@ exports.healthcheck = async (req, res, next) => {
 
     const queryParams = [qgenre, minrating];
 
-    // Add the yrFrom parameter to the queryParams if it's provided
     if (yrFrom !== undefined) {
         queryParams.push(yrFrom);
     }
-
-    // Add the yrTo parameter to the queryParams if it's provided
+    
     if (yrTo !== undefined) {
         queryParams.push(yrTo);
     }
-
-    // Add the limit parameter to the queryParams if it's provided
+    
     if (limit !== undefined) {
         queryParams.push(limit);
     }
-
+    
     pool.getConnection((err, connection) => {
         connection.query(query, queryParams, (err, rows) => {
             connection.release();
@@ -318,6 +224,3 @@ async function getTitleDetails(tconst) {
         throw error;
     }
 }
-
-
-
