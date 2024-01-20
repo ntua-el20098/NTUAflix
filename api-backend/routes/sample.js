@@ -23,3 +23,4 @@ router.get('/admin/healthcheck', adminController.healthcheck);
 router.post('/admin/upload/titlebasics', upload.single("file"), adminController.upload_titlebasics);
 
 module.exports = router;
+
