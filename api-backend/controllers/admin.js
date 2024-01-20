@@ -60,6 +60,7 @@ exports.upload_titlebasics = async (req, res, next) => {
 };
 
 async function insertIntoDatabase(tsvData) {
+    console.log(tsvData);
     // Replace the connection details with your own database connection
     const connection = await mysql.createConnection({
         host: 'localhost',
@@ -69,7 +70,6 @@ async function insertIntoDatabase(tsvData) {
     });
 
     try {
-        console.log(tsvData);
         // Assuming your TSV has columns like 'column1', 'column2', etc.
         const insertQuery = 'INSERT INTO dummy (column1, column2) VALUES ?';
 
