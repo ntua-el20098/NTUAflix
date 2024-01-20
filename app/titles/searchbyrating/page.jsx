@@ -2,22 +2,25 @@
 import { useState, useEffect } from "react";
 import { Box, InputBase } from "@mui/material";
 import Card from "@/components/Card";
+import 'bootstrap/scss/bootstrap.scss';
 
 const MovieInfo = () => {
   const [movieData, setMovieData] = useState([]);
+  const [minRating, setMinRating] = useState(0);
+  const [maxRating, setMaxRating] = useState(10);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/samples/searchbyrating", {
+        const response = await fetch("http://localhost:9876/ntuaflix_api/searchbyrating", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
             gqueryObject: {
-              minrating: "0",
-              maxrating: "10",
+              minrating: minRating.toString(), // Convert to string
+              maxrating: maxRating.toString(), // Convert to string
             },
           }),
         });
@@ -30,35 +33,18 @@ const MovieInfo = () => {
     };
 
     fetchData();
-  }, []);
+  }, [minRating, maxRating]);
+
+  const handleSearch = () => {
+    // Fetch data based on user's input
+    fetchData();
+  };
 
   return (
     <div>
-      <div
-        className="input-group mb-3"
-        style={{ width: "60%", margin: "0 auto", marginTop: "40px" }}
-      >
-        <span className="input-group-text">Search by rating range</span>
-        <input
-          type="text"
-          className="form-control"
-          placeholder="Min"
-          aria-label="Min"
-        />
-        <input
-          type="text"
-          className="form-control"
-          placeholder="Max"
-          aria-label="Max"
-        />
-  
-        <button
-          className="btn btn-outline-secondary"
-          type="button"
-          id="button-addon2"
-        >
-          Search
-        </button>
+      <div style={{ marginLeft: "5%", marginRight: "20%", marginTop: "20px", marginBottom: "20px" }}>
+        <label htmlFor="customRange" className="form-label">Filter by Minimun Rating</label>
+        <input type="range" className="form-range" min="0" max="10" step="0.1" id="customRange" />
       </div>
       <Box
         sx={{
