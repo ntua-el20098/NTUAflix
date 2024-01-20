@@ -199,7 +199,6 @@ exports.getTitlesByGenre = async (req, res, next) => {
             const tconsts = rows.map(row => row.tconst);
             const titleObjects = [];
 
-            // Use Promise.all to wait for all getTitleDetails requests to complete
             Promise.all(tconsts.map(tconst => getTitleDetails(tconst)))
                 .then(titleDetailsArray => {
                     titleObjects.push(...titleDetailsArray);
@@ -257,7 +256,6 @@ exports.getSearchByRating = async (req, res, next) => {
             const tconsts = rows.map(row => row.tconst);
             const titleObjects = [];
 
-            // Use Promise.all to wait for all getTitleDetails requests to complete
             Promise.all(tconsts.map(tconst => getTitleDetails(tconst)))
                 .then(titleDetailsArray => {
                     titleObjects.push(...titleDetailsArray);
