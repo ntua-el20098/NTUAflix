@@ -163,7 +163,7 @@ exports.getTitlesByGenre = async (req, res, next) => {
     if (
         (attributes.length === 2 && uniqueAttributes.length !== attributes.length) ||
         (attributes.length === 3 && uniqueAttributes.length > 3) ||
-        (attributes.length === 4 && uniqueAttributes.length > 3 && gqueryObject.yrFrom[0] === gqueryObject.yrTo[0])
+        (attributes.length === 4 && uniqueAttributes.length > 3 && yrFrom === yrTo)
     ) {
         return res.status(400).json({ message: 'Duplicate parameters detected' });
     }
