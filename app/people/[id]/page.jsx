@@ -1,23 +1,24 @@
-
 import PeopleCard from "@/components/PeopleCard";
 import MovieCard from "@/components/Card";
 
 function page() {
+
   const Person = {
-    coverImage: 'https://www.pentapostagma.gr/sites/default/files/styles/main/public/2021-08/image-77.png?itok=_4JiB9ue',
-    name: 'Sbhsa Person',
-    description: 'This is sbhsas biography for development purposes.',
-    age: '12',
-    birthplace: 'Grecia',
-    Awards: '100',
-    Status: 'Alive',
-    Spouse: 'No',
+    coverImage:
+      "https://www.pentapostagma.gr/sites/default/files/styles/main/public/2021-08/image-77.png?itok=_4JiB9ue",
+    name: "Sbhsa Person",
+    description: "This is sbhsas biography for development purposes.",
+    age: "12",
+    birthplace: "Grecia",
+    Awards: "100",
+    Status: "Alive",
+    Spouse: "No",
   };
 
   const genres = {
-    genre1: 'Action',
-    genre2: 'Adventure',
-    genre3: 'Drama',
+    genre1: "Action",
+    genre2: "Adventure",
+    genre3: "Drama",
   };
 
   const moviePosters = [
@@ -72,10 +73,16 @@ function page() {
       <div className="container mx-auto min-h-[calc(40vh-77px)] flex items-center relative">
         <div className="overflow-x-auto flex gap-4 py-4">
           {moviePosters.map((poster, index) => (
-            <MovieCard key={index} poster={poster} title={`Movie Title ${index}`} id={1} />
+            <MovieCard
+              key={index}
+              poster={poster}
+              title={`Movie Title ${index}`}
+              id={1}
+            />
           ))}
         </div>
       </div>
+      
     </div>
   );
 }

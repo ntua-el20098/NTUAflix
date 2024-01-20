@@ -51,8 +51,8 @@ WHERE
         connection.query(query, titleID, (err, rows) => {
             connection.release();
             if (err) return res.status(500).json({ message: 'Internal server error' });
-            const formattedResponse = processResults(rows);
-            return res.status(200).json(formattedResponse);
+            const titleObject = processResults(rows);
+            return res.status(200).json({titleObject});
         });
     });
 };
@@ -158,8 +158,6 @@ exports.getTitlesByGenre = async (req, res, next) => {
 
     const attributes = [qgenre, minrating, yrFrom, yrTo].flat().filter(attr => attr !== undefined);
     const uniqueAttributes = [...new Set(attributes)];
-    console.log(attributes.length);
-    console.log(uniqueAttributes.length);
     if (
         (attributes.length === 2 && uniqueAttributes.length !== attributes.length) ||
         (attributes.length === 3 && uniqueAttributes.length > 3) ||
@@ -196,6 +194,10 @@ exports.getTitlesByGenre = async (req, res, next) => {
         connection.query(query, queryParams, (err, rows) => {
             connection.release();
             if (err) return res.status(500).json({ message: 'Internal server error' });
+
+            if (rows.length === 0) {
+                return res.status(204).send();
+            }
 
             const tconsts = rows.map(row => row.tconst);
             const titleObjects = [];
@@ -254,6 +256,10 @@ exports.getSearchByRating = async (req, res, next) => {
             connection.release();
             if (err) return res.status(500).json({ message: 'Internal server error', error: err });
 
+            if (rows.length === 0) {
+                return res.status(204).send();
+            }
+            
             const tconsts = rows.map(row => row.tconst);
             const titleObjects = [];
 

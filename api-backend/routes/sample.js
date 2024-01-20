@@ -11,8 +11,8 @@ const router = express.Router();
 //title endpoints
 router.get('/title/:titleID', titleController.getTitleDetails);
 router.get('/bygenre', titleController.getTitlesByGenre);
+router.post('/bygenre', titleController.getTitlesByGenre);
 router.get('/searchtitle', titleController.getSearchByTitle);
-router.get('/searchbyrating', titleController.getSearchByRating);
 
 //name endpoints
 router.get('/searchname', nameController.getSearchPersonByName);
@@ -21,6 +21,12 @@ router.get('/name/:nameID', nameController.getPersonDetails);
 //admin endpoints
 router.get('/admin/healthcheck', adminController.healthcheck);
 router.post('/admin/upload/titlebasics', upload.single("file"), adminController.upload_titlebasics);
+
+//front-end
+router.post('/bygenre', titleController.getTitlesByGenre);
+router.post('/searchbyrating', titleController.getSearchByRating);
+router.post('/searchname', nameController.getSearchPersonByName);
+
 
 module.exports = router;
 

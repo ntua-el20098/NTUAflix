@@ -2,6 +2,8 @@ import React from "react";
 import { Box, InputBase, Typography } from "@mui/material";
 import Card from "@/components/allpeoplecard";
 
+
+
 const PeoplePage = () => {
 const actorData = [
   { name: "SBHSA", photo: "https://www.pentapostagma.gr/sites/default/files/styles/main/public/2021-08/image-77.png?itok=_4JiB9ue" },
