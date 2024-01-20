@@ -2,27 +2,30 @@
 import { useEffect, useState } from "react";
 import PeopleCard from "@/components/PeopleCard";
 import MovieCard from "@/components/Card";
+import { useRouter } from "next/navigation";
 import "bootstrap/scss/bootstrap.scss";
 
 function Page() {
   const [movieData, setMovieData] = useState(null);
+  const router = useRouter();
+  const { titleID } = router.query;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:3000/api/samples/title/tt0098987"
-        );
+        const response = await fetch(`http://localhost:9876/ntuaflix_api/title/${titleID}`);
         const data = await response.json();
-        setMovieData(data);
-        console.log(data); // Log the output to the console
+        setMovieData(data.titleObject);
+        console.log(data.titleObject);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
 
-    fetchData();
-  }, []);
+    if (titleID) {
+      fetchData();
+    }
+  }, [titleID]);
 
   return (
     <div className="bg-secondary relative px-4 md:px-0">
