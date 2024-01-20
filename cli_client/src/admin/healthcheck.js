@@ -1,5 +1,5 @@
-const constructURL = require('../lib/constructURL');
-const errorHandler = require('../lib/errorHandler');
+const constructURL = require('../../lib/constructURL');
+const errorHandler = require('../../lib/errorHandler');
 const chalk = require('chalk');
 const axios = require('axios');
 const https = require('https');
