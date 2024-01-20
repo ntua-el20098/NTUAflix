@@ -7,7 +7,77 @@ const csv = require('csv-parser');
 const fs = require('fs');
 
 
-exports.getPersonDetails = async (req, res, next) => {};
+
+exports.getPersonDetails = async (req, res, next) => {
+    let limit = undefined;
+    if (req.query.limit) {
+        limit = Number(req.query.limit);
+        if (!Number.isInteger(limit)) return res.status(400).json({ message: 'Limit query param should be an integer' });
+    }
+
+    const nameID = req.params.nameID;
+    console.log("test")
+
+    const query = `
+        
+    SELECT
+    p.nconst as nameID, 
+    p.primaryName as name,
+    p.img_url_asset as namePoster,
+    p.birthYear as birthYr,
+    p.deathYear as deathYr,
+    pr.category as category,
+    pr.tconst as titleID,
+    pp.profession as professions
+FROM
+    people p
+        JOIN principals pr ON p.nconst = pr.nconst
+        JOIN primaryprofession pp on pp.nconst = p.nconst
+WHERE
+    p.nconst = '${nameID}'`;
+
+    if (limit) {
+        query += ` LIMIT ${limit}`;
+    }
+
+    pool.getConnection((err, connection) => {
+        connection.query(query, nameID, (err, rows) => {
+            connection.release();
+            if (err) return res.status(500).json({ message: 'Internal server error' });
+            const formattedResponse = processPersonResults(rows);
+            return res.status(200).json(formattedResponse);
+        });
+    });
+};
+
+// Helper function to process the SQL results and format the response for getPersonDetails
+function processPersonResults(results) {
+    if (!results || results.length === 0) {
+        // Handle the case when no results are found
+        return { message: 'No results found' };
+    }
+
+    const professions = results.map(result => result.professions);
+    ProfessionsString = professions.join(',');
+
+    const formattedResponse = {
+        nameID: results[0].nameID,
+        name: results[0].name,
+        namePoster: results[0].namePoster,
+        birthYr: results[0].birthYr,
+        deathYr: results[0].deathYr,
+        profession: ProfessionsString,
+        nameTitles: []
+    };
+
+    // Process nameTitles
+    const uniquenameTitles = new Set(results.map(result => JSON.stringify({ titleID: result.titleID, category: result.category })));
+    formattedResponse.nameTitles = [...uniquenameTitles].map(nameTitle => JSON.parse(nameTitle));
+
+    return formattedResponse;
+
+};
+
 
 exports.getSearchPersonByName = async (req, res, next) => {
     let limit = undefined;
@@ -65,3 +135,13 @@ function format_getSearchPersonByName(results) {
 
 };
 
+// Function to get person details based on nameID using the getPersonDetails endpoint
+async function getPersonDetails(nconst) {
+    try {
+        const response = await axios.get(`http://localhost:3000/api/samples/name/${nconst}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching title details for', nconst, error.message);
+        throw error;
+    }
+}
