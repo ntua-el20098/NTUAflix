@@ -144,7 +144,6 @@ exports.getSearchByTitle = async (req, res, next) => {
 };
 
 exports.getTitlesByGenre = async (req, res, next) => {
-
     let limit = undefined;
     if (req.query.limit) {
         limit = Number(req.query.limit);
@@ -225,5 +224,49 @@ async function getTitleDetails(tconst) {
     }
 }
 
+exports.getSearchByRating = async (req, res, next) => {
+    let limit = undefined;
+    if (req.query.limit) {
+        limit = Number(req.query.limit);
+        if (!Number.isInteger(limit)) return res.status(400).json({ message: 'Limit query param should be an integer' });
+    }
 
+    const { minrating, maxrating } = req.body.gqueryObject;
 
+    if (!minrating || !maxrating || isNaN(minrating) || isNaN(maxrating)) {
+        return res.status(400).json({ message: 'Invalid or missing input parameters' });
+    }
+
+    const query = `
+        SELECT t.tconst
+        FROM title t
+        JOIN rating r ON t.tconst = r.tconst
+        WHERE r.averageRating >= ? AND r.averageRating <= ?
+    ` + (limit ? ' LIMIT ?' : '');
+
+    const queryParams = [minrating, maxrating];
+
+    if (limit !== undefined) {
+        queryParams.push(limit);
+    }
+
+    pool.getConnection((err, connection) => {
+        connection.query(query, queryParams, (err, rows) => {
+            connection.release();
+            if (err) return res.status(500).json({ message: 'Internal server error', error: err });
+
+            const tconsts = rows.map(row => row.tconst);
+            const titleObjects = [];
+
+            // Use Promise.all to wait for all getTitleDetails requests to complete
+            Promise.all(tconsts.map(tconst => getTitleDetails(tconst)))
+                .then(titleDetailsArray => {
+                    titleObjects.push(...titleDetailsArray);
+                    return res.status(200).json(titleObjects);
+                })
+                .catch(error => {
+                    return res.status(500).json({ message: 'Error processing title details', error });
+                });
+        });
+    });
+}
