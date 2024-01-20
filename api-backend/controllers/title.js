@@ -222,16 +222,6 @@ async function getTitleDetails(tconst) {
         throw error;
     }
 }
-// Function to get title details based on titleID using the getTitleDetails endpoint
-async function getTitleDetails(tconst) {
-    try {
-        const response = await axios.get(`http://localhost:3000/api/samples/title/${tconst}`);
-        return response.data;
-    } catch (error) {
-        console.error('Error fetching title details for', tconst, error.message);
-        throw error;
-    }
-}
 
 exports.getSearchByRating = async (req, res, next) => {
     let limit = undefined;
