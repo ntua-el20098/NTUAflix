@@ -51,8 +51,8 @@ WHERE
         connection.query(query, titleID, (err, rows) => {
             connection.release();
             if (err) return res.status(500).json({ message: 'Internal server error' });
-            const formattedResponse = processResults(rows);
-            return res.status(200).json(formattedResponse);
+            const titleObject = processResults(rows);
+            return res.status(200).json({titleObject});
         });
     });
 };
@@ -157,8 +157,6 @@ exports.getTitlesByGenre = async (req, res, next) => {
 
     const attributes = [qgenre, minrating, yrFrom, yrTo].flat().filter(attr => attr !== undefined);
     const uniqueAttributes = [...new Set(attributes)];
-    console.log(attributes.length);
-    console.log(uniqueAttributes.length);
     if (
         (attributes.length === 2 && uniqueAttributes.length !== attributes.length) ||
         (attributes.length === 3 && uniqueAttributes.length > 3) ||
