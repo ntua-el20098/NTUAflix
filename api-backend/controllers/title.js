@@ -5,6 +5,7 @@ const axios = require('axios');
 
 const csv = require('csv-parser');
 const fs = require('fs');
+const { unique } = require("next/dist/build/utils");
 
 exports.getTitleDetails = async (req, res, next) => {
     let limit = undefined;
@@ -93,7 +94,6 @@ function processResults(results) {
     formattedResponse.principals = [...uniquePrincipals].map(principal => JSON.parse(principal));
 
     return formattedResponse;
-
 };
 
 exports.getSearchByTitle = async (req, res, next) => {
@@ -144,7 +144,7 @@ exports.getSearchByTitle = async (req, res, next) => {
 };
 
 exports.getTitlesByGenre = async (req, res, next) => {
-    console.log('Entire Request Object:', req);
+
     let limit = undefined;
     if (req.query.limit) {
         limit = Number(req.query.limit);
@@ -157,11 +157,16 @@ exports.getTitlesByGenre = async (req, res, next) => {
         return res.status(400).json({ message: 'Invalid or missing input parameters' });
     }
 
-    // Check for duplicate attributes in the gquery
-    const attributes = [qgenre, minrating, yrFrom, yrTo];
-    const hasDuplicates = new Set(attributes).size !== attributes.filter(attr => attr !== undefined).length;
-    if (hasDuplicates) {
-        return res.status(400).json({ message: 'Too many attributes' });
+    const attributes = [qgenre, minrating, yrFrom, yrTo].flat().filter(attr => attr !== undefined);
+    const uniqueAttributes = [...new Set(attributes)];
+    console.log(attributes.length);
+    console.log(uniqueAttributes.length);
+    if (
+        (attributes.length === 2 && uniqueAttributes.length !== attributes.length) ||
+        (attributes.length === 3 && uniqueAttributes.length > 3) ||
+        (attributes.length === 4 && uniqueAttributes.length > 3 && gqueryObject.yrFrom[0] === gqueryObject.yrTo[0])
+    ) {
+        return res.status(400).json({ message: 'Duplicate parameters detected' });
     }
 
     const query = `SELECT t.tconst
@@ -176,21 +181,18 @@ exports.getTitlesByGenre = async (req, res, next) => {
 
     const queryParams = [qgenre, minrating];
 
-    // Add the yrFrom parameter to the queryParams if it's provided
     if (yrFrom !== undefined) {
         queryParams.push(yrFrom);
     }
-
-    // Add the yrTo parameter to the queryParams if it's provided
+    
     if (yrTo !== undefined) {
         queryParams.push(yrTo);
     }
-
-    // Add the limit parameter to the queryParams if it's provided
+    
     if (limit !== undefined) {
         queryParams.push(limit);
     }
-
+    
     pool.getConnection((err, connection) => {
         connection.query(query, queryParams, (err, rows) => {
             connection.release();
