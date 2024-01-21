@@ -3,13 +3,13 @@ const errorHandler = require('../../lib/errorHandler');
 const chalk = require('chalk');
 const axios = require('axios');
 
-module.exports = function(options) {
-    const url = constructURL('/admin/', 'healthcheck');
+module.exports = function() {
+    let url = constructURL('/admin/', 'healthcheck');
     console.log(url);
     let config = {
         method: 'GET',
         url: url,
-        port: 9876
+        port: 9876,
     };
     axios(config)
         .then(res => {

@@ -36,6 +36,7 @@ commands.command('healthcheck')
     .description('Confirms end-to-end connectivity between the user and the database')
     .action( function(options) { healthcheck(options) } )
 
+
 // resetall
 commands.command('resetall')
     .alias('rsall')
@@ -87,7 +88,7 @@ commands.command('newratings')
 commands.command('title')
     .alias('t')
     .description('Returns the title with the specified tconst')
-    .option('-tid, --tconst <tconst>', 'tconst of the title')
+    .option('-tid, --titleID <tconst>', 'tconst of the title')
     .action( function(options) { title(options) } )
 
 
@@ -114,6 +115,9 @@ commands.command('searchname')
     .alias('sn')
     .description('Returns the name with the specified primaryName')
     .action( function(options) { searchname(options) } )
+
+
+commands.parse(process.argv);
 
 let scope = process.argv[2];
 let scopeList = ['healthcheck', 'hc', 'resetall', 'rsall',

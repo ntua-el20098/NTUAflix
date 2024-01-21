@@ -3,8 +3,8 @@ const constructURL = require('../../lib/constructURL');
 const errorHandler = require('../../lib/errorHandler');
 
 function title(options) {
-    const tconst = options.tconst;
-    const url = constructURL('/title/:', tconst);
+    const titleID = options.titleID
+    const url = constructURL('/title/', titleID)
     const config = {
         method: 'GET',
         url: url,
