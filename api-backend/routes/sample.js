@@ -21,6 +21,7 @@ router.get('/name/:nameID', nameController.getPersonDetails);
 //admin endpoints
 router.get('/admin/healthcheck', adminController.healthcheck);
 router.post('/admin/upload/titlebasics', upload.single("file"), adminController.upload_titlebasics);
+//router.post('/admin/upload/namebasics', upload.single("file"), adminController.upload_namebasics);
 
 //front-end endpoints
 router.post('/bygenre', titleController.getTitlesByGenre);

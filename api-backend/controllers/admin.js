@@ -85,3 +85,35 @@ async function insertIntoDatabase(tsvData) {
         await connection.end();
     }
 }
+
+//admin 4
+exports.upload_namebasics = async (req, res, next) => {
+    try {
+        if (!req.file) {
+            return res.status(400).send("No TSV file uploaded.");
+        }
+
+        // Change this to the path of the uploaded file
+        const filePath = req.file.path;
+
+        const stream = fs.createReadStream(filePath);
+
+        const tsvData = [];
+        stream.pipe(csv({ separator: '\t' }))
+            .on('data', (row) => {
+                tsvData.push(row);
+            })
+            .on('end', async () => {
+                await insertIntoDatabase_name(tsvData);
+
+                res.status(200).send("TSV data inserted into the database successfully.");
+            })
+            .on('error', (error) => {
+                console.error('Error parsing TSV file:', error);
+                res.status(500).send("Error parsing TSV file.");
+            });
+    } catch (error) {
+        console.error('Error uploading TSV file:', error);
+        res.status(500).send("Error uploading TSV file.");
+    }
+};
