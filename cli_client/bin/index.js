@@ -36,7 +36,7 @@ commands.command('healthcheck')
     .description('Confirms end-to-end connectivity between the user and the database')
     .action( function(options) { healthcheck(options) } )
 
-// resetall
+    // resetall
 commands.command('resetall')
     .alias('rsall')
     .description('Deletes all data from the database')
@@ -107,6 +107,7 @@ commands.command('bygenre')
 commands.command('name')
     .alias('n')
     .description('Returns the name with the specified nconst')
+    .option('-nid, --name')
     .action( function(options) { name(options) } )
 
 // searchname
@@ -115,6 +116,8 @@ commands.command('searchname')
     .description('Returns the name with the specified primaryName')
     .action( function(options) { searchname(options) } )
 
+commands.parse(process.argv)
+
 let scope = process.argv[2];
 let scopeList = ['healthcheck', 'hc', 'resetall', 'rsall',
     'newtitle', 'nt', 'newakas', 'na', 'newnames', 'nn', 'newcrew', 'nc',
@@ -122,7 +125,6 @@ let scopeList = ['healthcheck', 'hc', 'resetall', 'rsall',
     'title', 't', 'searchtitle', 'st', 'bygenre', 'bg', 'name', 'n', 'searchname', 'sn'];
 
 if (process.argv.length < 2) {
-    console.log(process.argv.length < 3);
     console.log(chalk.red('Error occured! Scope was not specified!'));
     console.log(chalk.yellow('Choose one of the following:'));
     console.log(chalk.yellow('healthcheck | hc'));

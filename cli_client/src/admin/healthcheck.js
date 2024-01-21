@@ -3,7 +3,7 @@ const errorHandler = require('../../lib/errorHandler');
 const chalk = require('chalk');
 const axios = require('axios');
 
-module.exports = function(options) {
+module.exports = function() {
     const url = constructURL('/admin/', 'healthcheck');
     console.log(url);
     let config = {

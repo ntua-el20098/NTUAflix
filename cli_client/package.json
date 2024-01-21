@@ -34,6 +34,7 @@
     "has-flag": "^4.0.0",
     "iconv-lite": "^0.4.24",
     "ieee754": "^1.2.1",
+    "ig": "^0.0.5",
     "inherits": "^2.0.4",
     "inquirer": "^8.2.6",
     "is-fullwidth-code-point": "^3.0.0",
