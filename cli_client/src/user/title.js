@@ -2,7 +2,7 @@ const axios = require('axios');
 const constructURL = require('../../lib/constructURL');
 const errorHandler = require('../../lib/errorHandler');
 
-function title(options) {
+module.exports = function title(options) {
     const titleID = options.titleID
     const url = constructURL('/title/', titleID)
     const config = {

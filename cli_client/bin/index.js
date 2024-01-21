@@ -42,7 +42,7 @@ commands.command('title')
     .alias('t')
     .description('Returns the title with the specified tconst')
     .option('-tid, --titleID <tconst>', 'tconst of the title')
-    .action(function (options) { title() } )
+    .action(function (options) { title(options) } )
 
 // searchtitle
 commands.command('searchtitle')
@@ -117,17 +117,6 @@ commands.command('newratings')
     .description('Adds a new rating to the database')
     .action( function(options) { newratings(options) } )
 
-
-commands.parse(process.argv);
-
-// title
-commands.command('title')
-    .alias('t')
-    .description('Returns the title with the specified tconst')
-    .option('-tid, --titleID <tconst>', 'tconst of the title')
-    .action( function(options) { title(options) } )
-
-
 // searchtitle
 commands.command('searchtitle')
     .alias('st')
@@ -139,13 +128,6 @@ commands.command('bygenre')
     .alias('bg')
     .description('Returns the titles with the specified genre')
     .action( function(options) { bygenre(options) } )
-
-// name
-commands.command('name')
-    .alias('n')
-    .description('Returns the name with the specified nconst')
-    .option('-nid, --nameID ')
-    .action( function(options) { name(options) } )
 
 // searchname
 commands.command('searchname')
