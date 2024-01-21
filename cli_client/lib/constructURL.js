@@ -1,4 +1,4 @@
-module.exports = function (scope, param1, param2, param3, format, apikey) {
+module.exports = function (scope, param1, param2) {
     let base = 'http://localhost:9876/ntuaflix_api';
 
     // create url with scope
