@@ -37,6 +37,38 @@ commands.command('healthcheck')
     .action( function(options) { healthcheck(options) } )
 
 
+// title
+commands.command('title')
+    .alias('t')
+    .description('Returns the title with the specified tconst')
+    .option('-tid, --titleID <tconst>', 'tconst of the title')
+    .action( () => { title() } )
+
+// searchtitle
+commands.command('searchtitle')
+    .alias('st')
+    .description('Returns the title with the specified primaryTitle')
+    .action( function(options) { searchtitle(options) } )
+
+// bygenre
+commands.command('bygenre')
+    .alias('bg')
+    .description('Returns the titles with the specified genre')
+    .action( function(options) { bygenre(options) } )
+
+// name
+commands.command('name')
+    .alias('n')
+    .description('Returns the name with the specified nconst')
+    .action( function(options) { name(options) } )
+
+// searchname
+commands.command('searchname')
+    .alias('sn')
+    .description('Returns the name with the specified primaryName')
+    .action( function(options) { searchname(options) } )
+
+
 // resetall
 commands.command('resetall')
     .alias('rsall')
@@ -83,38 +115,6 @@ commands.command('newratings')
     .alias('nr')
     .description('Adds a new rating to the database')
     .action( function(options) { newratings(options) } )
-
-// title
-commands.command('title')
-    .alias('t')
-    .description('Returns the title with the specified tconst')
-    .option('-tid, --titleID <tconst>', 'tconst of the title')
-    .action( function(options) { title(options) } )
-
-
-// searchtitle
-commands.command('searchtitle')
-    .alias('st')
-    .description('Returns the title with the specified primaryTitle')
-    .action( function(options) { searchtitle(options) } )
-
-// bygenre
-commands.command('bygenre')
-    .alias('bg')
-    .description('Returns the titles with the specified genre')
-    .action( function(options) { bygenre(options) } )
-
-// name
-commands.command('name')
-    .alias('n')
-    .description('Returns the name with the specified nconst')
-    .action( function(options) { name(options) } )
-
-// searchname
-commands.command('searchname')
-    .alias('sn')
-    .description('Returns the name with the specified primaryName')
-    .action( function(options) { searchname(options) } )
 
 
 commands.parse(process.argv);
