@@ -6,8 +6,6 @@ const axios = require('axios');
 const csv = require('csv-parser');
 const fs = require('fs');
 
-
-
 exports.getPersonDetails = async (req, res, next) => {
     let limit = undefined;
     if (req.query.limit) {
@@ -78,7 +76,6 @@ function processPersonResults(results) {
 
 };
 
-
 exports.getSearchPersonByName = async (req, res, next) => {
     let limit = undefined;
     if (req.query.limit) {
@@ -89,10 +86,10 @@ exports.getSearchPersonByName = async (req, res, next) => {
     const namePart = req.body.nqueryObject.namePart;
 
     const query = `
-    SELECT p.nconst, p.primaryName, p.img_url_asset, p.birthYear, p.deathYear, pr.profession
-    FROM people p
-    JOIN primaryprofession pr ON p.nconst = pr.nconst
-    WHERE p.primaryName LIKE "${namePart}" `+ (limit ? ' LIMIT ?' : '');
+        SELECT p.nconst
+        FROM people p
+        WHERE p.primaryName LIKE "%${namePart}%"`+ (limit ? ' LIMIT ?' : '');
+    const queryParams = [namePart];
 
     // Add the limit parameter to the queryParams if it's provided
     if (limit !== undefined) {
@@ -100,39 +97,29 @@ exports.getSearchPersonByName = async (req, res, next) => {
     }
 
     pool.getConnection((err, connection) => {
-        if (err) return res.status(500).json({ message: 'Database connection ERROR' });
+        if (err) return res.status(500).json({ message: 'Error in connection to the database' });
 
         connection.query(query, queryParams, (err, rows) => {
             connection.release();
 
-            if (err) return res.status(500).json({ message: 'Query execution ERROR' });
+            if (err) return res.status(500).json({ message: 'Error in executing the query' });
 
-            const formattedResponse = format_getSearchPersonByName(rows);
-            return res.status(200).json(formattedResponse);
+            // Map over the tconst values and call getPersonDetails for each one
+            const nameDetailsPromises = rows.map(row => getPersonDetails(row.nconst));
+
+            const nameObjects = [];
+
+            // Use Promise.all to wait for all the getPersonDetails requests to complete
+            Promise.all(nameDetailsPromises)
+                .then(nameObjects => {
+                    // Return the array of person details in the response
+                    res.status(200).json(nameObjects);
+                })
+                .catch(error => {
+                    return res.status(500).json({ message: 'Error processing person details', error });
+                });
         });
     });
-};
-function format_getSearchPersonByName(results) {
-    const formattedResponse = {
-        nameObject: {
-            nameID: results[0].nameID,
-            name: results[0].name,
-            namePoster: results[0].namePoster,
-            birthYr: results[0].birthYr,
-            deathYr: results[0].deathYr,
-            profession: results[0].profession,
-            nameTitles: [],
-            titleID: results[0].titleID,
-            category: results[0].category
-        }
-    };
-
-    // Process nameTitles
-    const uniqueNameTitles = new Set(results.map(result => JSON.stringify({ titleID: result.titleID, category: result.category })));
-    formattedResponse.nameObject.nameTitles = [...uniqueNameTitles].map(nameTitle => JSON.parse(nameTitle));
-
-    return formattedResponse;
-
 };
 
 // Function to get person details based on nameID using the getPersonDetails endpoint
