@@ -28,19 +28,13 @@ console.log(
     chalk.yellow(
         figlet.textSync('BitsPlease', {horizontalLayout: 'full'})
     )
-);
-
-
-commands
-    .version('1.0.0')
-    .description('CLI for interacting with the API');
+)
 
 // healthcheck
 commands.command('healthcheck')
     .alias('hc')
     .description('Confirms end-to-end connectivity between the user and the database')
     .action( function(options) { healthcheck(options) } )
-
 
 // resetall
 commands.command('resetall')
@@ -93,7 +87,9 @@ commands.command('newratings')
 commands.command('title')
     .alias('t')
     .description('Returns the title with the specified tconst')
+    .option('-tid, --tconst <tconst>', 'tconst of the title')
     .action( function(options) { title(options) } )
+
 
 // searchtitle
 commands.command('searchtitle')
