@@ -60,6 +60,7 @@ commands.command('bygenre')
 commands.command('name')
     .alias('n')
     .description('Returns the name with the specified nconst')
+    .option('-nid, --nameID <nconst>', 'nconst of the name')
     .action( function(options) { name(options) } )
 
 // searchname
