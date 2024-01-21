@@ -1,24 +1,21 @@
 module.exports = function (scope, param1, param2, param3, format, apikey) {
-    let base = 'https://localhost:9876/ntuaflix_api';
+    let base = 'http://localhost:9876/ntuaflix_api';
 
     // create url with scope
     base = base + scope;
 
-    // create url for SessionsPerPoint, SessionsPerStation, SessionsPerEV, SessionsPerProvider
-    if (scope === '/SessionsPerPoint/' || scope === '/SessionsPerStation/' || scope === '/SessionsPerEV/' || scope === '/SessionsPerProvider/') {
-        base = base + param1 + '/' + param2 + '/' + param3 + '?format=' + format;
+    // create url for healthcheck
+    if (scope === '/admin/'){
+        base = base + 'healthcheck';
     }
-        // create url for Admin scope
-        // healthcheck
-        // resetsessions
-        // usermod /admin/usermod/param1/param2 -> param1 = usermod, param2 = username, param3 = password
-        // users
-    // sessionsupd /admin/system/sessionsupd/
-    else if (scope === '/admin/') {
-        if (param1 === 'sessionsupd') base = base + 'system/' + param1;
-        else if (param1 === 'usermod') base = base + param1 + '/' + param2 + '/' + param3 + '?isAdministrator=' + format;
-        else if (param1 === 'users') base = base + param1 + '/' + param2 + '?isAdministrator=' + param3;
-        else base = base + param1;
+    else if (scope === '/title/:'){
+        // create url for title
+        if (param1 !== undefined) {
+            base = base + param1;
+        }
+    }
+    else {
+        console.log('Error: Invalid scope');
     }
     return base;
 }
