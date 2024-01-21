@@ -14,6 +14,13 @@ module.exports = function (scope, param1, param2, param3, format, apikey) {
             base = base + param1;
         }
     }
+    else if(scope === '/name/') {
+        // create url for name
+        if (param1 !== undefined) {
+            base = base + param1;
+        }
+    }
+
     else {
         console.log('Error: Invalid scope');
     }

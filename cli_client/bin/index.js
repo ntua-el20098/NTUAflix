@@ -36,7 +36,7 @@ commands.command('healthcheck')
     .description('Confirms end-to-end connectivity between the user and the database')
     .action( function(options) { healthcheck(options) } )
 
-    // resetall
+// resetall
 commands.command('resetall')
     .alias('rsall')
     .description('Deletes all data from the database')
@@ -87,7 +87,7 @@ commands.command('newratings')
 commands.command('title')
     .alias('t')
     .description('Returns the title with the specified tconst')
-    .option('-tid, --tconst <tconst>', 'tconst of the title')
+    .option('-tid, --titleID <tconst>', 'tconst of the title')
     .action( function(options) { title(options) } )
 
 

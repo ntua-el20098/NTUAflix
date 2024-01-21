@@ -21,7 +21,7 @@
     "color-convert": "^2.0.1",
     "color-name": "^1.1.4",
     "combined-stream": "^1.0.8",
-    "commander": "^7.2.0",
+    "commander": "^11.1.0",
     "conf": "^12.0.0",
     "defaults": "^1.0.4",
     "delayed-stream": "^1.0.0",

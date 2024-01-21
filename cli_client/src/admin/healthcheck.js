@@ -4,12 +4,12 @@ const chalk = require('chalk');
 const axios = require('axios');
 
 module.exports = function() {
-    const url = constructURL('/admin/', 'healthcheck');
+    let url = constructURL('/admin/', 'healthcheck');
     console.log(url);
     let config = {
         method: 'GET',
         url: url,
-        port: 9876
+        port: 9876,
     };
     axios(config)
         .then(res => {
