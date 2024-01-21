@@ -85,3 +85,9 @@ async function insertIntoDatabase(tsvData) {
         await connection.end();
     }
 }
+
+//admin 4
+/*exports.upload_namebasics = async (req, res, next) => {
+
+}
+*/
