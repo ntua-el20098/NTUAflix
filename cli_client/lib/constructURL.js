@@ -8,7 +8,7 @@ module.exports = function (scope, param1, param2, param3, format, apikey) {
     if (scope === '/admin/'){
         base = base + 'healthcheck';
     }
-    else if (scope === '/title/:'){
+    else if (scope === '/title/'){
         // create url for title
         if (param1 !== undefined) {
             base = base + param1;
