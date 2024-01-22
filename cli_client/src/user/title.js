@@ -12,7 +12,7 @@ module.exports = function title(options) {
     };
     axios(config)
         .then(res => {
-            console.log(res.data);
+            console.log(JSON.stringify(res.data, null, 2));
         })
         .catch(err => {
             errorHandler(err);
