@@ -104,6 +104,11 @@ exports.getSearchPersonByName = async (req, res, next) => {
 
             if (err) return res.status(500).json({ message: 'Error in executing the query' });
 
+            if (rows.length === 0) {
+                // Return a 204 No Content status if there are no results
+                return res.status(204).send();
+            }
+            
             // Map over the tconst values and call getPersonDetails for each one
             const nameDetailsPromises = rows.map(row => getPersonDetails(row.nconst));
 

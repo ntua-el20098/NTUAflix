@@ -20,7 +20,12 @@ module.exports = function (scope, param1, param2) {
             base = base + param1;
         }
     }
+    else if(scope === '/searchtitle') {
+        // create url for searchtitle
+    }
+    else if (scope === '/admin/upload/titlebasics') {
 
+    }
     else {
         console.log('Error: Invalid scope');
     }
