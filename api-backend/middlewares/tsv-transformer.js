@@ -41,8 +41,12 @@ function modifyTSV_Names(inputFilePath, outputProfessionFilePath, outputTitlesFi
     fs.writeFileSync(outputTitlesFilePath, titlesResult, 'utf8');
 }
 
-const inputFilePath = 'C:/Users/daphn/Documents/πολυτεχνειο/Μαθήματα/7o εξάμηνο/ΤΛ/Εργασία/NtuaFlix/sample_data_softeng_project_2023_v2/truncated_data/truncated_name.basics.tsv';
-const outputProfessionFilePath = 'C:/Users/daphn/Documents/πολυτεχνειο/Μαθήματα/7o εξάμηνο/ΤΛ/Εργασία/Tests/output1.tsv';
-const outputTitlesFilePath = 'C:/Users/daphn/Documents/πολυτεχνειο/Μαθήματα/7o εξάμηνο/ΤΛ/Εργασία/Tests/output2.tsv';
+//const inputFilePath = 'C:/Users/daphn/Documents/πολυτεχνειο/Μαθήματα/7o εξάμηνο/ΤΛ/Εργασία/NtuaFlix/sample_data_softeng_project_2023_v2/truncated_data/truncated_name.basics.tsv';
+//const outputProfessionFilePath = 'C:/Users/daphn/Documents/πολυτεχνειο/Μαθήματα/7o εξάμηνο/ΤΛ/Εργασία/Tests/output1.tsv';
+//const outputTitlesFilePath = 'C:/Users/daphn/Documents/πολυτεχνειο/Μαθήματα/7o εξάμηνο/ΤΛ/Εργασία/Tests/output2.tsv';
 
-modifyTSV_Names(inputFilePath, outputProfessionFilePath, outputTitlesFilePath);
+//modifyTSV_Names(inputFilePath, outputProfessionFilePath, outputTitlesFilePath);
+
+module.exports = {
+    modifyTSV_Names
+  };
