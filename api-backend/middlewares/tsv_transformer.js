@@ -45,7 +45,11 @@ function modifyTSV(inputFilePath, outputFilePath) {
 }
 
 // Example usage
-const inputFilePath = '/Users/charalamposk/Desktop/Software Engineering/truncated_data/truncated_title.basics.tsv';
-const outputFilePath = '/Users/charalamposk/Desktop/Software Engineering/truncated_data/truncated_title.basics2.tsv';
+// const inputFilePath = '/Users/charalamposk/Desktop/Software Engineering/truncated_data/truncated_title.basics.tsv';
+// const outputFilePath = '/Users/charalamposk/Desktop/Software Engineering/truncated_data/truncated_title.basics2.tsv';
 
-modifyTSV(inputFilePath, outputFilePath);
+//modifyTSV(inputFilePath, outputFilePath);
+
+module.exports = {
+  modifyTSV
+};

@@ -5,6 +5,7 @@ const { body } = require("express/lib/request");
 
 const csv = require('csv-parser');
 const fs = require('fs');
+const uploadFile = require("../middlewares/upload");
 
 //admin 1
 exports.healthcheck = async (req, res, next) => {
@@ -26,10 +27,8 @@ exports.healthcheck = async (req, res, next) => {
 //admin 2
 exports.upload_titlebasics = async (req, res, next) => {
     try {
-        if (!req.file) {
-            return res.status(400).send("No TSV file uploaded.");
-        }
-
+        
+        console.log(req.file.path);
         // Get the path of the uploaded file
         const filePath = req.file.path;
 
@@ -60,7 +59,7 @@ exports.upload_titlebasics = async (req, res, next) => {
 };
 
 async function insertIntoDatabase(tsvData) {
-    console.log(tsvData);
+
     // Replace the connection details with your own database connection
     const connection = await mysql.createConnection({
         host: 'localhost',
