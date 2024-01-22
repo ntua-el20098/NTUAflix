@@ -22,9 +22,9 @@ var storage = multer.diskStorage({
     cb(null, `${routePath}_${file.originalname}`);
 
     // Call modifyTSV after a file has been uploaded
-    const inputFilePath = '';
-    const outputFilePath = '';
-    modifyTSV(inputFilePath, outputFilePath);
+    //const inputFilePath = '';
+    //const outputFilePath = '';
+    //modifyTSV(inputFilePath, outputFilePath);
   }
 });
 

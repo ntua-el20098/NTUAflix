@@ -47,6 +47,7 @@ commands.command('title')
 commands.command('searchtitle')
     .alias('st')
     .description('Returns the title with the specified primaryTitle')
+    .option('-tp, --titlePart <primaryTitle>', 'primaryTitle of the title')
     .action( function(options) { searchtitle(options) } )
 
 // bygenre
@@ -62,7 +63,7 @@ commands.command('name')
     .option('-nid, --nameID <nconst>', 'nconst of the name')
     .action( function(options) { name(options) } )
 
-// searchname
+// search name
 commands.command('searchname')
     .alias('sn')
     .description('Returns the name with the specified primaryName')
@@ -79,6 +80,7 @@ commands.command('resetall')
 commands.command('newtitle')
     .alias('nt')
     .description('Adds a new title to the database')
+    .option('-f, --filename <file>', 'primaryTitle of the title')
     .action( function(options) { newtitle(options) } )
 
 // newakas
