@@ -13,37 +13,51 @@ exports.getPersonDetails = async (req, res, next) => {
         if (!Number.isInteger(limit)) return res.status(400).json({ message: 'Limit query param should be an integer' });
     }
 
+    if (req.params.nameID === undefined) return res.status(400).json({ message: 'nameID is required' });
+
+    if (Number.isInteger(req.params.nameID)) return res.status(400).json({ message: 'nameID should be an integer' });
+
     const nameID = req.params.nameID;
     console.log("test")
 
     const query = `
-        
     SELECT
-    p.nconst as nameID, 
-    p.primaryName as name,
-    p.img_url_asset as namePoster,
-    p.birthYear as birthYr,
-    p.deathYear as deathYr,
-    pr.category as category,
-    pr.tconst as titleID,
-    pp.profession as professions
-FROM
-    people p
+        p.nconst as nameID, 
+        p.primaryName as name,
+        p.img_url_asset as namePoster,
+        p.birthYear as birthYr,
+        p.deathYear as deathYr,
+        pr.category as category,
+        pr.tconst as titleID,
+        pp.profession as professions
+    FROM
+        people p
         JOIN principals pr ON p.nconst = pr.nconst
         JOIN primaryprofession pp on pp.nconst = p.nconst
-WHERE
-    p.nconst = '${nameID}'`;
+    WHERE
+        p.nconst = '${nameID}'` + (limit ? ' LIMIT ?' : '');
 
-    if (limit) {
-        query += ` LIMIT ${limit}`;
+    const queryParams = [nameID];
+
+    if (limit !== undefined) {
+        queryParams.push(limit);
     }
 
     pool.getConnection((err, connection) => {
-        connection.query(query, nameID, (err, rows) => {
+        if (err) return res.status(500).json({ message: 'Error in connection to the database' });
+
+        connection.query(query, queryParams, (err, rows) => {
             connection.release();
-            if (err) return res.status(500).json({ message: 'Internal server error' });
-            const nameObject = processPersonResults(rows);
-            return res.status(200).json({nameObject});
+
+            if (err) return res.status(500).json({ message: 'Error in executing the query' });
+
+            try {
+                const formattedResponse = processPersonResults(rows);
+                res.status(200).json(formattedResponse);
+            }
+            catch (error) {
+                return res.status(500).json({ message: 'Error processing person details', error });
+            }
         });
     });
 };
@@ -89,6 +103,7 @@ exports.getSearchPersonByName = async (req, res, next) => {
         SELECT p.nconst
         FROM people p
         WHERE p.primaryName LIKE "%${namePart}%"`+ (limit ? ' LIMIT ?' : '');
+
     const queryParams = [namePart];
 
     // Add the limit parameter to the queryParams if it's provided
@@ -106,7 +121,7 @@ exports.getSearchPersonByName = async (req, res, next) => {
 
             if (rows.length === 0) {
                 // Return a 204 No Content status if there are no results
-                return res.status(204).send();
+                return res.status(204).json({ message: 'No results found' });
             }
             
             // Map over the tconst values and call getPersonDetails for each one

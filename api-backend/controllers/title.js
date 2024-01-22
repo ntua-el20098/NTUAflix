@@ -14,55 +14,77 @@ exports.getTitleDetails = async (req, res, next) => {
         if (!Number.isInteger(limit)) return res.status(400).json({ message: 'Limit query param should be an integer' });
     }
 
+    if (req.params.titleID === undefined) {
+        return res.status(400).json({ message: 'Missing titleID parameter' });
+    }
+
+    if (req.params.titleID) {
+        if (Number.isInteger(req.params.titleID)) {
+            return res.status(400).json({ message: 'titleID parameter should be an integer' });
+        }
+    } 
+
     const titleID = req.params.titleID;
 
     const query = `
-        
     SELECT
-    t.tconst as titleID, 
-    t.titleType as type,
-    t.originalTitle,
-    t.img_url_asset as titlePoster,
-    t.startYear,
-    t.endYear,
-    g.genre as genreTitle,
-    a.title as akaTitle,
-    a.region as regionAbbrev,
-    p.nconst as nameID,
-    p.primaryName as name,
-    pr.category as category,
-    r.averageRating as avRating,
-    r.numVotes as nVotes
-FROM
-    title t
-     JOIN genre g ON t.tconst = g.tconst
-     JOIN akas a ON t.tconst = a.tconst
-     JOIN principals pr ON t.tconst = pr.tconst
-     JOIN people p ON pr.nconst = p.nconst
-     JOIN rating r ON t.tconst = r.tconst
-WHERE
-    t.tconst = '${titleID}'`;
+        t.tconst as titleID, 
+        t.titleType as type,
+        t.originalTitle,
+        t.img_url_asset as titlePoster,
+        t.startYear,
+        t.endYear,
+        g.genre as genreTitle,
+        a.title as akaTitle,
+        a.region as regionAbbrev,
+        p.nconst as nameID,
+        p.primaryName as name,
+        pr.category as category,
+        r.averageRating as avRating,
+        r.numVotes as nVotes
+    FROM
+        title t
+        JOIN genre g ON t.tconst = g.tconst
+        JOIN akas a ON t.tconst = a.tconst
+        JOIN principals pr ON t.tconst = pr.tconst
+        JOIN people p ON pr.nconst = p.nconst
+        JOIN rating r ON t.tconst = r.tconst
+    WHERE
+        t.tconst = '${titleID}'` + (limit ? ' LIMIT ?' : '');
 
-    if (limit) {
-        query += ` LIMIT ${limit}`;
+    const queryParams = [titleID];
+
+    if (limit !== undefined) {
+        queryParams.push(limit);
     }
 
     pool.getConnection((err, connection) => {
-        connection.query(query, titleID, (err, rows) => {
+        if (err) return res.status(500).json({ message: 'Error in connection to the database' });
+
+        connection.query(query, queryParams, (err, rows) => {
             connection.release();
-            if (err) return res.status(500).json({ message: 'Internal server error' });
-            const titleObject = processResults(rows);
-            return res.status(200).json({titleObject});
+
+            if (err) return res.status(500).json({ message: 'Error in executing the query' });
+            
+            if (rows.length === 0) {
+                // Return a 204 No Content status if there are no results
+                return res.status(204).json({ message: 'No results found' });
+            }
+
+            try {
+                const titleObject = processResults(rows);
+                return res.status(200).json(titleObject);
+            }
+            catch (error) {
+                return res.status(500).json({ message: 'Error processing title details', error });
+            }
+
         });
     });
 };
 
 // Helper function to process the SQL results and format the response
 function processResults(results) {
-    if (!results || results.length === 0) {
-        // Handle the case when no results are found
-        return { message: 'No results found' };
-    }
 
     const formattedResponse = {
         titleID: results[0].titleID,
@@ -104,6 +126,7 @@ exports.getSearchByTitle = async (req, res, next) => {
     }
 
     const titlePart = req.body.tqueryObject.titlePart;
+
     const query = `
         SELECT t.tconst
         FROM Title t
