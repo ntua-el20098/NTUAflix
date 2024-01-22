@@ -8,7 +8,7 @@ const clear = require('clear');
 //Endpoints
 const healthcheck = require('../src/admin/healthcheck');
 const resetall = require('../src/admin/resetall');
-const newtitle = require('../src/admin/newtitle');
+const newtitles = require('../src/admin/newtitles');
 const newakas = require('../src/admin/newakas');
 const newnames = require('../src/admin/newnames');
 const newcrew = require('../src/admin/newcrew');
@@ -76,12 +76,12 @@ commands.command('resetall')
     .description('Deletes all data from the database')
     .action( function(options) { resetall(options) } )
 
-// newtitle
-commands.command('newtitle')
+// newtitles
+commands.command('newtitles')
     .alias('nt')
     .description('Adds a new title to the database')
     .option('-f, --filename <file>', 'primaryTitle of the title')
-    .action( function(options) { newtitle(options) } )
+    .action( function(options) { newtitles(options) } )
 
 // newakas
 commands.command('newakas')
