@@ -1,4 +1,20 @@
 const fs = require('fs');
+const uploadFile = require('../upload');
+
+async function processUploadedFile(req, res) {
+    try {
+        const inputFilePath = req.file.path;
+        const outputProfessionFilePath = __dirname + '/../uploads/output1.tsv';
+        const outputTitlesFilePath = __dirname + '/../uploads/output2.tsv';
+
+        modifyTSV_Names(inputFilePath, outputProfessionFilePath, outputTitlesFilePath);
+
+        res.status(200).send("File processed successfully!");
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal server error");
+    }
+}
 
 function modifyTSV_Names(inputFilePath, outputProfessionFilePath, outputTitlesFilePath) {
     const data = fs.readFileSync(inputFilePath, 'utf8');
@@ -19,7 +35,6 @@ function modifyTSV_Names(inputFilePath, outputProfessionFilePath, outputTitlesFi
             });
         }
 
-        // Check if column 5 (index 4) is not null, undefined, or an empty string
         if (columns[5] !== null && columns[5] !== undefined && columns[5].trim() !== '') {
             const titlesArray = columns[5].split(',');
 
@@ -29,7 +44,6 @@ function modifyTSV_Names(inputFilePath, outputProfessionFilePath, outputTitlesFi
         }
     });
 
-
     const professionResult = profession.join('\n');
     fs.writeFileSync(outputProfessionFilePath, professionResult, 'utf8');
 
@@ -37,9 +51,4 @@ function modifyTSV_Names(inputFilePath, outputProfessionFilePath, outputTitlesFi
     fs.writeFileSync(outputTitlesFilePath, titlesResult, 'utf8');
 }
 
-const inputFilePath = 'C:/Users/daphn/Documents/πολυτεχνειο/Μαθήματα/7o εξάμηνο/ΤΛ/Εργασία/NtuaFlix/sample_data_softeng_project_2023_v2/truncated_data/truncated_name.basics.tsv';
-const outputProfessionFilePath = 'C:/Users/daphn/Documents/πολυτεχνειο/Μαθήματα/7o εξάμηνο/ΤΛ/Εργασία/Tests/output1.tsv';
-const outputTitlesFilePath = 'C:/Users/daphn/Documents/πολυτεχνειο/Μαθήματα/7o εξάμηνο/ΤΛ/Εργασία/Tests/output2.tsv';
-
-modifyTSV_Names(inputFilePath, outputProfessionFilePath, outputTitlesFilePath);
-
+module.exports = { processUploadedFile };
