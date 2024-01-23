@@ -76,12 +76,16 @@
   "keywords": [
     "cli",
     "client",
-    "soft2326",
+    "se2326",
     "ntuaflix"
   ],
   "bin": {
-    "soft2326": "./bin/index.js"
+    "se2326": "bin/index.js"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "directories": {
+    "lib": "lib"
+  },
+  "devDependencies": {}
 }

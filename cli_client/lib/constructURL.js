@@ -24,7 +24,7 @@ module.exports = function (scope, param1, param2) {
         // create url for searchtitle
     }
     else if (scope === '/admin/upload/titlebasics') {
-
+        // create url for upload titlebasics
     }
     else {
         console.log('Error: Invalid scope');

@@ -25,19 +25,3 @@ module.exports = function title(options) {
             errorHandler(err);
         });
 }
-/*
-async (cmd) => {
-    const tqueryObject = {
-        tqueryObject: {
-            titlePart: cmd.titlePart
-        }
-    };
-    const url = constructURL('/searchtitle', undefined, tqueryObject);
-    try {
-        const response = await axios.post(url, tqueryObject);
-        console.log(response.data);
-    } catch (error) {
-        console.error('Error:', error.message);
-    }
-
- */

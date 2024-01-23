@@ -123,7 +123,7 @@ commands.parse(process.argv)
 
 let scope = process.argv[2];
 let scopeList = ['healthcheck', 'hc', 'resetall', 'rsall',
-    'newtitle', 'nt', 'newakas', 'na', 'newnames', 'nn', 'newcrew', 'nc',
+    'newtitles', 'nt', 'newakas', 'na', 'newnames', 'nn', 'newcrew', 'nc',
     'newepisode', 'ne', 'newprincipals', 's', 'newratings', 'nr',
     'title', 't', 'searchtitle', 'st', 'bygenre', 'bg', 'name', 'n', 'searchname', 'sn'];
 
@@ -132,7 +132,7 @@ if (process.argv.length < 2) {
     console.log(chalk.yellow('Choose one of the following:'));
     console.log(chalk.yellow('healthcheck | hc'));
     console.log(chalk.yellow('resetall | rsall'));
-    console.log(chalk.yellow('newtitle | nt'));
+    console.log(chalk.yellow('newtitles | nt'));
     console.log(chalk.yellow('newakas | na'));
     console.log(chalk.yellow('newnames | nn'));
     console.log(chalk.yellow('newcrew  | nc'));
