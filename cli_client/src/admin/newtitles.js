@@ -11,7 +11,7 @@ module.exports = function newtitle(options) {
         method: 'POST',
         url: url,
         port: 9876,
-        data : {filepath}
+        data : filepath
     };
     axios(config)
         .then(res => {

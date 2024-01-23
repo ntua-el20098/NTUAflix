@@ -24,7 +24,25 @@ module.exports = function (scope, param1, param2) {
         // create url for searchtitle
     }
     else if (scope === '/admin/upload/titlebasics') {
-        // create url for upload titlebasics
+        // create url for upload newtitles
+    }
+    else if(scope === '/admin/upload/namebasics') {
+        // create url for upload newnames
+    }
+    else if(scope === '/admin/upload/titleepisode') {
+        // create url for upload newepisode
+    }
+    else if(scope === '/admin/upload/titleakas') {
+        // create url for upload newakas
+    }
+    else if(scope === '/admin/upload/titlecrew') {
+        // create url for upload newcrew
+    }
+    else if(scope === '/admin/upload/titleprincipals') {
+        // create url for upload newprincipals
+    }
+    else if(scope === '/admin/upload/titleratings') {
+        // create url for upload newratings
     }
     else {
         console.log('Error: Invalid scope');
