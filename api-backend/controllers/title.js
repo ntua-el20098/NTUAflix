@@ -11,16 +11,16 @@ exports.getTitleDetails = async (req, res, next) => {
     let limit = undefined;
     if (req.query.limit) {
         limit = Number(req.query.limit);
-        if (!Number.isInteger(limit)) return res.status(400).json({ message: 'Limit query param should be an integer' });
+        if (!Number.isInteger(limit)) return res.status(400).json({ message: 'Limit query param should be an integer', error: (err ? err : '') });
     }
 
-    if (req.params.titleID === undefined) {
-        return res.status(400).json({ message: 'Missing titleID parameter' });
+    if (!req.params.titleID) {
+        return res.status(400).json({ message: 'Missing titleID parameter', error: err ? err : '' });
     }
 
     if (req.params.titleID) {
-        if (Number.isInteger(req.params.titleID)) {
-            return res.status(400).json({ message: 'titleID parameter should be an integer' });
+        if (!Number.isInteger(req.params.titleID)) {
+            return res.status(400).json({ message: 'titleID parameter should be an integer', error: err ? err : '' });
         }
     } 
 
@@ -59,16 +59,16 @@ exports.getTitleDetails = async (req, res, next) => {
     }
 
     pool.getConnection((err, connection) => {
-        if (err) return res.status(500).json({ message: 'Error in connection to the database' });
+        if (err) return res.status(500).json({ message: 'Error in connection to the database', error: err ? err : '' });
 
         connection.query(query, queryParams, (err, rows) => {
             connection.release();
 
-            if (err) return res.status(500).json({ message: 'Error in executing the query' });
+            if (err) return res.status(500).json({ message: 'Error in executing the query', error: err ? err : '' });
             
             if (rows.length === 0) {
                 // Return a 204 No Content status if there are no results
-                return res.status(204).json({ message: 'No results found' });
+                return res.status(204).json({ message: 'No results found', error: err ? err : '' });
             }
 
             try {
@@ -76,7 +76,7 @@ exports.getTitleDetails = async (req, res, next) => {
                 return res.status(200).json(titleObject);
             }
             catch (error) {
-                return res.status(500).json({ message: 'Error processing title details', error });
+                return res.status(500).json({ message: 'Error processing title details', error: error});
             }
 
         });
@@ -122,7 +122,11 @@ exports.getSearchByTitle = async (req, res, next) => {
     let limit = undefined;
     if (req.query.limit) {
         limit = Number(req.query.limit);
-        if (!Number.isInteger(limit)) return res.status(400).json({ message: 'Limit query param should be an integer' });
+        if (!Number.isInteger(limit)) return res.status(400).json({ message: 'Limit query param should be an integer', error: (err ? err : '')});
+    }
+
+    if (!req.body.tqueryObject.titlePart) {
+        return res.status(400).json({ message: 'Missing titlePart parameter', error: err ? err : ''});
     }
 
     const titlePart = req.body.tqueryObject.titlePart;
@@ -131,21 +135,25 @@ exports.getSearchByTitle = async (req, res, next) => {
         SELECT t.tconst
         FROM Title t
         WHERE t.originalTitle LIKE "%${titlePart}%"`+ (limit ? ' LIMIT ?' : '');
+
     const queryParams = [titlePart];
 
     // Add the limit parameter to the queryParams if it's provided
     if (limit !== undefined) {
         queryParams.push(limit);
     }
+
     pool.getConnection((err, connection) => {
-        if (err) {
-            return res.status(500).json({ message: 'Error in connection to the database' });
-        }
+        if (err) return res.status(500).json({ message: 'Error in connection to the database', error: err ? err : ''});
+        
         connection.query(query, queryParams,(err, rows) => {
             connection.release();
 
-            if (err) {
-                return res.status(500).json({ message: 'Error in executing the query' });
+            if (err) return res.status(500).json({ message: 'Error in executing the query', error: err ? err : ''});
+
+            if (rows.length === 0) {
+                // Return a 204 No Content status if there are no results
+                return res.status(204).json({ message: 'No results found', error: err ? err : ''});
             }
 
             // Map over the tconst values and call getTitleDetails for each one
@@ -160,7 +168,7 @@ exports.getSearchByTitle = async (req, res, next) => {
                     res.status(200).json(titleObjects);
                 })
                 .catch(error => {
-                    return res.status(500).json({ message: 'Error processing title details', error });
+                    return res.status(500).json({ message: 'Error processing title details', error: error});
                 });
         });
     });
@@ -170,34 +178,35 @@ exports.getTitlesByGenre = async (req, res, next) => {
     let limit = undefined;
     if (req.query.limit) {
         limit = Number(req.query.limit);
-        if (!Number.isInteger(limit)) return res.status(400).json({ message: 'Limit query param should be an integer' });
+        if (!Number.isInteger(limit)) return res.status(400).json({ message: 'Limit query param should be an integer', error: (err ? err : '')});
     }
 
     const { qgenre, minrating, yrFrom, yrTo } = req.body.gqueryObject;
 
-    if (!qgenre || !minrating || isNaN(minrating)) {
-        return res.status(400).json({ message: 'Invalid or missing input parameters' });
+    if (!qgenre || !minrating) {
+        return res.status(400).json({ message: 'Invalid or missing input parameters', error: err ? err : ''});
     }
 
     const attributes = [qgenre, minrating, yrFrom, yrTo].flat().filter(attr => attr !== undefined);
     const uniqueAttributes = [...new Set(attributes)];
+
     if (
         (attributes.length === 2 && uniqueAttributes.length !== attributes.length) ||
         (attributes.length === 3 && uniqueAttributes.length > 3) ||
         (attributes.length === 4 && uniqueAttributes.length > 3 && yrFrom === yrTo)
     ) {
-        return res.status(400).json({ message: 'Duplicate parameters detected' });
+        return res.status(400).json({ message: 'Duplicate parameters detected', error: err ? err : ''});
     }
 
-    const query = `SELECT t.tconst
-    FROM title t
-    JOIN genre g ON t.tconst = g.tconst
-    JOIN rating r ON t.tconst = r.tconst
-    WHERE g.genre = ?
-      AND r.averageRating >= ?
-      ${yrFrom !== undefined ? 'AND t.startYear >= ?' : ''}
-      ${yrTo !== undefined ? 'AND t.startYear <= ?' : ''}
-  ` + (limit ? ' LIMIT ?' : '');
+    const query = `
+        SELECT t.tconst
+        FROM title t
+        JOIN genre g ON t.tconst = g.tconst
+        JOIN rating r ON t.tconst = r.tconst
+        WHERE g.genre = ?
+        AND r.averageRating >= ?
+        ${yrFrom !== undefined ? 'AND t.startYear >= ?' : ''}
+        ${yrTo !== undefined ? 'AND t.startYear <= ?' : ''}` + (limit ? ' LIMIT ?' : '');
 
     const queryParams = [qgenre, minrating];
 
@@ -214,12 +223,14 @@ exports.getTitlesByGenre = async (req, res, next) => {
     }
     
     pool.getConnection((err, connection) => {
+        if (err) return res.status(500).json({ message: 'Error in connection to the database', error: err ? err : ''});
+
         connection.query(query, queryParams, (err, rows) => {
             connection.release();
-            if (err) return res.status(500).json({ message: 'Internal server error' });
+            if (err) return res.status(500).json({ message: 'Error in executing query', error: err ? err : ''});
 
             if (rows.length === 0) {
-                return res.status(204).send();
+                return res.status(204).json({ message: 'No results found', error: err ? err : ''});
             }
 
             const tconsts = rows.map(row => row.tconst);
@@ -231,7 +242,7 @@ exports.getTitlesByGenre = async (req, res, next) => {
                     return res.status(200).json(titleObjects);
                 })
                 .catch(error => {
-                    return res.status(500).json({ message: 'Error processing title details', error });
+                    return res.status(500).json({ message: 'Error processing title details', error: error });
                 });
         });
     });
@@ -252,13 +263,13 @@ exports.getSearchByRating = async (req, res, next) => {
     let limit = undefined;
     if (req.query.limit) {
         limit = Number(req.query.limit);
-        if (!Number.isInteger(limit)) return res.status(400).json({ message: 'Limit query param should be an integer' });
+        if (!Number.isInteger(limit)) return res.status(400).json({ message: 'Limit query param should be an integer', error: (err ? err : '')});
     }
 
-    const { minrating} = req.body.gqueryObject;
+    const { minrating } = req.body.gqueryObject;
 
-    if (!minrating || isNaN(minrating) ) {
-        return res.status(400).json({ message: 'Invalid or missing input parameters' });
+    if (!minrating) {
+        return res.status(400).json({ message: 'Minrating object request param should be an integer', error: (err ? err : '')});
     }
 
     const query = `
@@ -275,12 +286,14 @@ exports.getSearchByRating = async (req, res, next) => {
     }
 
     pool.getConnection((err, connection) => {
+        if (err) return res.status(500).json({ message: 'Error in connection to the database', error: err ? err : ''});
+
         connection.query(query, queryParams, (err, rows) => {
             connection.release();
-            if (err) return res.status(500).json({ message: 'Internal server error', error: err });
+            if (err) return res.status(500).json({ message: 'Error in executing query', error: err ? err : ''});
 
             if (rows.length === 0) {
-                return res.status(204).send();
+                return res.status(204).json({ message: 'No results found', error: err ? err : ''});
             }
             
             const tconsts = rows.map(row => row.tconst);
@@ -292,11 +305,8 @@ exports.getSearchByRating = async (req, res, next) => {
                     return res.status(200).json(titleObjects);
                 })
                 .catch(error => {
-                    return res.status(500).json({ message: 'Error processing title details', error });
+                    return res.status(500).json({ message: 'Error processing title details', error: error });
                 });
         });
     });
 }
-
-
-
