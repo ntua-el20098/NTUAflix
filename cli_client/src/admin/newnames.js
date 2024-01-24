@@ -23,7 +23,7 @@ module.exports = function newnames(options) {
         method: 'POST',
         url: url,
         port: 9876,
-        data : filepath
+        data : formData
     };
     axios(config)
         .then(res => {
