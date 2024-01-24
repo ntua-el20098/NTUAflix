@@ -1,6 +1,8 @@
 #! /usr/bin/env node
 
-const commands = require("commander");
+const {Command} = require("commander");
+const program = new Command();
+
 const chalk = require('chalk');
 const figlet = require('figlet');
 const clear = require('clear');
@@ -31,96 +33,119 @@ console.log(
 )
 
 // healthcheck
-commands.command('healthcheck')
+program
+    .command('healthcheck')
     .alias('hc')
     .description('Confirms end-to-end connectivity between the user and the database')
     .action( function(options) { healthcheck(options) } )
 
 // title
-commands.command('title')
+program
+    .command('title')
     .alias('t')
     .description('Returns the title with the specified tconst')
     .option('-tid, --titleID <tconst>', 'tconst of the title')
     .action(function (options) { title(options) } )
 
 // searchtitle
-commands.command('searchtitle')
+program
+    .command('searchtitle')
     .alias('st')
     .description('Returns the title with the specified primaryTitle')
     .option('-tp, --titlePart <primaryTitle>', 'primaryTitle of the title')
     .action( function(options) { searchtitle(options) } )
 
 // bygenre
-commands.command('bygenre')
+program
+    .command('bygenre')
     .alias('bg')
     .description('Returns the titles with the specified genre')
     .action( function(options) { bygenre(options) } )
 
 // name
-commands.command('name')
+program
+    .command('name')
     .alias('n')
     .description('Returns the name with the specified nconst')
     .option('-nid, --nameID <nconst>', 'nconst of the name')
     .action( function(options) { name(options) } )
 
 // search name
-commands.command('searchname')
+program
+    .command('searchname')
     .alias('sn')
     .description('Returns the name with the specified primaryName')
     .action( function(options) { searchname(options) } )
 
 
 // resetall
-commands.command('resetall')
+program
+    .command('resetall')
     .alias('rsall')
     .description('Deletes all data from the database')
     .action( function(options) { resetall(options) } )
 
 // newtitles
-commands.command('newtitles')
+program
+    .command('newtitles')
     .alias('nt')
     .description('Adds a new title to the database')
-    .option('-f, --filename <file>', 'primaryTitle of the title')
+    .option('-f, --filename <file>', 'path to the file')
     .action( function(options) { newtitles(options) } )
 
 // newakas
-commands.command('newakas')
+program
+    .command('newakas')
     .alias('na')
     .description('Adds a new alternate title to the database')
+    .option('-f, --filename <file>', 'path to the file')
     .action( function(options) { newakas(options) } )
 // newnames
-commands.command('newnames')
+program
+    .command('newnames')
     .alias('nn')
     .description('Adds a new name to the database')
-    .option('-f, --filename <file>', 'commentt missing')
+    .option('-f, --filename <file>', 'path to the file')
     .action( function(options) { newnames(options) } )
 
 // newcrew
-commands.command('newcrew')
+program
+    .command('newcrew')
     .alias('nc')
     .description('Adds a new crew member to the database')
+    .option('-f, --filename <file>', 'path to the file')
     .action( function(options) { newcrew(options) } )
 
 // newepisode
-commands.command('newepisode')
+program
+    .command('newepisode')
     .alias('ne')
     .description('Adds a new episode to the database')
+    .option('-f, --filename <file>', 'path to the file')
     .action( function(options) { newepisode(options) } )
 
 // newprincipals
-commands.command('newprincipals')
+program
+    .command('newprincipals')
     .alias('s')
     .description('Adds a new principal to the database')
+    .option('-f, --filename <file>', 'path to the file')
     .action( function(options) { newprincipals(options) } )
 
 // newratings
-commands.command('newratings')
+program
+    .command('newratings')
     .alias('nr')
     .description('Adds a new rating to the database')
+    .option('-f, --filename <file>', 'path to the file')
+    .requiredOption('-f, --filename <file>', 'path to the file')
     .action( function(options) { newratings(options) } )
 
-
-commands.parse(process.argv)
+program
+    .command('help')
+    .description('Shows help')
+    .action( () => { program.help() } )
+program.parse(process.argv)
 
 let scope = process.argv[2];
 let scopeList = ['healthcheck', 'hc', 'resetall', 'rsall',
