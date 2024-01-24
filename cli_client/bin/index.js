@@ -92,6 +92,7 @@ commands.command('newakas')
 commands.command('newnames')
     .alias('nn')
     .description('Adds a new name to the database')
+    .option('-f, --filename <file>', 'commentt missing')
     .action( function(options) { newnames(options) } )
 
 // newcrew
