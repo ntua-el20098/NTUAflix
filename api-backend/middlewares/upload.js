@@ -18,27 +18,20 @@ var storage = multer.diskStorage({
 
   filename: function (req, file, cb) {
     console.log("Uploaded file name:", file.originalname);
-    const baseDirectory = __dirname + '/../uploads';
-    const routePath = req.route.path.replace(/\//g, '_');
-    cb(null, `${routePath}_${file.originalname}`);
 
-    //Change the path to the file you want to modify and the path to the output file
+    // Define the output file name based on the route
+    let outputFileName;
     if (req.route.path === '/admin/upload/titlebasics') {
-      const inputFilePath = `${baseDirectory}/${routePath}_${file.originalname}`;
-      const outputFilePath = '';
-
-      modifyTSV(inputFilePath, outputFilePath);
-    } 
-    else if (req.route.path === '/admin/upload/namebasics') {
-      const inputFilePath = `${baseDirectory}/${routePath}_${file.originalname}`;
-      const outputProfessionFilePath = `${baseDirectory}/Profession.tsv`;
-      const outputTitlesFilePath = `${baseDirectory}/Titles.tsv`;
-
-      modifyTSV_Names(inputFilePath, outputProfessionFilePath, outputTitlesFilePath);
+      outputFileName = 'titlebasics.tsv';
+    } else if (req.route.path === '/admin/upload/namebasics') {
+      outputFileName = 'namebasics.tsv';
+    } else {
+      outputFileName = file.originalname;
     }
+    cb(null, outputFileName);
   }
 });
 
+const upload = multer({ storage: storage, fileFilter: tsvFilter });
 
-var uploadFile = multer({ storage: storage, fileFilter: tsvFilter });
-module.exports = uploadFile;
+module.exports = upload;
