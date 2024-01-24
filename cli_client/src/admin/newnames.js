@@ -1,10 +1,22 @@
 const axios = require('axios');
 const constructURL = require('../../lib/constructURL');
 const errorHandler = require('../../lib/errorHandler');
+const fs = require("fs");
+const FormData = require("form-data");
 
 module.exports = function newnames(options) {
 
+    console.log(options.filename)
+
     const filepath = options.filename;
+
+    // Create a stream to read the file
+    const fileStream = fs.createReadStream(filepath);
+
+    // Create a FormData object
+    const formData = new FormData();
+    // Append the file to the FormData object
+    formData.append('file', fileStream);
 
     const url = constructURL('/admin/upload/namebasics' )
     const config = {
