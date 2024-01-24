@@ -124,10 +124,6 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [
-    "ntuaflix",
-    "se2326"
-  ],
   "author": "",
   "license": "ISC"
 }
