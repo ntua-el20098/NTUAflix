@@ -23,6 +23,9 @@ module.exports = function (scope, param1, param2) {
     else if(scope === '/searchtitle') {
         // create url for searchtitle
     }
+    else if(scope === '/searchname'){
+        // create url for searchname 
+    }
     else if (scope === '/admin/upload/titlebasics') {
         // create url for upload newtitles
     }

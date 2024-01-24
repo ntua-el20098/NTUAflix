@@ -75,6 +75,7 @@ program
     .command('searchname')
     .alias('sn')
     .description('Returns the name with the specified primaryName')
+    .option('-np, --namePart <primaryName>', 'primaryName of the name')
     .action( function(options) { searchname(options) } )
 
 
