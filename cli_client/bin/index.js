@@ -60,6 +60,8 @@ program
     .command('bygenre')
     .alias('bg')
     .description('Returns the titles with the specified genre')
+    .option('-g, --genre <genre>', 'genre name')
+    .option('-m, --min <averageRating>', 'with minimum rating')
     .action( function(options) { bygenre(options) } )
 
 // name

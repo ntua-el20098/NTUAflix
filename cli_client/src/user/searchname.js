@@ -3,7 +3,7 @@ const constructURL = require('../../lib/constructURL');
 const errorHandler = require('../../lib/errorHandler');
 
 module.exports = function title(options) {
-    console.log(options.titlePart);
+    console.log(options.namePart);
     options = {
         nqueryObject: {
             namePart: options.namePart

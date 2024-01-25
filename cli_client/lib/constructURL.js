@@ -4,10 +4,12 @@ module.exports = function (scope, param1, param2) {
     // create url with scope
     base = base + scope;
 
-    // create url for healthcheck
+
     if (scope === '/admin/'){
         base = base + 'healthcheck';
     }
+    // create url for healthcheck
+
     else if (scope === '/title/'){
         // create url for title
         if (param1 !== undefined) {
@@ -25,6 +27,9 @@ module.exports = function (scope, param1, param2) {
     }
     else if(scope === '/searchname'){
         // create url for searchname 
+    }
+    else if(scope === '/bygenre'){
+        // create url for bygenre 
     }
     else if (scope === '/admin/upload/titlebasics') {
         // create url for upload newtitles
