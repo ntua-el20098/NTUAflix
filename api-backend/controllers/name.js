@@ -6,17 +6,18 @@ const axios = require('axios');
 const csv = require('csv-parser');
 const fs = require('fs');
 
-exports.getPersonDetails = async (req, res, next) => {
+exports.getPersonDetails = async (req, res, err) => {
     let limit = undefined;
     if (req.query.limit) {
         limit = Number(req.query.limit);
         if (!Number.isInteger(limit)) return res.status(400).json({ message: 'Limit query param should be an integer' });
     }
 
+    // status 400(Bad request) error handling
     if (req.params.nameID === undefined) return res.status(400).json({ message: 'nameID is required' });
-
-    if (Number.isInteger(req.params.nameID)) return res.status(400).json({ message: 'nameID should be an integer' });
-
+    if (req.params.nameID[0] !== 'n' || req.params.nameID[1] !== 'm') {
+        return res.status(400).json({ message: 'Invalid nameID parameter', error: err ? err : ''});
+    }
     const nameID = req.params.nameID;
     
     const query = `
@@ -49,7 +50,10 @@ exports.getPersonDetails = async (req, res, next) => {
             connection.release();
 
             if (err) return res.status(500).json({ message: 'Error in executing the query' });
-
+            //status 204(no data) error handling
+            if (rows.length === 0) {
+                return res.status(204).json({ message: 'No results found' });
+            }
             try {
                 const formattedResponse = processPersonResults(rows);
                 res.status(200).json(formattedResponse);
@@ -86,8 +90,7 @@ function processPersonResults(results) {
     formattedResponse.nameTitles = [...uniquenameTitles].map(nameTitle => JSON.parse(nameTitle));
 
     return formattedResponse;
-
-};
+}
 
 exports.getSearchPersonByName = async (req, res, next) => {
     let limit = undefined;
@@ -95,7 +98,10 @@ exports.getSearchPersonByName = async (req, res, next) => {
         limit = Number(req.query.limit);
         if (!Number.isInteger(limit)) return res.status(400).json({ message: 'Limit query param should be an integer' });
     }
-
+    // status 400(Bad request) error handling
+    if (!req.body.nqueryObject.namePart) {
+        return res.status(400).json({ message: 'Missing namePart parameter', error: err ? err : ''});
+    }
     const namePart = req.body.nqueryObject.namePart;
 
     const query = `
@@ -116,16 +122,19 @@ exports.getSearchPersonByName = async (req, res, next) => {
         connection.query(query, queryParams, (err, rows) => {
             connection.release();
 
-            if (err) return res.status(500).json({ message: 'Error in executing the query' });
+            if (err) return res.status(500).json({ message: 'Error in executing the query' , error: err ? err : ''});
 
+            // status 204(no data) error handling
             if (rows.length === 0) {
                 // Return a 204 No Content status if there are no results
-                return res.status(204).json({ message: 'No results found' });
+                return res.status(204).json({ message: 'No results found', error: err ? err : ''});
             }
             
-            // Map over the tconst values and call getPersonDetails for each one
-            const nameDetailsPromises = rows.map(row => getPersonDetails(row.nconst));
-
+            // Map over the nconst values and call getPersonDetails for each one
+            const nameDetailsPromises = rows.map(row => getPersonDetails(row.nconst).catch(error => {
+                console.error('Error fetching person details for', row.nconst, error.message);
+                return null; // return null if there's an error
+            }));
             const nameObjects = [];
 
             // Use Promise.all to wait for all the getPersonDetails requests to complete
@@ -135,7 +144,7 @@ exports.getSearchPersonByName = async (req, res, next) => {
                     res.status(200).json(nameObjects);
                 })
                 .catch(error => {
-                    return res.status(500).json({ message: 'Error processing person details', error });
+                    return res.status(500).json({ message: 'Error processing person details!', error });
                 });
         });
     });

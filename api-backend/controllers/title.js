@@ -113,7 +113,7 @@ function processResults(results) {
     formattedResponse.principals = [...uniquePrincipals].map(principal => JSON.parse(principal));
 
     return formattedResponse;
-};
+}
 
 
 exports.getSearchByTitle = async (req, res, next) => {
@@ -122,7 +122,7 @@ exports.getSearchByTitle = async (req, res, next) => {
         limit = Number(req.query.limit);
         if (!Number.isInteger(limit)) return res.status(400).json({ message: 'Limit query param should be an integer', error: (err ? err : '')});
     }
-
+    //status 400(Bad Request)  error handling
     if (!req.body.tqueryObject.titlePart) {
         return res.status(400).json({ message: 'Missing titlePart parameter', error: err ? err : ''});
     }
