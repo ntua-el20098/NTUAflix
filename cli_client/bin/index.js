@@ -25,12 +25,13 @@ const searchname = require('../src/user/searchname');
 
 
 clear();
-
+/*
 console.log(
     chalk.yellow(
         figlet.textSync('BitsPlease', {horizontalLayout: 'full'})
     )
 )
+*/
 
 // healthcheck
 program
@@ -56,12 +57,15 @@ program
     .action( function(options) { searchtitle(options) } )
 
 // bygenre
+// bygenre
 program
     .command('bygenre')
     .alias('bg')
     .description('Returns the titles with the specified genre')
-    .option('-g, --genre <genre>', 'genre name')
-    .option('-m, --min <averageRating>', 'with minimum rating')
+    .option('-g, --genre <genre>', 'Genre of the title')
+    .option('-m, --min <minYear>', 'Minimum year of the title')
+    .option('-f, --from <fromYear>', 'From year of the title')
+    .option('-t, --to <toYear>', 'To year of the title')
     .action( function(options) { bygenre(options) } )
 
 // name
@@ -77,7 +81,7 @@ program
     .command('searchname')
     .alias('sn')
     .description('Returns the name with the specified primaryName')
-    .option('-np, --namePart <primaryName>', 'primaryName of the name')
+    .option('-np, --name <primaryName>', 'primaryName of the name')
     .action( function(options) { searchname(options) } )
 
 

@@ -7,22 +7,21 @@ const csv = require('csv-parser');
 const fs = require('fs');
 const { unique } = require("next/dist/build/utils");
 
-exports.getTitleDetails = async (req, res, next) => {
+exports.getTitleDetails = async (req, res, err) => {
     let limit = undefined;
     if (req.query.limit) {
         limit = Number(req.query.limit);
-        if (!Number.isInteger(limit)) return res.status(400).json({ message: 'Limit query param should be an integer', error: (err ? err : '') });
+        if (!Number.isInteger(limit)) return res.status(400).json(
+            { message: 'Limit query param should be an integer', error: (err ? err : '')} );
     }
 
+    //status 400
     if (!req.params.titleID) {
-        return res.status(400).json({ message: 'Missing titleID parameter', error: err ? err : '' });
+        return res.status(400).json({ message: 'Missing titleID parameter', error: err ? err : ''});
     }
-
-    if (req.params.titleID) {
-        if (!Number.isInteger(req.params.titleID)) {
-            return res.status(400).json({ message: 'titleID parameter should be an integer', error: err ? err : '' });
-        }
-    } 
+    if (req.params.titleID[0] !== 't' || req.params.titleID[1] !== 't') {
+        return res.status(400).json({ message: 'Invalid titleID parameter', error: err ? err : ''});
+    }
 
     const titleID = req.params.titleID;
 
@@ -65,12 +64,10 @@ exports.getTitleDetails = async (req, res, next) => {
             connection.release();
 
             if (err) return res.status(500).json({ message: 'Error in executing the query', error: err ? err : '' });
-            
             if (rows.length === 0) {
                 // Return a 204 No Content status if there are no results
                 return res.status(204).json({ message: 'No results found', error: err ? err : '' });
             }
-
             try {
                 const titleObject = processResults(rows);
                 return res.status(200).json(titleObject);

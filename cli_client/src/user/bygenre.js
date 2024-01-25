@@ -3,25 +3,24 @@ const constructURL = require('../../lib/constructURL');
 const errorHandler = require('../../lib/errorHandler');
 
 module.exports = function bygenre(options) {
-    if (!options.genre || !options.min) {
-        console.error('Both --genre and --min are required.');
-        process.exit(1);
-    }
-    console.log(options.genre);
-    console.log(options.min);
+    const genre = options.genre
+    const minRating = options.min
+    const fromYear = options.from
+    const toYear = options.to
+    const url = constructURL('/bygenre', genre, minRating, fromYear, toYear)
     options = {
         gqueryObject: {
-            qgenre: options.genre,
-            minrating: options.min
+            qgenre: genre,
+            minrating: minRating,
+            yrFrom: fromYear, //optional
+            yrTo: toYear//optional
         }
     };
-
-    const url = constructURL('/bygenre' )
     const config = {
         method: 'GET',
         url: url,
         port: 9876,
-        data : options
+        data: options
     };
     axios(config)
         .then(res => {

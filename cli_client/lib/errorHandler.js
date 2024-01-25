@@ -4,7 +4,7 @@ const chalk = require('chalk');
 module.exports = function (err, customMessage) {
 
     let serverStatus = err.message.split(' ').slice(0,2).join(' ');
-    if (serverStatus == 'connect ECONNREFUSED') {
+    if (serverStatus === 'read ECONNRESET') {
         console.log(chalk.red("Sorry the server is facing some problems right now.\nPlease try again later!"));
         return;
     }

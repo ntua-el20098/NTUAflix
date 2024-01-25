@@ -52,6 +52,9 @@ module.exports = function (scope, param1, param2) {
     else if(scope === '/admin/upload/titleratings') {
         // create url for upload newratings
     }
+    else if(scope === '/bygenre') {
+        // create url for bygenre
+    }
     else {
         console.log('Error: Invalid scope');
     }
