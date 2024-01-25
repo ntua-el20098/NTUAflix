@@ -4,8 +4,6 @@ const { body } = require("express/lib/request");
 const { modifyTSV_Names } = require('../middlewares/tsv-transformer');
 const { modifyTSV_Titles } = require('../middlewares/tsv_transformer'); 
 
-//const axios = require('axios');
-
 const csv = require('csv-parser');
 const fs = require('fs');
 const uploadFile = require("../middlewares/upload");
@@ -47,7 +45,6 @@ exports.upload_titlebasics = async (req, res, next) => {
     }
 };
 
-
 async function parseAndInsertIntoDatabase(filePath, tableName, columnMappings) {
     try {
         const stream = fs.createReadStream(filePath);
@@ -65,7 +62,7 @@ async function parseAndInsertIntoDatabase(filePath, tableName, columnMappings) {
                 return;
               }
     
-              const insertQuery = `INSERT IGNORE INTO ${tableName} (${columnMappings.join(', ')}) VALUES ?`;
+              const insertQuery = `INSERT INTO ${tableName} (${columnMappings.join(', ')}) VALUES ?`;
               const values = tsvData.map(row => columnMappings.map(column => row[column] === '\\N' ? null : row[column]));
               //console.log(values);
     
