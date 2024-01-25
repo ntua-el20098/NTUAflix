@@ -20,11 +20,9 @@ exports.getTitleDetails = async (req, res, err) => {
         return res.status(400).json({ message: 'Missing titleID parameter', error: err ? err : ''});
     }
 
-    // if (req.params.titleID) {
-    //     if (!Number.isInteger(req.params.titleID)) {
-    //         return res.status(400).json({ message: 'titleID parameter should be an integer', error: err ? err : '' });
-    //     }
-    // } 
+    if (req.params.titleID[0] !== 't' || req.params.titleID[1] !== 't') {
+        return res.status(400).json({ message: 'Invalid titleID parameter', error: err ? err : ''});
+    }
 
     const titleID = req.params.titleID;
 
