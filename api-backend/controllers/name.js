@@ -18,7 +18,7 @@ exports.getPersonDetails = async (req, res, err) => {
     if (req.params.nameID[0] !== 'n' || req.params.nameID[1] !== 'm') {
         return res.status(400).json({ message: 'Invalid nameID parameter! namedID should start with nm', error: err ? err : ''});
     }
-    if (req.params.nameID.length!== 9) {
+    if (req.params.nameID.length !== 9) {
         return res.status(400).json({ message: 'Invalid nameID parameter! namedID should have 9 characters', error: err? err : ''});
     }
     const nameID = req.params.nameID;
@@ -70,13 +70,14 @@ exports.getPersonDetails = async (req, res, err) => {
 
 // Helper function to process the SQL results and format the response for getPersonDetails
 function processPersonResults(results) {
+
     if (!results || results.length === 0) {
         // Handle the case when no results are found
         return { message: 'No results found' };
     }
 
     const professions = results.map(result => result.professions);
-    ProfessionsString = professions.join(',');
+    let ProfessionsString = professions.join(',');
 
     const formattedResponse = {
         nameID: results[0].nameID,
@@ -95,16 +96,15 @@ function processPersonResults(results) {
     return formattedResponse;
 }
 
-exports.getSearchPersonByName = async (req, res, next) => {
+exports.getSearchPersonByName = async (req, res, err) => {
     let limit = undefined;
     if (req.query.limit) {
         limit = Number(req.query.limit);
-        if (!Number.isInteger(limit)) return res.status(400).json({ message: 'Limit query param should be an integer' });
+        if (!Number.isInteger(limit)) return res.status(400).json({ message: 'Limit query param should be an integer' , error :err ? err : ''});
     }
     // status 400(Bad request) error handling
-    if (!req.body.nqueryObject.namePart) {
-        return res.status(400).json({ message: 'Missing namePart parameter', error: err ? err : ''});
-    }
+    if (req.body.nqueryObject === undefined) return res.status(400).json({ message: 'nqueryObject is required' , error : err ? err : ''});
+    if (req.body.nqueryObject.namePart === undefined) return res.status(400).json({ message: 'namePart is required' , error : err ? err : ''});
     const namePart = req.body.nqueryObject.namePart;
 
     const query = `

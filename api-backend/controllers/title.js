@@ -15,7 +15,7 @@ exports.getTitleDetails = async (req, res, err) => {
             { message: 'Limit query param should be an integer', error: (err ? err : '')} );
     }
 
-    //status 400
+    //status 400 (bad request) error handling
     if (!req.params.titleID) {
         return res.status(400).json({ message: 'Missing titleID parameter', error: err ? err : ''});
     }
@@ -118,7 +118,7 @@ function processResults(results) {
 }
 
 
-exports.getSearchByTitle = async (req, res, next) => {
+exports.getSearchByTitle = async (req, res, err) => {
     let limit = undefined;
     if (req.query.limit) {
         limit = Number(req.query.limit);
