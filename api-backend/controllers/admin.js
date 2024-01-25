@@ -1,7 +1,7 @@
 const mysql = require("mysql2");
 const { pool } = require('../utils/database');
 const { body } = require("express/lib/request");
-const { modifyTSV_Names } = require('../middlewares/tsv-transformer');
+const { modifyTSV_Names, modifyTSV_Crew } = require('../middlewares/tsv-transformer');
 const { modifyTSV_Titles } = require('../middlewares/tsv_transformer'); 
 
 const csv = require('csv-parser');
@@ -62,7 +62,7 @@ async function parseAndInsertIntoDatabase(filePath, tableName, columnMappings) {
                 return;
               }
     
-              const insertQuery = `INSERT INTO ${tableName} (${columnMappings.join(', ')}) VALUES ?`;
+              const insertQuery = `INSERT IGNORE INTO ${tableName} (${columnMappings.join(', ')}) VALUES ?`;
               const values = tsvData.map(row => columnMappings.map(column => row[column] === '\\N' ? null : row[column]));
               //console.log(values);
     
@@ -125,8 +125,16 @@ exports.upload_namebasics = async (req, res, next) => {
 //admin 5
 exports.upload_titlecrew = async (req, res, next) => {
     try {
-        console.log(req.file.path);
-        await parseAndInsertIntoDatabase(req.file.path, 'titlecrew', ['tconst', 'directors', 'writers']);
+        //console.log(req.file.path);
+        const baseDirectory = __dirname + '/../uploads';
+        const inputFilePath = req.file.path;
+        const filePathDirectors = `${baseDirectory}/Directors.tsv`;
+        const filePathWriters = `${baseDirectory}/Writers.tsv`;
+        await modifyTSV_Crew(inputFilePath, filePathDirectors, filePathWriters);
+
+        await parseAndInsertIntoDatabase(filePathDirectors, 'crewdirectors', ['tconst', 'directors']);
+        await parseAndInsertIntoDatabase(filePathWriters, 'crewwriters', ['tconst', 'writers']);
+
         res.status(200).send("TSV data inserted into the database successfully.");
     } catch (error) {
         console.error('Error uploading TSV files:', error);

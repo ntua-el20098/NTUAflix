@@ -1,34 +1,57 @@
 "use client";
 import { useEffect, useState } from "react";
 import PeopleCard from "@/components/PeopleCard";
-import MovieCard from "@/components/Card";
-import { useRouter } from "next/navigation";
 import "bootstrap/scss/bootstrap.scss";
 
-function Page() {
-  const [movieData, setMovieData] = useState(null);
-  const router = useRouter();
-  const { titleID } = router.query;
+interface Genre {
+  genreTitle: string;
+}
+
+interface Principal {
+  nameID: string;
+  name: string;
+  category: string;
+}
+
+interface MovieData {
+  titlePoster: string;
+  originalTitle: string;
+  genres: Genre[];
+  type: string;
+  startYear: number;
+  runtime: number;
+  rating: {
+    avRating: number;
+  };
+  overview: string;
+  principals: Principal[];
+}
+
+function Page( {params}: {params: {id: string}}) {
+  const [movieData, setMovieData] = useState<MovieData | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:9876/ntuaflix_api/title/${titleID}`);
-        const data = await response.json();
+        const response = await fetch(
+          `http://localhost:9876/ntuaflix_api/title/${params.id}`
+        );
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data: { titleObject: MovieData } = await response.json();
         setMovieData(data.titleObject);
-        console.log(data.titleObject);
+        console.log("Fetched data:", data.titleObject);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
 
-    if (titleID) {
-      fetchData();
-    }
-  }, [titleID]);
+    fetchData();
+  }, [params.id]);
 
   return (
-    <div className="bg-secondary relative px-4 md:px-0">
+    <div className=" relative px-4 md:px-0">
       <div className="container mx-auto min-h-[calc(100vh-77px)] flex items-center relative">
         <div className="flex-col lg:flex-row flex gap-10 lg:mx-10 py-20">
           <div className="mx-auto flex-none relative">
@@ -36,7 +59,7 @@ function Page() {
               src={movieData?.titlePoster.replace(
                 "{width_variable}",
                 "original"
-              )} // Use 'original' as a constant value
+              )}
               width={700}
               height={700}
               className="w-[300px] object-cover"
@@ -58,15 +81,14 @@ function Page() {
               <div>Type: {movieData?.type}</div>
               <div>Language: English</div>
               <div>Release: {movieData?.startYear}</div>
-              <div>Runtime: 120 MIN.</div>
-              <div>Rating: {movieData?.rating.avRating} ⭐</div>
+              <div>Runtime: {movieData?.runtime} MIN.</div>
+              <div>Rating: {movieData?.rating?.avRating} ⭐</div>
             </div>
 
             <div className="pt-14 space-y-2 pr-4">
               <div>OVERVIEW:</div>
               <div className="lg:line-clamp-4">
-                {" "}
-                Here is the overview for {movieData?.originalTitle}
+                {movieData?.overview || "No overview available."}
               </div>
             </div>
           </div>

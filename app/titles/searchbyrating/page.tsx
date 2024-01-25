@@ -1,12 +1,24 @@
 "use client";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, ChangeEvent } from "react";
 import { Box, InputBase, Alert } from "@mui/material";
 import Card from "@/components/Card";
 
-const MovieInfo = () => {
-  const [movieData, setMovieData] = useState([]);
-  const [minRating, setMinRating] = useState("0"); // Set the default value to "0"
-  const [inputError, setInputError] = useState(null);
+interface Movie {
+  titleObject: {
+    titleID: string;
+    type: string;
+    originalTitle: string;
+    rating: {
+      avRating: number;
+    };
+    titlePoster: string;
+  };
+}
+
+const MovieInfo: React.FC = () => {
+  const [movieData, setMovieData] = useState<Movie[]>([]);
+  const [minRating, setMinRating] = useState<string>("0");
+  const [inputError, setInputError] = useState<string | null>(null);
 
   const fetchData = async () => {
     try {
@@ -47,7 +59,7 @@ const MovieInfo = () => {
         return;
       }
 
-      const data = await response.json();
+      const data: Movie[] = await response.json();
 
       // Log the raw data to better understand the response
       console.log("Raw Data:", data);
@@ -78,34 +90,37 @@ const MovieInfo = () => {
       setInputError("Please enter a valid number for minimum rating.");
       return;
     }
-  
+
     // Clear any previous input error
     setInputError(null);
-  
+
     // Fetch data based on user's input
     try {
-      const response = await fetch("http://localhost:9876/ntuaflix_api/searchbyrating", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          gqueryObject: {
-            minrating: minRatingValue.toString(),
+      const response = await fetch(
+        "http://localhost:9876/ntuaflix_api/searchbyrating",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
           },
-        }),
-      });
-  
+          body: JSON.stringify({
+            gqueryObject: {
+              minrating: minRatingValue.toString(),
+            },
+          }),
+        }
+      );
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-  
+
       const contentType = response.headers.get("content-type");
       const contentLength = response.headers.get("content-length");
-  
+
       console.log("Content-Type:", contentType);
       console.log("Content-Length:", contentLength);
-  
+
       if (
         contentType === null ||
         contentLength === null ||
@@ -116,12 +131,12 @@ const MovieInfo = () => {
         setMovieData([]);
         return;
       }
-  
-      const data = await response.json();
-  
+
+      const data: Movie[] = await response.json();
+
       // Log the raw data to better understand the response
       console.log("Raw Data:", data);
-  
+
       // Check if the response contains valid JSON data
       if (Array.isArray(data)) {
         setMovieData(data);
@@ -144,10 +159,10 @@ const MovieInfo = () => {
         <span className="input-group-text">Set the minimum rating value</span>
         <input
           type="text"
-         className={`form-control ${inputError ? 'is-invalid' : ''}`} // Add 'is-invalid' class for styling
+          className={`form-control ${inputError ? "is-invalid" : ""}`}
           placeholder="Min"
           aria-label="Min"
-          onChange={(e) => {
+          onChange={(e: ChangeEvent<HTMLInputElement>) => {
             // Allow only numbers and decimals
             const sanitizedValue = e.target.value.replace(/[^0-9.]/g, "");
             setMinRating(sanitizedValue);
