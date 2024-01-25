@@ -57,7 +57,6 @@ program
     .action( function(options) { searchtitle(options) } )
 
 // bygenre
-// bygenre
 program
     .command('bygenre')
     .alias('bg')
