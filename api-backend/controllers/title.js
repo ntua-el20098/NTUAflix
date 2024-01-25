@@ -19,9 +19,12 @@ exports.getTitleDetails = async (req, res, err) => {
     if (!req.params.titleID) {
         return res.status(400).json({ message: 'Missing titleID parameter', error: err ? err : ''});
     }
-    if (req.params.titleID[0] !== 't' || req.params.titleID[1] !== 't') {
-        return res.status(400).json({ message: 'Invalid titleID parameter', error: err ? err : ''});
-    }
+
+    // if (req.params.titleID) {
+    //     if (!Number.isInteger(req.params.titleID)) {
+    //         return res.status(400).json({ message: 'titleID parameter should be an integer', error: err ? err : '' });
+    //     }
+    // } 
 
     const titleID = req.params.titleID;
 
@@ -33,7 +36,7 @@ exports.getTitleDetails = async (req, res, err) => {
         t.img_url_asset as titlePoster,
         t.startYear,
         t.endYear,
-        g.genre as genreTitle,
+        g.genres as genreTitle,
         a.title as akaTitle,
         a.region as regionAbbrev,
         p.nconst as nameID,
@@ -44,7 +47,7 @@ exports.getTitleDetails = async (req, res, err) => {
     FROM
         title t
         JOIN genre g ON t.tconst = g.tconst
-        JOIN akas a ON t.tconst = a.tconst
+        JOIN akas a ON t.tconst = a.titleId
         JOIN principals pr ON t.tconst = pr.tconst
         JOIN people p ON pr.nconst = p.nconst
         JOIN rating r ON t.tconst = r.tconst
@@ -200,7 +203,7 @@ exports.getTitlesByGenre = async (req, res, next) => {
         FROM title t
         JOIN genre g ON t.tconst = g.tconst
         JOIN rating r ON t.tconst = r.tconst
-        WHERE g.genre = ?
+        WHERE g.genres = ?
         AND r.averageRating >= ?
         ${yrFrom !== undefined ? 'AND t.startYear >= ?' : ''}
         ${yrTo !== undefined ? 'AND t.startYear <= ?' : ''}` + (limit ? ' LIMIT ?' : '');

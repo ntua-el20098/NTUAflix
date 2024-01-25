@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-function modifyTSV(inputFilePath, outputFilePath) {
+function modifyTSV_Titles(inputFilePath, outputFilePath) {
   // Read the TSV file
   const data = fs.readFileSync(inputFilePath, 'utf8');
 
@@ -12,23 +12,21 @@ function modifyTSV(inputFilePath, outputFilePath) {
     // Split the row into columns
     const columns = row.split('\t');
 
+  
     // Check if genres column exists (index 8)
-    if (!columns.length) {
+    if (columns.length >= 9) {
       // Split genres into an array
       const genres = columns[8].split(',');
-
+  
       // Create a new row for each genre
       const genreRows = genres.map(genre => {
-        // Clone the columns
-        const newColumns = [...columns];
-
-        // Update the genre column
-        newColumns[8] = genre.trim();
-
+        // Keep only the first and the eighth column
+        const newColumns = [columns[0], genre.trim()];
+  
         // Join columns back into a tab-separated string
         return newColumns.join('\t');
       });
-
+  
       // Join the rows for each genre
       return genreRows.join('\n');
     } else {
@@ -45,11 +43,11 @@ function modifyTSV(inputFilePath, outputFilePath) {
 }
 
 // Example usage
-// const inputFilePath = '/Users/charalamposk/Desktop/Software Engineering/truncated_data/truncated_title.basics.tsv';
+// const inputFilePath = '/Users/charalampoask/Desktop/Software Engineering/truncated_data/truncated_title.basics.tsv';
 // const outputFilePath = '/Users/charalamposk/Desktop/Software Engineering/truncated_data/truncated_title.basics2.tsv';
 
 //modifyTSV(inputFilePath, outputFilePath);
 
 module.exports = {
-  modifyTSV
+  modifyTSV_Titles
 };

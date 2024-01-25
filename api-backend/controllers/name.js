@@ -18,8 +18,7 @@ exports.getPersonDetails = async (req, res, next) => {
     if (Number.isInteger(req.params.nameID)) return res.status(400).json({ message: 'nameID should be an integer' });
 
     const nameID = req.params.nameID;
-    console.log("test")
-
+    
     const query = `
     SELECT
         p.nconst as nameID, 
@@ -29,7 +28,7 @@ exports.getPersonDetails = async (req, res, next) => {
         p.deathYear as deathYr,
         pr.category as category,
         pr.tconst as titleID,
-        pp.profession as professions
+        pp.primaryProfession as professions
     FROM
         people p
         JOIN principals pr ON p.nconst = pr.nconst
