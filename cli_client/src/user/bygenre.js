@@ -7,6 +7,10 @@ module.exports = function bygenre(options) {
     const minRating = options.min
     const fromYear = options.from
     const toYear = options.to
+    if (!genre || !minRating) {
+        console.error('Both --genre and --min are required.');
+        process.exit(1);
+    }
     const url = constructURL('/bygenre')
     options = {
         gqueryObject: {
