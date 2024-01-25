@@ -9,7 +9,7 @@ const adminController = require('../controllers/admin');   //admin controller
 
 const router = express.Router();
 //title endpoints
-router.get('/title/:titleID', titleController.getTitleDetails);
+router.get('/title/:titleID', titleController.getTitleDetails );
 router.get('/bygenre', titleController.getTitlesByGenre);
 router.post('/bygenre', titleController.getTitlesByGenre);
 router.get('/searchtitle', titleController.getSearchByTitle);
