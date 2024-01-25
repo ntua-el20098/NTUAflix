@@ -7,7 +7,7 @@ module.exports = function bygenre(options) {
     const minRating = options.min
     const fromYear = options.from
     const toYear = options.to
-    const url = constructURL('/bygenre', genre, minRating, fromYear, toYear)
+    const url = constructURL('/bygenre')
     options = {
         gqueryObject: {
             qgenre: genre,
