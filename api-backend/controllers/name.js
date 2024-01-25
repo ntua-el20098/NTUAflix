@@ -23,6 +23,7 @@ exports.getPersonDetails = async (req, res, err) => {
     }
     const nameID = req.params.nameID;
     
+    
     const query = `
     SELECT
         p.nconst as nameID, 
@@ -58,8 +59,8 @@ exports.getPersonDetails = async (req, res, err) => {
                 return res.status(204).json({ message: 'No results found' });
             }
             try {
-                const formattedResponse = processPersonResults(rows);
-                res.status(200).json(formattedResponse);
+                const nameObject = processPersonResults(rows);
+                res.status(200).json({nameObject});
             }
             catch (error) {
                 return res.status(500).json({ message: 'Error processing person details', error });
@@ -110,14 +111,16 @@ exports.getSearchPersonByName = async (req, res, next) => {
     const query = `
         SELECT p.nconst
         FROM people p
-        WHERE p.primaryName LIKE "%${namePart}%"`+ (limit ? ' LIMIT ?' : '');
+        WHERE p.primaryName LIKE ?`+ (limit ? ' LIMIT ?' : '');
 
-    const queryParams = [namePart];
+        const queryParams = [`%${namePart}%`];
+   
 
     // Add the limit parameter to the queryParams if it's provided
     if (limit !== undefined) {
         queryParams.push(limit);
     }
+    console.log(queryParams);   
 
     pool.getConnection((err, connection) => {
         if (err) return res.status(500).json({ message: 'Error in connection to the database' });
@@ -159,7 +162,7 @@ async function getPersonDetails(nconst) {
         const response = await axios.get(`http://localhost:9876/ntuaflix_api/name/${nconst}`);
         return response.data;
     } catch (error) {
-        console.error('Error fetching title details for', nconst, error.message);
+        console.error('Error fetching name details for', nconst, error.message);
         throw error;
     }
 }

@@ -7,7 +7,7 @@ module.exports = function(options) {
     let url = constructURL('/admin/', 'healthcheck');
     console.log(url);
     let config = {
-        method: 'GET',
+        method: 'POST',
         url: url,
         port: 9876,
     };

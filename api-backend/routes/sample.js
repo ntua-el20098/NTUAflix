@@ -19,7 +19,8 @@ router.get('/searchname', nameController.getSearchPersonByName);
 router.get('/name/:nameID', nameController.getPersonDetails);
 
 //admin endpoints
-router.get('/admin/healthcheck', adminController.healthcheck);
+router.post('/admin/healthcheck', adminController.healthcheck);
+router.post('/admin/resetall', adminController.resetall);
 router.post('/admin/upload/titlebasics',upload.single("file"),adminController.upload_titlebasics);
 router.post('/admin/upload/titleakas', upload.single("file"), adminController.upload_titleakas);
 router.post('/admin/upload/namebasics', upload.single("file"), adminController.upload_namebasics);
