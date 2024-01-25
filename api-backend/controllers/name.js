@@ -16,7 +16,10 @@ exports.getPersonDetails = async (req, res, err) => {
     // status 400(Bad request) error handling
     if (req.params.nameID === undefined) return res.status(400).json({ message: 'nameID is required' });
     if (req.params.nameID[0] !== 'n' || req.params.nameID[1] !== 'm') {
-        return res.status(400).json({ message: 'Invalid nameID parameter', error: err ? err : ''});
+        return res.status(400).json({ message: 'Invalid nameID parameter! namedID should start with nm', error: err ? err : ''});
+    }
+    if (req.params.nameID.length!== 9) {
+        return res.status(400).json({ message: 'Invalid nameID parameter! namedID should have 9 characters', error: err? err : ''});
     }
     const nameID = req.params.nameID;
     
@@ -132,7 +135,7 @@ exports.getSearchPersonByName = async (req, res, next) => {
             
             // Map over the nconst values and call getPersonDetails for each one
             const nameDetailsPromises = rows.map(row => getPersonDetails(row.nconst).catch(error => {
-                console.error('Error fetching person details for', row.nconst, error.message);
+                console.error('Error fetching person details for', row.nconst);
                 return null; // return null if there's an error
             }));
             const nameObjects = [];
