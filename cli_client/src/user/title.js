@@ -1,6 +1,7 @@
 const axios = require('axios');
 const constructURL = require('../../lib/constructURL');
 const errorHandler = require('../../lib/errorHandler');
+const chalk = require('chalk');
 
 module.exports = function title(options) {
     const titleID = options.titleID
@@ -12,7 +13,7 @@ module.exports = function title(options) {
     };
     axios(config)
         .then(res => {
-            console.log(JSON.stringify(res.data, null, 2));
+            console.log(chalk.green((JSON.stringify(res.data, null, 2))));
         })
         .catch(err => {
             errorHandler(err);

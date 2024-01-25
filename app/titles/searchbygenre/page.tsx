@@ -1,13 +1,28 @@
 "use client";
-import { useState, useEffect } from "react";
-import { Box, InputBase, Typography } from "@mui/material";
+import React, { useState, useEffect, ChangeEvent } from "react";
+import { Box, Typography } from "@mui/material";
 import 'bootstrap/scss/bootstrap.scss';
 import Card from "@/components/Card";
 
-const MovieInfo = () => {
-  const [movieData, setMovieData] = useState([]);
-  const [genresList, setGenresList] = useState([]);
-  const [selectedGenre, setSelectedGenre] = useState('');
+interface Movie {
+  titleObject: {
+    titleID: string;
+    type: string;
+    originalTitle: string;
+    rating: {
+      avRating: number;
+    };
+    titlePoster: string;
+    genres: {
+      genreTitle: string;
+    }[];
+  };
+}
+
+const MovieInfo: React.FC = () => {
+  const [movieData, setMovieData] = useState<Movie[]>([]);
+  const [genresList, setGenresList] = useState<string[]>([]);
+  const [selectedGenre, setSelectedGenre] = useState<string>('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,7 +39,7 @@ const MovieInfo = () => {
             }
           }),
         });
-        const data = await response.json();
+        const data: Movie[] = await response.json();
   
         // Check if data is an array and has valid entries
         if (Array.isArray(data)) {
@@ -40,9 +55,11 @@ const MovieInfo = () => {
           console.log("Genres List:", genresList);
   
           setMovieData(data);
+          setGenresList(genresList);
         } else {
           console.log("Invalid data format:", data);
           setMovieData([]);
+          setGenresList([]);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -51,10 +68,8 @@ const MovieInfo = () => {
   
     fetchData();
   }, []);
-  
-  
 
-  const handleGenreChange = (event) => {
+  const handleGenreChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setSelectedGenre(event.target.value);
   };
 
@@ -78,7 +93,7 @@ const MovieInfo = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      const data = await response.json();
+      const data: Movie[] = await response.json();
       setMovieData(data);
       console.log(data);
     } catch (error) {

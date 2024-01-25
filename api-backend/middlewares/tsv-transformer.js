@@ -1,81 +1,52 @@
 const fs = require('fs');
-
+ 
 function modifyTSV_Names(inputFilePath, outputProfessionFilePath, outputTitlesFilePath) {
     const data = fs.readFileSync(inputFilePath, 'utf8');
     const rows = data.split('\n');
-
+ 
     const profession = [];
     const titles = [];
-
+ 
     rows.forEach(row => {
         const columns = row.split('\t');
-
+ 
+        // Ensure there are at least 6 columns
         if (columns.length >= 6) {
             const id = columns[0];
-
+ 
+            // Check if column 4 (index 3) is not null, undefined, or an empty string
             if (columns[4] !== null && columns[4] !== undefined && columns[4].trim() !== '') {
                 const professionArray = columns[4].split(',');
                 
-                professionArray.forEach(profession => {
-                    profession.push(`${id}\t${profession.trim()}`);
+                professionArray.forEach(genre => {
+                    profession.push(`${id}\t${genre.trim()}`);
                 });
             }
-
+ 
+            // Check if column 5 (index 4) is not null, undefined, or an empty string
             if (columns[5] !== null && columns[5] !== undefined && columns[5].trim() !== '') {
                 const titlesArray = columns[5].split(',');
-
+ 
                 titlesArray.forEach(title => {
                     titles.push(`${id}\t${title.trim()}`);
                 });
             }
         }
     });
-
+ 
     const professionResult = profession.join('\n');
     fs.writeFileSync(outputProfessionFilePath, professionResult, 'utf8');
-
+ 
     const titlesResult = titles.join('\n');
     fs.writeFileSync(outputTitlesFilePath, titlesResult, 'utf8');
 }
-
-function modifyTSV_Crew(inputFilePath, outputDirectorsFilePath, outputWritersFilePath) {
-    const data = fs.readFileSync(inputFilePath, 'utf8');
-    const rows = data.split('\n');
-
-    const directors = [];
-    const writers = [];
-
-    rows.forEach(row => {
-        const columns = row.split('\t');
-
-        if (columns.length >= 3) {
-            const id = columns[0];
-
-            if (columns[1] !== null && columns[1] !== undefined && columns[1].trim() !== '') {
-                const directorsArray = columns[1].split(',');
-                
-                directorsArray.forEach(director => {
-                    directors.push(`${id}\t${director.trim()}`);
-                });
-            }
-
-            if (columns[2] !== null && columns[2] !== undefined && columns[2].trim() !== '') {
-                const writersArray = columns[2].split(',');
-
-                writersArray.forEach(writer => {
-                    writers.push(`${id}\t${writer.trim()}`);
-                });
-            }
-        }
-    });
-
-    const directorsResult = directors.join('\n');
-    fs.writeFileSync(outputDirectorsFilePath, directorsResult, 'utf8');
-
-    const writersResult = writers.join('\n');
-    fs.writeFileSync(outputWritersFilePath, writersResult, 'utf8');
-}
-
+ 
+//const inputFilePath = 'C:/Users/daphn/Documents/πολυτεχνειο/Μαθήματα/7o εξάμηνο/ΤΛ/Εργασία/NtuaFlix/sample_data_softeng_project_2023_v2/truncated_data/truncated_name.basics.tsv';
+//const outputProfessionFilePath = 'C:/Users/daphn/Documents/πολυτεχνειο/Μαθήματα/7o εξάμηνο/ΤΛ/Εργασία/Tests/output1.tsv';
+//const outputTitlesFilePath = 'C:/Users/daphn/Documents/πολυτεχνειο/Μαθήματα/7o εξάμηνο/ΤΛ/Εργασία/Tests/output2.tsv';
+ 
+//modifyTSV_Names(inputFilePath, outputProfessionFilePath, outputTitlesFilePath);
+ 
 module.exports = {
-    modifyTSV_Names, modifyTSV_Crew
+    modifyTSV_Names
   };
