@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Εξυπηρετητής: 127.0.0.1
--- Χρόνος δημιουργίας: 25 Ιαν 2024 στις 14:05:41
+-- Χρόνος δημιουργίας: 16 Ιαν 2024 στις 13:42:09
 -- Έκδοση διακομιστή: 10.4.27-MariaDB
 -- Έκδοση PHP: 8.2.0
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Βάση δεδομένων: `tl`
+-- Βάση δεδομένων: `tl1`
 --
 
 -- --------------------------------------------------------
@@ -38,28 +38,9 @@ CREATE TABLE `akas` (
   `isOriginalTitle` tinyint(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- --------------------------------------------------------
-
 --
--- Δομή πίνακα για τον πίνακα `crewdirectors`
+-- Άδειασμα δεδομένων του πίνακα `akas`
 --
-
-CREATE TABLE `crewdirectors` (
-  `tconst` varchar(20) NOT NULL,
-  `directors` varchar(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Δομή πίνακα για τον πίνακα `crewwriters`
---
-
-CREATE TABLE `crewwriters` (
-  `tconst` varchar(20) NOT NULL,
-  `writers` varchar(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
 -- --------------------------------------------------------
 
 --
@@ -73,6 +54,11 @@ CREATE TABLE `episode` (
   `episodeNumber` int(5) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Άδειασμα δεδομένων του πίνακα `episode`
+--
+
+
 -- --------------------------------------------------------
 
 --
@@ -84,6 +70,11 @@ CREATE TABLE `genre` (
   `genres` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Άδειασμα δεδομένων του πίνακα `genre`
+--
+
+
 -- --------------------------------------------------------
 
 --
@@ -94,6 +85,10 @@ CREATE TABLE `knowfortitles` (
   `nconst` varchar(20) NOT NULL,
   `knownForTitles` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Άδειασμα δεδομένων του πίνακα `knowfortitles`
+--
 
 -- --------------------------------------------------------
 
@@ -109,6 +104,10 @@ CREATE TABLE `people` (
   `img_url_asset` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Άδειασμα δεδομένων του πίνακα `people`
+--
+
 -- --------------------------------------------------------
 
 --
@@ -119,6 +118,10 @@ CREATE TABLE `primaryprofession` (
   `nconst` varchar(20) NOT NULL,
   `primaryProfession` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Άδειασμα δεδομένων του πίνακα `primaryprofession`
+--
 
 -- --------------------------------------------------------
 
@@ -136,6 +139,11 @@ CREATE TABLE `principals` (
   `img_url_asset` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Άδειασμα δεδομένων του πίνακα `principals`
+--
+
+
 -- --------------------------------------------------------
 
 --
@@ -147,6 +155,11 @@ CREATE TABLE `rating` (
   `averageRating` float DEFAULT NULL,
   `numVotes` int(6) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Άδειασμα δεδομένων του πίνακα `rating`
+--
+
 
 -- --------------------------------------------------------
 
@@ -167,6 +180,10 @@ CREATE TABLE `title` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
+-- Άδειασμα δεδομένων του πίνακα `title`
+--
+
+--
 -- Ευρετήρια για άχρηστους πίνακες
 --
 
@@ -175,20 +192,6 @@ CREATE TABLE `title` (
 --
 ALTER TABLE `akas`
   ADD PRIMARY KEY (`titleId`,`ordering`);
-
---
--- Ευρετήρια για πίνακα `crewdirectors`
---
-ALTER TABLE `crewdirectors`
-  ADD PRIMARY KEY (`tconst`,`directors`),
-  ADD KEY `directors` (`directors`);
-
---
--- Ευρετήρια για πίνακα `crewwriters`
---
-ALTER TABLE `crewwriters`
-  ADD PRIMARY KEY (`tconst`,`writers`),
-  ADD KEY `writers` (`writers`);
 
 --
 -- Ευρετήρια για πίνακα `episode`
@@ -250,20 +253,6 @@ ALTER TABLE `title`
 --
 ALTER TABLE `akas`
   ADD CONSTRAINT `akas_ibfk_1` FOREIGN KEY (`titleId`) REFERENCES `title` (`tconst`);
-
---
--- Περιορισμοί για πίνακα `crewdirectors`
---
-ALTER TABLE `crewdirectors`
-  ADD CONSTRAINT `crewdirectors_ibfk_1` FOREIGN KEY (`tconst`) REFERENCES `title` (`tconst`),
-  ADD CONSTRAINT `crewdirectors_ibfk_2` FOREIGN KEY (`directors`) REFERENCES `people` (`nconst`);
-
---
--- Περιορισμοί για πίνακα `crewwriters`
---
-ALTER TABLE `crewwriters`
-  ADD CONSTRAINT `crewwriters_ibfk_1` FOREIGN KEY (`tconst`) REFERENCES `title` (`tconst`),
-  ADD CONSTRAINT `crewwriters_ibfk_2` FOREIGN KEY (`writers`) REFERENCES `people` (`nconst`);
 
 --
 -- Περιορισμοί για πίνακα `episode`

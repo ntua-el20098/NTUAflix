@@ -1,24 +1,62 @@
-module.exports = function (scope, param1, param2, param3, format, apikey) {
-    let base = 'https://localhost:9876/ntuaflix_api';
+module.exports = function (scope, param1, param2) {
+    let base = 'http://localhost:9876/ntuaflix_api';
 
     // create url with scope
     base = base + scope;
 
-    // create url for SessionsPerPoint, SessionsPerStation, SessionsPerEV, SessionsPerProvider
-    if (scope === '/SessionsPerPoint/' || scope === '/SessionsPerStation/' || scope === '/SessionsPerEV/' || scope === '/SessionsPerProvider/') {
-        base = base + param1 + '/' + param2 + '/' + param3 + '?format=' + format;
+
+    if (scope === '/admin/'){
+        base = base + 'healthcheck';
     }
-        // create url for Admin scope
-        // healthcheck
-        // resetsessions
-        // usermod /admin/usermod/param1/param2 -> param1 = usermod, param2 = username, param3 = password
-        // users
-    // sessionsupd /admin/system/sessionsupd/
-    else if (scope === '/admin/') {
-        if (param1 === 'sessionsupd') base = base + 'system/' + param1;
-        else if (param1 === 'usermod') base = base + param1 + '/' + param2 + '/' + param3 + '?isAdministrator=' + format;
-        else if (param1 === 'users') base = base + param1 + '/' + param2 + '?isAdministrator=' + param3;
-        else base = base + param1;
+    // create url for healthcheck
+
+    else if (scope === '/title/'){
+        // create url for title
+        if (param1 !== undefined) {
+            base = base + param1;
+        }
+    }
+    else if(scope === '/name/') {
+        // create url for name
+        if (param1 !== undefined) {
+            base = base + param1;
+        }
+    }
+    else if(scope === '/searchtitle') {
+        // create url for searchtitle
+    }
+    else if(scope === '/searchname'){
+        // create url for searchname 
+    }
+    else if(scope === '/bygenre'){
+        // create url for bygenre 
+    }
+    else if (scope === '/admin/upload/titlebasics') {
+        // create url for upload newtitles
+    }
+    else if(scope === '/admin/upload/namebasics') {
+        // create url for upload newnames
+    }
+    else if(scope === '/admin/upload/titleepisode') {
+        // create url for upload newepisode
+    }
+    else if(scope === '/admin/upload/titleakas') {
+        // create url for upload newakas
+    }
+    else if(scope === '/admin/upload/titlecrew') {
+        // create url for upload newcrew
+    }
+    else if(scope === '/admin/upload/titleprincipals') {
+        // create url for upload newprincipals
+    }
+    else if(scope === '/admin/upload/titleratings') {
+        // create url for upload newratings
+    }
+    else if(scope === '/bygenre') {
+        // create url for bygenre
+    }
+    else {
+        console.log('Error: Invalid scope');
     }
     return base;
 }

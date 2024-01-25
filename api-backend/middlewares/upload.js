@@ -1,7 +1,8 @@
 const multer = require("multer");
+const { modifyTSV } = require('./tsv_transformer'); 
+const { modifyTSV_Names } = require('./tsv-transformer'); 
 
 const tsvFilter = (req, file, cb) => {
-    console.log(file);
   if (file.originalname.endsWith('.tsv')) {
     cb(null, true);
   } else {
@@ -9,14 +10,31 @@ const tsvFilter = (req, file, cb) => {
   }
 };
 
-var storage = multer.diskStorage({
+var storage = multer.diskStorage({  
   destination: function (req, file, cb) {
-    cb(null, __dirname + '/../uploads')
+    console.log("Reached upload middleware from route:", req.route.path);
+    cb(null, __dirname + '/../uploads');
   },
-  filename: function (req, file, cb) {
-    cb(null, `${file.originalname}`)
-  }
-})
 
-var uploadFile = multer({ storage: storage, fileFilter: tsvFilter });
-module.exports = uploadFile;
+  filename: function (req, file, cb) {
+    console.log("Uploaded file name:", file.originalname);
+
+    // Define the output file name based on the route
+    let outputFileName;
+    if (req.route.path === '/admin/upload/titlebasics') {
+      outputFileName = 'titlebasics.tsv';
+    } else if (req.route.path === '/admin/upload/namebasics') {
+      outputFileName = 'namebasics.tsv';
+    } else if (req.route.path === '/admin/upload/titleratings') {
+      outputFileName = 'titleratings.tsv';
+    }
+    else {
+      outputFileName = file.originalname;
+    }
+    cb(null, outputFileName);
+  }
+});
+
+const upload = multer({ storage: storage, fileFilter: tsvFilter });
+
+module.exports = upload;

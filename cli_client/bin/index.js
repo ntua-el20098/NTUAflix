@@ -1,6 +1,8 @@
 #! /usr/bin/env node
 
-const commands = require("commander");
+const {Command} = require("commander");
+const program = new Command();
+
 const chalk = require('chalk');
 const figlet = require('figlet');
 const clear = require('clear');
@@ -8,7 +10,7 @@ const clear = require('clear');
 //Endpoints
 const healthcheck = require('../src/admin/healthcheck');
 const resetall = require('../src/admin/resetall');
-const newtitle = require('../src/admin/newtitle');
+const newtitles = require('../src/admin/newtitles');
 const newakas = require('../src/admin/newakas');
 const newnames = require('../src/admin/newnames');
 const newcrew = require('../src/admin/newcrew');
@@ -23,115 +25,146 @@ const searchname = require('../src/user/searchname');
 
 
 clear();
-
+/*
 console.log(
     chalk.yellow(
         figlet.textSync('BitsPlease', {horizontalLayout: 'full'})
     )
-);
-
-
-commands
-    .version('1.0.0')
-    .description('CLI for interacting with the API');
+)
+*/
 
 // healthcheck
-commands.command('healthcheck')
+program
+    .command('healthcheck')
     .alias('hc')
     .description('Confirms end-to-end connectivity between the user and the database')
     .action( function(options) { healthcheck(options) } )
 
+// title
+program
+    .command('title')
+    .alias('t')
+    .description('Returns the title with the specified tconst')
+    .option('-tid, --titleID <tconst>', 'tconst of the title')
+    .action(function (options) { title(options) } )
+
+// searchtitle
+program
+    .command('searchtitle')
+    .alias('st')
+    .description('Returns the title with the specified primaryTitle')
+    .option('-tp, --titlePart <primaryTitle>', 'primaryTitle of the title')
+    .action( function(options) { searchtitle(options) } )
+
+// bygenre
+program
+    .command('bygenre')
+    .alias('bg')
+    .description('Returns the titles with the specified genre')
+    .option('-g, --genre <genre>', 'Genre of the title')
+    .option('-m, --min <minYear>', 'Minimum year of the title')
+    .option('-f, --from <fromYear>', 'From year of the title')
+    .option('-t, --to <toYear>', 'To year of the title')
+    .action( function(options) { bygenre(options) } )
+
+// name
+program
+    .command('name')
+    .alias('n')
+    .description('Returns the name with the specified nconst')
+    .option('-nid, --nameID <nconst>', 'nconst of the name')
+    .action( function(options) { name(options) } )
+
+// search name
+program
+    .command('searchname')
+    .alias('sn')
+    .description('Returns the name with the specified primaryName')
+    .option('-np, --name <primaryName>', 'primaryName of the name')
+    .action( function(options) { searchname(options) } )
+
 
 // resetall
-commands.command('resetall')
+program
+    .command('resetall')
     .alias('rsall')
     .description('Deletes all data from the database')
     .action( function(options) { resetall(options) } )
 
-// newtitle
-commands.command('newtitle')
+// newtitles
+program
+    .command('newtitles')
     .alias('nt')
     .description('Adds a new title to the database')
-    .action( function(options) { newtitle(options) } )
+    .option('-f, --filename <file>', 'path to the file')
+    .action( function(options) { newtitles(options) } )
 
 // newakas
-commands.command('newakas')
+program
+    .command('newakas')
     .alias('na')
     .description('Adds a new alternate title to the database')
+    .option('-f, --filename <file>', 'path to the file')
     .action( function(options) { newakas(options) } )
 // newnames
-commands.command('newnames')
+program
+    .command('newnames')
     .alias('nn')
     .description('Adds a new name to the database')
+    .option('-f, --filename <file>', 'path to the file')
     .action( function(options) { newnames(options) } )
 
 // newcrew
-commands.command('newcrew')
+program
+    .command('newcrew')
     .alias('nc')
     .description('Adds a new crew member to the database')
+    .option('-f, --filename <file>', 'path to the file')
     .action( function(options) { newcrew(options) } )
 
 // newepisode
-commands.command('newepisode')
+program
+    .command('newepisode')
     .alias('ne')
     .description('Adds a new episode to the database')
+    .option('-f, --filename <file>', 'path to the file')
     .action( function(options) { newepisode(options) } )
 
 // newprincipals
-commands.command('newprincipals')
+program
+    .command('newprincipals')
     .alias('s')
     .description('Adds a new principal to the database')
+    .option('-f, --filename <file>', 'path to the file')
     .action( function(options) { newprincipals(options) } )
 
 // newratings
-commands.command('newratings')
+program
+    .command('newratings')
     .alias('nr')
     .description('Adds a new rating to the database')
+    .option('-f, --filename <file>', 'path to the file')
+    .requiredOption('-f, --filename <file>', 'path to the file')
     .action( function(options) { newratings(options) } )
 
-// title
-commands.command('title')
-    .alias('t')
-    .description('Returns the title with the specified tconst')
-    .action( function(options) { title(options) } )
-
-// searchtitle
-commands.command('searchtitle')
-    .alias('st')
-    .description('Returns the title with the specified primaryTitle')
-    .action( function(options) { searchtitle(options) } )
-
-// bygenre
-commands.command('bygenre')
-    .alias('bg')
-    .description('Returns the titles with the specified genre')
-    .action( function(options) { bygenre(options) } )
-
-// name
-commands.command('name')
-    .alias('n')
-    .description('Returns the name with the specified nconst')
-    .action( function(options) { name(options) } )
-
-// searchname
-commands.command('searchname')
-    .alias('sn')
-    .description('Returns the name with the specified primaryName')
-    .action( function(options) { searchname(options) } )
+program
+    .command('help')
+    .description('Shows help')
+    .action( () => { program.help() } )
+program.parse(process.argv)
 
 let scope = process.argv[2];
 let scopeList = ['healthcheck', 'hc', 'resetall', 'rsall',
-    'newtitle', 'nt', 'newakas', 'na', 'newnames', 'nn', 'newcrew', 'nc',
+    'newtitles', 'nt', 'newakas', 'na', 'newnames', 'nn', 'newcrew', 'nc',
     'newepisode', 'ne', 'newprincipals', 's', 'newratings', 'nr',
     'title', 't', 'searchtitle', 'st', 'bygenre', 'bg', 'name', 'n', 'searchname', 'sn'];
 
 if (process.argv.length < 2) {
-    console.log(process.argv.length < 3);
     console.log(chalk.red('Error occured! Scope was not specified!'));
     console.log(chalk.yellow('Choose one of the following:'));
     console.log(chalk.yellow('healthcheck | hc'));
     console.log(chalk.yellow('resetall | rsall'));
-    console.log(chalk.yellow('newtitle | nt'));
+    console.log(chalk.yellow('newtitles | nt'));
     console.log(chalk.yellow('newakas | na'));
     console.log(chalk.yellow('newnames | nn'));
     console.log(chalk.yellow('newcrew  | nc'));

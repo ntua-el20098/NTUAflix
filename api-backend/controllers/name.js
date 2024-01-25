@@ -6,8 +6,6 @@ const axios = require('axios');
 const csv = require('csv-parser');
 const fs = require('fs');
 
-
-
 exports.getPersonDetails = async (req, res, next) => {
     let limit = undefined;
     if (req.query.limit) {
@@ -15,37 +13,50 @@ exports.getPersonDetails = async (req, res, next) => {
         if (!Number.isInteger(limit)) return res.status(400).json({ message: 'Limit query param should be an integer' });
     }
 
-    const nameID = req.params.nameID;
-    console.log("test")
+    if (req.params.nameID === undefined) return res.status(400).json({ message: 'nameID is required' });
 
+    if (Number.isInteger(req.params.nameID)) return res.status(400).json({ message: 'nameID should be an integer' });
+
+    const nameID = req.params.nameID;
+    
     const query = `
-        
     SELECT
-    p.nconst as nameID, 
-    p.primaryName as name,
-    p.img_url_asset as namePoster,
-    p.birthYear as birthYr,
-    p.deathYear as deathYr,
-    pr.category as category,
-    pr.tconst as titleID,
-    pp.profession as professions
-FROM
-    people p
+        p.nconst as nameID, 
+        p.primaryName as name,
+        p.img_url_asset as namePoster,
+        p.birthYear as birthYr,
+        p.deathYear as deathYr,
+        pr.category as category,
+        pr.tconst as titleID,
+        pp.primaryProfession as professions
+    FROM
+        people p
         JOIN principals pr ON p.nconst = pr.nconst
         JOIN primaryprofession pp on pp.nconst = p.nconst
-WHERE
-    p.nconst = '${nameID}'`;
+    WHERE
+        p.nconst = '${nameID}'` + (limit ? ' LIMIT ?' : '');
 
-    if (limit) {
-        query += ` LIMIT ${limit}`;
+    const queryParams = [nameID];
+
+    if (limit !== undefined) {
+        queryParams.push(limit);
     }
 
     pool.getConnection((err, connection) => {
-        connection.query(query, nameID, (err, rows) => {
+        if (err) return res.status(500).json({ message: 'Error in connection to the database' });
+
+        connection.query(query, queryParams, (err, rows) => {
             connection.release();
-            if (err) return res.status(500).json({ message: 'Internal server error' });
-            const nameObject = processPersonResults(rows);
-            return res.status(200).json({nameObject});
+
+            if (err) return res.status(500).json({ message: 'Error in executing the query' });
+
+            try {
+                const formattedResponse = processPersonResults(rows);
+                res.status(200).json(formattedResponse);
+            }
+            catch (error) {
+                return res.status(500).json({ message: 'Error processing person details', error });
+            }
         });
     });
 };
@@ -78,7 +89,6 @@ function processPersonResults(results) {
 
 };
 
-
 exports.getSearchPersonByName = async (req, res, next) => {
     let limit = undefined;
     if (req.query.limit) {
@@ -89,10 +99,11 @@ exports.getSearchPersonByName = async (req, res, next) => {
     const namePart = req.body.nqueryObject.namePart;
 
     const query = `
-    SELECT p.nconst, p.primaryName, p.img_url_asset, p.birthYear, p.deathYear, pr.profession
-    FROM people p
-    JOIN primaryprofession pr ON p.nconst = pr.nconst
-    WHERE p.primaryName LIKE "${namePart}" `+ (limit ? ' LIMIT ?' : '');
+        SELECT p.nconst
+        FROM people p
+        WHERE p.primaryName LIKE "%${namePart}%"`+ (limit ? ' LIMIT ?' : '');
+
+    const queryParams = [namePart];
 
     // Add the limit parameter to the queryParams if it's provided
     if (limit !== undefined) {
@@ -100,39 +111,34 @@ exports.getSearchPersonByName = async (req, res, next) => {
     }
 
     pool.getConnection((err, connection) => {
-        if (err) return res.status(500).json({ message: 'Database connection ERROR' });
+        if (err) return res.status(500).json({ message: 'Error in connection to the database' });
 
         connection.query(query, queryParams, (err, rows) => {
             connection.release();
 
-            if (err) return res.status(500).json({ message: 'Query execution ERROR' });
+            if (err) return res.status(500).json({ message: 'Error in executing the query' });
 
-            const formattedResponse = format_getSearchPersonByName(rows);
-            return res.status(200).json(formattedResponse);
+            if (rows.length === 0) {
+                // Return a 204 No Content status if there are no results
+                return res.status(204).json({ message: 'No results found' });
+            }
+            
+            // Map over the tconst values and call getPersonDetails for each one
+            const nameDetailsPromises = rows.map(row => getPersonDetails(row.nconst));
+
+            const nameObjects = [];
+
+            // Use Promise.all to wait for all the getPersonDetails requests to complete
+            Promise.all(nameDetailsPromises)
+                .then(nameObjects => {
+                    // Return the array of person details in the response
+                    res.status(200).json(nameObjects);
+                })
+                .catch(error => {
+                    return res.status(500).json({ message: 'Error processing person details', error });
+                });
         });
     });
-};
-function format_getSearchPersonByName(results) {
-    const formattedResponse = {
-        nameObject: {
-            nameID: results[0].nameID,
-            name: results[0].name,
-            namePoster: results[0].namePoster,
-            birthYr: results[0].birthYr,
-            deathYr: results[0].deathYr,
-            profession: results[0].profession,
-            nameTitles: [],
-            titleID: results[0].titleID,
-            category: results[0].category
-        }
-    };
-
-    // Process nameTitles
-    const uniqueNameTitles = new Set(results.map(result => JSON.stringify({ titleID: result.titleID, category: result.category })));
-    formattedResponse.nameObject.nameTitles = [...uniqueNameTitles].map(nameTitle => JSON.parse(nameTitle));
-
-    return formattedResponse;
-
 };
 
 // Function to get person details based on nameID using the getPersonDetails endpoint

@@ -2,21 +2,20 @@ const constructURL = require('../../lib/constructURL');
 const errorHandler = require('../../lib/errorHandler');
 const chalk = require('chalk');
 const axios = require('axios');
-const https = require('https');
 
-module.exports = function(o) {
-    var url = constructURL('/admin/', 'healthcheck');
-    var config = {
-        method: 'get',
+module.exports = function(options) {
+    let url = constructURL('/admin/', 'healthcheck');
+    console.log(url);
+    let config = {
+        method: 'GET',
         url: url,
-        httpsAgent: new https.Agent({ rejectUnauthorized: false })
+        port: 9876,
     };
     axios(config)
         .then(res => {
-            console.log(chalk.green('Connection status with database: ' + res.data.status))
+            console.log(res.data);
         })
         .catch(err => {
             errorHandler(err);
         })
-
 }
