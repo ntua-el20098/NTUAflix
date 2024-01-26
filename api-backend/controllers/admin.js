@@ -256,57 +256,57 @@ exports.upload_titleratings = async (req, res, next) => {
 };
 */
 
-exports.resetall = async (req, res, next) => {
-    try {
-      pool.getConnection((err, connection) => {
-        if (err) {
-          console.error('Error in connection to the database', err);
-          res.status(500).send('Error in connection to the database');
-          return;
-        }
+// exports.resetall = async (req, res, next) => {
+//     try {
+//       pool.getConnection((err, connection) => {
+//         if (err) {
+//           console.error('Error in connection to the database', err);
+//           res.status(500).send('Error in connection to the database');
+//           return;
+//         }
   
-        const deleteQueries = [
-          'DELETE FROM akas',
-          'DELETE FROM crewdirectors',
-          'DELETE FROM crewwriters',
-          'DELETE FROM episode',
-          'DELETE FROM genre',
-          'DELETE FROM knowfortitles',
-          'DELETE FROM principals',
-          'DELETE FROM primaryprofession',
-          'DELETE FROM rating',
-          'DELETE FROM people',
-          'DELETE FROM title'
-        ];
+//         const deleteQueries = [
+//           'DELETE FROM akas',
+//           'DELETE FROM crewdirectors',
+//           'DELETE FROM crewwriters',
+//           'DELETE FROM episode',
+//           'DELETE FROM genre',
+//           'DELETE FROM knowfortitles',
+//           'DELETE FROM principals',
+//           'DELETE FROM primaryprofession',
+//           'DELETE FROM rating',
+//           'DELETE FROM people',
+//           'DELETE FROM title'
+//         ];
   
-        const queryPromises = deleteQueries.map(query => {
-          return new Promise((resolve, reject) => {
-            connection.query(query, (err, results) => {
-              if (err) {
-                console.error('Error in executing the query', err);
-                reject(err);
-              } else {
-                resolve(results);
-              }
-            });
-          });
-        });
+//         const queryPromises = deleteQueries.map(query => {
+//           return new Promise((resolve, reject) => {
+//             connection.query(query, (err, results) => {
+//               if (err) {
+//                 console.error('Error in executing the query', err);
+//                 reject(err);
+//               } else {
+//                 resolve(results);
+//               }
+//             });
+//           });
+//         });
   
-        Promise.all(queryPromises)
-          .then(results => {
-            connection.release();
-            console.log('All queries executed successfully.');
-            res.status(200).send('All data deleted successfully.');
-          })
-          .catch(error => {
-            connection.release();
-            console.error('Error executing queries:', error);
-            res.status(500).send('Error executing queries.');
-          });
-      });
-    } catch (error) {
-      console.error('Error uploading/parsing TSV file:', error);
-      res.status(500).send('Error uploading/parsing TSV file.');
-    }
-  };
+//         Promise.all(queryPromises)
+//           .then(results => {
+//             connection.release();
+//             console.log('All queries executed successfully.');
+//             res.status(200).send('All data deleted successfully.');
+//           })
+//           .catch(error => {
+//             connection.release();
+//             console.error('Error executing queries:', error);
+//             res.status(500).send('Error executing queries.');
+//           });
+//       });
+//     } catch (error) {
+//       console.error('Error uploading/parsing TSV file:', error);
+//       res.status(500).send('Error uploading/parsing TSV file.');
+//     }
+//   };
   

@@ -99,6 +99,8 @@ function processPersonResults(results) {
 
 exports.getSearchPersonByName = async (req, res, err) => {
     let limit = undefined;
+    let offset = undefined;
+
     if (req.query.limit) {
         limit = Number(req.query.limit);
         if (!Number.isInteger(limit)) return res.status(400).json({ message: 'Limit query param should be an integer' , error :err ? err : ''});
@@ -108,10 +110,19 @@ exports.getSearchPersonByName = async (req, res, err) => {
     if (req.body.nqueryObject.namePart === undefined) return res.status(400).json({ message: 'namePart is required' , error : err ? err : ''});
     const namePart = req.body.nqueryObject.namePart;
 
+    let page = req.query.page;
+
+    if (!page) {
+        page = 1;
+    }
+
+
+    offset = (page - 1) * limit;
+
     const query = `
         SELECT p.nconst
         FROM people p
-        WHERE p.primaryName LIKE ?`+ (limit ? ' LIMIT ?' : '');
+        WHERE p.primaryName LIKE ?`+ (limit ? ' LIMIT ?' : '') + (offset ? ' OFFSET ?' : '');
 
         const queryParams = [`%${namePart}%`];
    
@@ -119,6 +130,10 @@ exports.getSearchPersonByName = async (req, res, err) => {
     // Add the limit parameter to the queryParams if it's provided
     if (limit !== undefined) {
         queryParams.push(limit);
+    }
+
+    if (offset !== undefined) {
+        queryParams.push(offset);
     }
     console.log(queryParams);   
 
