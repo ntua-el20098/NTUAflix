@@ -27,18 +27,21 @@ exports.healthcheck = async (req, res, next) => {
     }
 };
 
+//admin 9
 exports.resetall = async (req, res, next) => {
     try {
         const [rows1, fields1] = await pool.promise().query('DELETE FROM genre');
         const [rows2, fields2] = await pool.promise().query('DELETE FROM akas');
         const [rows3, fields3] = await pool.promise().query('DELETE FROM primaryprofession');
         const [rows4, fields4] = await pool.promise().query('DELETE FROM knowfortitles');
-        //const [rows5, fields5] = await pool.promise().query('DELETE FROM titlecrew');
-        const [rows6, fields6] = await pool.promise().query('DELETE FROM episode');
-        const [rows7, fields7] = await pool.promise().query('DELETE FROM principals');
-        const [rows8, fields8] = await pool.promise().query('DELETE FROM rating');
-        const [rows9, fields9] = await pool.promise().query('DELETE FROM people');
+        const [rows5, fields5] = await pool.promise().query('DELETE FROM crewdirectors');
+        const [rows6, fields6] = await pool.promise().query('DELETE FROM crewwriters');
+        const [rows7, fields7] = await pool.promise().query('DELETE FROM episode');
+        const [rows8, fields8] = await pool.promise().query('DELETE FROM principals');
+        const [rows9, fields9] = await pool.promise().query('DELETE FROM rating');
         const [rows10, fields10] = await pool.promise().query('DELETE FROM title');
+        const [rows11, fields11] = await pool.promise().query('DELETE FROM people');
+
         res.json({
             status: 'OK',
             message: 'All tables have been reset',
@@ -51,26 +54,6 @@ exports.resetall = async (req, res, next) => {
         });
     }
 };
-
-//admin 2
-exports.upload_titlebasics = async (req, res, next) => {
-    try {
-        //console.log(req.file.path);
-        const baseDirectory = __dirname + '/../uploads';
-        const inputFilePath = req.file.path;
-        const filePathGenres = `${baseDirectory}/Genres.tsv`;
-         modifyTSV_Titles(inputFilePath, filePathGenres);
-
-         await parseAndInsertIntoDatabase(inputFilePath, 'title', ['tconst', 'titleType', 'primaryTitle', 'originalTitle', 'isAdult','startYear','endYear','runtimeMinutes','img_url_asset']);
-         await parseAndInsertIntoDatabase(filePathGenres, 'genre', ['tconst', 'genres']);
-
-        res.status(200).send("TSV data inserted into the database successfully.");
-    } catch (error) {
-        console.error('Error uploading TSV files:', error);
-        res.status(500).send("Error uploading/parsing TSV files.");
-    }
-};
-
 
 function parseAndInsertIntoDatabase(filePath, tableName, columnMappings) {
     return new Promise((resolve, reject) => {
@@ -127,7 +110,26 @@ function parseAndInsertIntoDatabase(filePath, tableName, columnMappings) {
         reject(error);
       }
     });
-  }
+}
+
+//admin 2
+exports.upload_titlebasics = async (req, res, next) => {
+    try {
+        //console.log(req.file.path);
+        const baseDirectory = __dirname + '/../uploads';
+        const inputFilePath = req.file.path;
+        const filePathGenres = `${baseDirectory}/Genres.tsv`;
+         modifyTSV_Titles(inputFilePath, filePathGenres);
+
+         await parseAndInsertIntoDatabase(inputFilePath, 'title', ['tconst', 'titleType', 'primaryTitle', 'originalTitle', 'isAdult','startYear','endYear','runtimeMinutes','img_url_asset']);
+         await parseAndInsertIntoDatabase(filePathGenres, 'genre', ['tconst', 'genres']);
+
+        res.status(200).send("TSV data inserted into the database successfully.");
+    } catch (error) {
+        console.error('Error uploading TSV files:', error);
+        res.status(500).send("Error uploading/parsing TSV files.");
+    }
+};
 
 //admin 3
 exports.upload_titleakas = async (req, res, next) => {
@@ -217,96 +219,3 @@ exports.upload_titleratings = async (req, res, next) => {
         res.status(500).send("Error uploading/parsing TSV files.");
     }
 };
-
-//admin 9
-/*exports.resetall = async (req, res, next) => {
-    const connection = await pool.getConnection();
-    try {
-        if (!connection) {
-            console.error('Error: Unable to acquire a database connection.');
-            res.status(500).send("Error deleting data from database.");
-            return;
-        }
-
-        await connection.beginTransaction();
-
-        await pool.query('DELETE FROM akas');
-        await pool.query('DELETE FROM crewdirectors');
-        await pool.query('DELETE FROM crewwriters');
-        await pool.query('DELETE FROM episode');
-        await pool.query('DELETE FROM genre');
-        await pool.query('DELETE FROM knowfortitles');
-        await pool.query('DELETE FROM principals');
-        await pool.query('DELETE FROM primaryprofession');
-        await pool.query('DELETE FROM rating');
-        await pool.query('DELETE FROM people');
-        await pool.query('DELETE FROM title');
-
-        await connection.commit();
-        res.status(200).send("All data deleted successfully.");
-    } catch (error) {
-        console.error('Error deleting data from database:', error);
-        await connection.rollback();
-        res.status(500).send("Error deleting data from database.");
-    } finally {
-        if (connection) {
-            connection.release();
-        }
-    }
-};
-*/
-
-// exports.resetall = async (req, res, next) => {
-//     try {
-//       pool.getConnection((err, connection) => {
-//         if (err) {
-//           console.error('Error in connection to the database', err);
-//           res.status(500).send('Error in connection to the database');
-//           return;
-//         }
-  
-//         const deleteQueries = [
-//           'DELETE FROM akas',
-//           'DELETE FROM crewdirectors',
-//           'DELETE FROM crewwriters',
-//           'DELETE FROM episode',
-//           'DELETE FROM genre',
-//           'DELETE FROM knowfortitles',
-//           'DELETE FROM principals',
-//           'DELETE FROM primaryprofession',
-//           'DELETE FROM rating',
-//           'DELETE FROM people',
-//           'DELETE FROM title'
-//         ];
-  
-//         const queryPromises = deleteQueries.map(query => {
-//           return new Promise((resolve, reject) => {
-//             connection.query(query, (err, results) => {
-//               if (err) {
-//                 console.error('Error in executing the query', err);
-//                 reject(err);
-//               } else {
-//                 resolve(results);
-//               }
-//             });
-//           });
-//         });
-  
-//         Promise.all(queryPromises)
-//           .then(results => {
-//             connection.release();
-//             console.log('All queries executed successfully.');
-//             res.status(200).send('All data deleted successfully.');
-//           })
-//           .catch(error => {
-//             connection.release();
-//             console.error('Error executing queries:', error);
-//             res.status(500).send('Error executing queries.');
-//           });
-//       });
-//     } catch (error) {
-//       console.error('Error uploading/parsing TSV file:', error);
-//       res.status(500).send('Error uploading/parsing TSV file.');
-//     }
-//   };
-  
