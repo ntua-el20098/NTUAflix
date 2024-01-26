@@ -18,9 +18,9 @@ exports.getPersonDetails = async (req, res, err) => {
     if (req.params.nameID[0] !== 'n' || req.params.nameID[1] !== 'm') {
         return res.status(400).json({ message: 'Invalid nameID parameter! namedID should start with nm', error: err ? err : ''});
     }
-    if (req.params.nameID.length !== 9) {
-        return res.status(400).json({ message: 'Invalid nameID parameter! namedID should have 9 characters', error: err? err : ''});
-    }
+    // if (req.params.nameID.length !== 9) {
+    //     return res.status(400).json({ message: 'Invalid nameID parameter! namedID should have 9 characters', error: err? err : ''});
+    // }
     const nameID = req.params.nameID;
     
     
@@ -140,7 +140,7 @@ exports.getSearchPersonByName = async (req, res, err) => {
     pool.getConnection((err, connection) => {
         if (err) return res.status(500).json({ message: 'Error in connection to the database' });
 
-        connection.query(query, queryParams, (err, rows) => {
+        connection.query(query, queryParams, async (err, rows) => {
             connection.release();
 
             if (err) return res.status(500).json({ message: 'Error in executing the query' , error: err ? err : ''});
@@ -152,32 +152,30 @@ exports.getSearchPersonByName = async (req, res, err) => {
             }
             
             // Map over the nconst values and call getPersonDetails for each one
-            const nameDetailsPromises = rows.map(row => getPersonDetails(row.nconst).catch(error => {
-                console.error('Error fetching person details for', row.nconst);
-                return null; // return null if there's an error
-            }));
+
+            const nconst = rows.map(row => row.nconst);
             const nameObjects = [];
 
-            // Use Promise.all to wait for all the getPersonDetails requests to complete
-            Promise.all(nameDetailsPromises)
-                .then(nameObjects => {
-                    // Return the array of person details in the response
-                    res.status(200).json(nameObjects);
-                })
-                .catch(error => {
-                    return res.status(500).json({ message: 'Error processing person details!', error });
-                });
+            try {
+                for (const n of nconst) {
+                    const personDetails = await getPersonDetails(n);
+                    nameObjects.push(personDetails);
+                }
+                return res.status(200).json(nameObjects);
+            } catch (error) {
+                return res.status(500).json({ message: 'Error processing name details', error: error });
+            }
         });
     });
 };
 
-// Function to get person details based on nameID using the getPersonDetails endpoint
+
 async function getPersonDetails(nconst) {
-    try {
-        const response = await axios.get(`http://localhost:9876/ntuaflix_api/name/${nconst}`);
-        return response.data;
-    } catch (error) {
-        console.error('Error fetching name details for', nconst, error.message);
-        throw error;
-    }
+  try {
+    const response = await  axios.get(`http://localhost:9876/ntuaflix_api/name/${nconst}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching name details for', nconst, error.message);
+    throw error;
+  }
 }

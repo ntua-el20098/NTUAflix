@@ -73,7 +73,7 @@ exports.getTitleDetails = async (req, res, err) => {
             }
             try {
                 const titleObject = processResults(rows);
-                return res.status(200).json(titleObject);
+                return res.status(200).json({titleObject});
             }
             catch (error) {
                 return res.status(500).json({ message: 'Error processing title details', error: error});
@@ -125,7 +125,7 @@ exports.getSearchByTitle = async (req, res, err) => {
         if (!Number.isInteger(limit)) return res.status(400).json({ message: 'Limit query param should be an integer', error: (err ? err : '')});
     }
     //status 400(Bad Request)  error handling
-    if (!req.body.tqueryObject.titlePart) {
+    if (req.body.tqueryObject.titlePart === undefined) {
         return res.status(400).json({ message: 'Missing titlePart parameter', error: err ? err : ''});
     }
 
@@ -146,7 +146,7 @@ exports.getSearchByTitle = async (req, res, err) => {
     pool.getConnection((err, connection) => {
         if (err) return res.status(500).json({ message: 'Error in connection to the database', error: err ? err : ''});
         
-        connection.query(query, queryParams,(err, rows) => {
+        connection.query(query, queryParams, async (err, rows) => {
             connection.release();
 
             if (err) return res.status(500).json({ message: 'Error in executing the query', error: err ? err : ''});
@@ -156,20 +156,17 @@ exports.getSearchByTitle = async (req, res, err) => {
                 return res.status(204).json({ message: 'No results found', error: err ? err : ''});
             }
 
-            // Map over the tconst values and call getTitleDetails for each one
-            const titleDetailsPromises = rows.map(row => getTitleDetails(row.tconst));
-
+            const tconsts = rows.map(row => row.tconst);
             const titleObjects = [];
-
-            // Use Promise.all to wait for all the getTitleDetails requests to complete
-            Promise.all(titleDetailsPromises)
-                .then(titleObjects => {
-                    // Return the array of title details in the response
-                    res.status(200).json(titleObjects);
-                })
-                .catch(error => {
-                    return res.status(500).json({ message: 'Error processing title details', error: error});
-                });
+            try {
+                for (const n of tconsts) {
+                    const titleDetails = await getTitleDetails(n);
+                    titleObjects.push(titleDetails);
+                }
+                return res.status(200).json(titleObjects);
+            } catch (error) {
+                return res.status(500).json({ message: 'Error processing name details', error: error });
+            }
         });
     });
 };
@@ -225,7 +222,7 @@ exports.getTitlesByGenre = async (req, res, next) => {
     pool.getConnection((err, connection) => {
         if (err) return res.status(500).json({ message: 'Error in connection to the database', error: err ? err : ''});
 
-        connection.query(query, queryParams, (err, rows) => {
+        connection.query(query, queryParams, async (err, rows) => {
             connection.release();
             if (err) return res.status(500).json({ message: 'Error in executing query', error: err ? err : ''});
 
@@ -236,14 +233,15 @@ exports.getTitlesByGenre = async (req, res, next) => {
             const tconsts = rows.map(row => row.tconst);
             const titleObjects = [];
 
-            Promise.all(tconsts.map(tconst => getTitleDetails(tconst)))
-                .then(titleDetailsArray => {
-                    titleObjects.push(...titleDetailsArray);
-                    return res.status(200).json(titleObjects);
-                })
-                .catch(error => {
-                    return res.status(500).json({ message: 'Error processing title details', error: error });
-                });
+            try {
+                for (const n of tconsts) {
+                    const titleDetails = await getTitleDetails(n);
+                    titleObjects.push(titleDetails);
+                }
+                return res.status(200).json(titleObjects);
+            } catch (error) {
+                return res.status(500).json({ message: 'Error processing name details', error: error });
+            }
         });
     });
 };
@@ -288,7 +286,7 @@ exports.getSearchByRating = async (req, res, next) => {
     pool.getConnection((err, connection) => {
         if (err) return res.status(500).json({ message: 'Error in connection to the database', error: err ? err : ''});
 
-        connection.query(query, queryParams, (err, rows) => {
+        connection.query(query, queryParams, async (err, rows) => {
             connection.release();
             if (err) return res.status(500).json({ message: 'Error in executing query', error: err ? err : ''});
 
@@ -299,14 +297,15 @@ exports.getSearchByRating = async (req, res, next) => {
             const tconsts = rows.map(row => row.tconst);
             const titleObjects = [];
 
-            Promise.all(tconsts.map(tconst => getTitleDetails(tconst)))
-                .then(titleDetailsArray => {
-                    titleObjects.push(...titleDetailsArray);
-                    return res.status(200).json(titleObjects);
-                })
-                .catch(error => {
-                    return res.status(500).json({ message: 'Error processing title details', error: error });
-                });
+            try {
+                for (const n of tconsts) {
+                    const titleDetails = await getTitleDetails(n);
+                    titleObjects.push(titleDetails);
+                }
+                return res.status(200).json(titleObjects);
+            } catch (error) {
+                return res.status(500).json({ message: 'Error processing name details', error: error });
+            }
         });
     });
 }
