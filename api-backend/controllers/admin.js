@@ -80,7 +80,7 @@ function parseAndInsertIntoDatabase(filePath, tableName, columnMappings) {
                 }
   
                 const insertQuery = `INSERT IGNORE INTO ${tableName} (${columnMappings.join(', ')}) VALUES ?`;
-                const values = tsvData.map(row => columnMappings.map(column => row[column] === '\\N' ? null : row[column]));
+                const values = tsvData.map(row => columnMappings.map(column => row[column] === '\\N' || row[column] === '' ? null : row[column]));
   
                 connection.query(insertQuery, [values], (err, results) => {
                   if (err) {

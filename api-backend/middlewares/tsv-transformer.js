@@ -10,25 +10,19 @@ function modifyTSV_Names(inputFilePath, outputProfessionFilePath, outputTitlesFi
     rows.forEach(row => {
         const columns = row.split('\t');
  
-        if (columns.length >= 6) {
-            const id = columns[0];
+        const id = columns[0];
  
-            if (columns[4] !== null && columns[4] !== undefined && columns[4].trim() !== '') {
-                const professionArray = columns[4].split(',');
+        const professionArray = columns[4].split(',');
                 
-                professionArray.forEach(genre => {
-                    profession.push(`${id}\t${genre.trim()}`);
-                });
-            }
+        professionArray.forEach(genre => {
+            profession.push(`${id}\t${genre.trim()}`);
+        });
  
-            if (columns[5] !== null && columns[5] !== undefined && columns[5].trim() !== '') {
-                const titlesArray = columns[5].split(',');
+        const titlesArray = columns[5].split(',');
  
-                titlesArray.forEach(title => {
-                    titles.push(`${id}\t${title.trim()}`);
-                });
-            }
-        }
+        titlesArray.forEach(title => {
+            titles.push(`${id}\t${title.trim()}`);
+        });
     });
  
     const professionResult = profession.join('\n');
@@ -48,25 +42,19 @@ function modifyTSV_Crew(inputFilePath, outputDirectorsFilePath, outputWritersFil
     rows.forEach(row => {
         const columns = row.split('\t');
  
-        if (columns.length >= 3) {
-            const id = columns[0];
+        const id = columns[0];
  
-            if (columns[1] !== null && columns[1] !== undefined && columns[1].trim() !== '') {
-                const directorsArray = columns[1].split(',');
+        const directorsArray = columns[1].split(',');
                 
-                directorsArray.forEach(director => {
-                    directors.push(`${id}\t${director.trim()}`);
-                });
-            }
+        directorsArray.forEach(director => {
+            directors.push(`${id}\t${director.trim()}`);
+        });
  
-            if (columns[2] !== null && columns[2] !== undefined && columns[2].trim() !== '') {
-                const writersArray = columns[2].split(',');
+        const writersArray = columns[2].split(',');
  
-                writersArray.forEach(writer => {
-                    writers.push(`${id}\t${writer.trim()}`);
-                });
-            }
-        }
+        writersArray.forEach(writer => {
+            writers.push(`${id}\t${writer.trim()}`);
+        });
     });
  
     const directorsResult = directors.join('\n');
