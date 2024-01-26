@@ -15,6 +15,8 @@ module.exports = function (scope, param1, param2) {
         if (param1 !== undefined) {
             base = base + param1;
         }
+
+
     }
     else if(scope === '/name/') {
         // create url for name
