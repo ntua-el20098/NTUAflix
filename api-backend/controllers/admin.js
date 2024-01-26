@@ -115,7 +115,7 @@ function parseAndInsertIntoDatabase(filePath, tableName, columnMappings) {
 //admin 2
 exports.upload_titlebasics = async (req, res, next) => {
     try {
-        //console.log(req.file.path);
+        
         const baseDirectory = __dirname + '/../uploads';
         const inputFilePath = req.file.path;
         const filePathGenres = `${baseDirectory}/Genres.tsv`;
@@ -134,7 +134,7 @@ exports.upload_titlebasics = async (req, res, next) => {
 //admin 3
 exports.upload_titleakas = async (req, res, next) => {
     try {
-        console.log(req.file.path);
+        
         await parseAndInsertIntoDatabase(req.file.path, 'akas', ['titleId', 'ordering', 'title', 'region', 'language', 'types', 'attributes', 'isOriginalTitle']);
         res.status(200).send("TSV data inserted into the database successfully.");
     } catch (error) {
@@ -146,7 +146,7 @@ exports.upload_titleakas = async (req, res, next) => {
 //admin 4
 exports.upload_namebasics = async (req, res, next) => {
     try {
-        //console.log(req.file.path);
+        
         const baseDirectory = __dirname + '/../uploads';
         const inputFilePath = req.file.path;
         const filePathProfession = `${baseDirectory}/Profession.tsv`;
@@ -167,7 +167,7 @@ exports.upload_namebasics = async (req, res, next) => {
 //admin 5
 exports.upload_titlecrew = async (req, res, next) => {
     try {
-        //console.log(req.file.path);
+        
         const baseDirectory = __dirname + '/../uploads';
         const inputFilePath = req.file.path;
         const filePathDirectors = `${baseDirectory}/Directors.tsv`;
@@ -187,7 +187,7 @@ exports.upload_titlecrew = async (req, res, next) => {
 //admin 6
 exports.upload_titleepisode = async (req, res, next) => {
     try {
-        console.log(req.file.path);
+        
         await parseAndInsertIntoDatabase(req.file.path, 'episode', ['tconst', 'parentTconst', 'seasonNumber', 'episodeNumber']);
         res.status(200).send("TSV data inserted into the database successfully.");
     } catch (error) {
@@ -199,7 +199,7 @@ exports.upload_titleepisode = async (req, res, next) => {
 //admin 7
 exports.upload_titleprincipals = async (req, res, next) => {
     try {
-        console.log(req.file.path);
+        
         await parseAndInsertIntoDatabase(req.file.path, 'principals', ['nconst','tconst', 'ordering', 'category', 'job', 'characters','img_url_asset']);
         res.status(200).send("TSV data inserted into the database successfully.");
     } catch (error) {
@@ -211,7 +211,7 @@ exports.upload_titleprincipals = async (req, res, next) => {
 //admin 8
 exports.upload_titleratings = async (req, res, next) => {
     try {
-        console.log(req.file.path);
+        
         await parseAndInsertIntoDatabase(req.file.path, 'rating', ['tconst', 'averageRating', 'numVotes']);
         res.status(200).send("TSV data inserted into the database successfully.");
     } catch (error) {
