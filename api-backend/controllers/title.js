@@ -8,13 +8,6 @@ const fs = require('fs');
 const { unique } = require("next/dist/build/utils");
 
 exports.getTitleDetails = async (req, res, err) => {
-    let limit = undefined;
-    if (req.query.limit) {
-        limit = Number(req.query.limit);
-        if (!Number.isInteger(limit)) return res.status(400).json(
-            { message: 'Limit query param should be an integer', error: (err ? err : '')} );
-    }
-
     //status 400 (bad request) error handling
     if (!req.params.titleID) {
         return res.status(400).json({ message: 'Missing titleID parameter', error: err ? err : ''});
@@ -22,9 +15,9 @@ exports.getTitleDetails = async (req, res, err) => {
     if (req.params.titleID[0] !== 't' || req.params.titleID[1] !== 't') {
         return res.status(400).json({ message: 'Invalid titleID parameter! titleID should start with tt', error: err ? err : ''});
     }
-    if (req.params.titleID.length !== 9) {
-        return res.status(400).json({ message: 'Invalid titleID parameter! titleID should have 9 characters', error: err? err : ''});
-    }
+    // if (req.params.titleID.length !== 9) {
+    //     return res.status(400).json({ message: 'Invalid titleID parameter! titleID should have 9 characters', error: err? err : ''});
+    // }
 
     const titleID = req.params.titleID;
 
@@ -52,13 +45,9 @@ exports.getTitleDetails = async (req, res, err) => {
         JOIN people p ON pr.nconst = p.nconst
         JOIN rating r ON t.tconst = r.tconst
     WHERE
-        t.tconst = '${titleID}'` + (limit ? ' LIMIT ?' : '');
+        t.tconst = ?`;
 
-    const queryParams = [titleID];
-
-    if (limit !== undefined) {
-        queryParams.push(limit);
-    }
+    const queryParams = `${titleID}`;
 
     pool.getConnection((err, connection) => {
         if (err) return res.status(500).json({ message: 'Error in connection to the database', error: err ? err : '' });
@@ -120,6 +109,8 @@ function processResults(results) {
 
 exports.getSearchByTitle = async (req, res, err) => {
     let limit = undefined;
+    let offset = undefined;
+
     if (req.query.limit) {
         limit = Number(req.query.limit);
         if (!Number.isInteger(limit)) return res.status(400).json({ message: 'Limit query param should be an integer', error: (err ? err : '')});
@@ -131,16 +122,27 @@ exports.getSearchByTitle = async (req, res, err) => {
 
     const titlePart = req.body.tqueryObject.titlePart;
 
+    let page = req.query.page;
+
+    if (!page) {
+        page = 1;
+    }
+
+    offset = (page - 1) * limit;
+
     const query = `
         SELECT t.tconst
         FROM Title t
-        WHERE t.originalTitle LIKE "%${titlePart}%"`+ (limit ? ' LIMIT ?' : '');
+        WHERE t.originalTitle LIKE ?`+ (limit ? ' LIMIT ?' : '') + (offset ? ' OFFSET ?' : '');
 
-    const queryParams = [titlePart];
+    const queryParams = [`%${titlePart}%`];
 
     // Add the limit parameter to the queryParams if it's provided
     if (limit !== undefined) {
         queryParams.push(limit);
+    }
+    if (offset !== undefined) {
+        queryParams.push(offset);
     }
 
     pool.getConnection((err, connection) => {
@@ -173,6 +175,8 @@ exports.getSearchByTitle = async (req, res, err) => {
 
 exports.getTitlesByGenre = async (req, res, next) => {
     let limit = undefined;
+    let offset = undefined;
+
     if (req.query.limit) {
         limit = Number(req.query.limit);
         if (!Number.isInteger(limit)) return res.status(400).json({ message: 'Limit query param should be an integer', error: (err ? err : '')});
@@ -195,6 +199,14 @@ exports.getTitlesByGenre = async (req, res, next) => {
         return res.status(400).json({ message: 'Duplicate parameters detected', error: err ? err : ''});
     }
 
+    let page = req.query.page;
+
+    if (!page) {
+        page = 1;
+    }
+
+    offset = (page - 1) * limit;
+
     const query = `
         SELECT t.tconst
         FROM title t
@@ -203,7 +215,7 @@ exports.getTitlesByGenre = async (req, res, next) => {
         WHERE g.genres = ?
         AND r.averageRating >= ?
         ${yrFrom !== undefined ? 'AND t.startYear >= ?' : ''}
-        ${yrTo !== undefined ? 'AND t.startYear <= ?' : ''}` + (limit ? ' LIMIT ?' : '');
+        ${yrTo !== undefined ? 'AND t.startYear <= ?' : ''}` + (limit ? ' LIMIT ?' : '') + (offset ? ' OFFSET ?' : '');
 
     const queryParams = [qgenre, minrating];
 
@@ -217,6 +229,10 @@ exports.getTitlesByGenre = async (req, res, next) => {
     
     if (limit !== undefined) {
         queryParams.push(limit);
+    }
+
+    if (offset !== undefined) {
+        queryParams.push(offset);
     }
     
     pool.getConnection((err, connection) => {
@@ -259,6 +275,7 @@ async function getTitleDetails(tconst) {
 
 exports.getSearchByRating = async (req, res, next) => {
     let limit = undefined;
+    let offset = undefined;
     if (req.query.limit) {
         limit = Number(req.query.limit);
         if (!Number.isInteger(limit)) return res.status(400).json({ message: 'Limit query param should be an integer', error: (err ? err : '')});
@@ -270,17 +287,30 @@ exports.getSearchByRating = async (req, res, next) => {
         return res.status(400).json({ message: 'Minrating object request param should be an integer', error: (err ? err : '')});
     }
 
+    let page = req.query.page;
+
+    if (!page) {
+        page = 1;
+    }
+
+    offset = (page - 1) * limit;
+
+
     const query = `
         SELECT t.tconst
         FROM title t
         JOIN rating r ON t.tconst = r.tconst
         WHERE r.averageRating >= ? 
-    ` + (limit ? ' LIMIT ?' : '');
+    ` + (limit ? ' LIMIT ?' : '') + (offset ? ' OFFSET ?' : '');
 
     const queryParams = [minrating];
 
     if (limit !== undefined) {
         queryParams.push(limit);
+    }
+
+    if (offset !== undefined) {
+        queryParams.push(offset);
     }
 
     pool.getConnection((err, connection) => {
@@ -306,6 +336,29 @@ exports.getSearchByRating = async (req, res, next) => {
             } catch (error) {
                 return res.status(500).json({ message: 'Error processing name details', error: error });
             }
+        });
+    });
+}
+
+exports.getAllGenres = async (req, res, next) => {
+    const query = `
+        SELECT DISTINCT g.genres
+        FROM genre g
+    `;
+
+    pool.getConnection((err, connection) => {
+        if (err) return res.status(500).json({ message: 'Error in connection to the database', error: err ? err : ''});
+
+        connection.query(query, async (err, rows) => {
+            connection.release();
+            if (err) return res.status(500).json({ message: 'Error in executing query', error: err ? err : ''});
+
+            if (rows.length === 0) {
+                return res.status(204).json({ message: 'No results found', error: err ? err : ''});
+            }
+            
+            const genres = rows.map(row => row.genres);
+            return res.status(200).json(genres);
         });
     });
 }
