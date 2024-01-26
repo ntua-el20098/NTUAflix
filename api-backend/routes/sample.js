@@ -34,6 +34,7 @@ router.post('/admin/resetall', adminController.resetall);
 router.post('/bygenre', titleController.getTitlesByGenre);
 router.post('/searchbyrating', titleController.getSearchByRating);
 router.post('/searchname', nameController.getSearchPersonByName);
+router.get('/getallgenres', titleController.getAllGenres);
 
 
 module.exports = router;

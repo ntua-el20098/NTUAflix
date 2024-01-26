@@ -10,12 +10,12 @@ const tsvFilter = (req, file, cb) => {
 
 var storage = multer.diskStorage({  
   destination: function (req, file, cb) {
-    console.log("Reached upload middleware from route:", req.route.path);
+    //console.log("Reached upload middleware from route:", req.route.path);
     cb(null, __dirname + '/../uploads');
   },
 
   filename: function (req, file, cb) {
-    console.log("Uploaded file name:", file.originalname);
+    //console.log("Uploaded file name:", file.originalname);
 
     // Define the output file name based on the route
     let outputFileName;

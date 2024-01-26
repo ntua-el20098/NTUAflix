@@ -4,7 +4,6 @@ import { Box, InputBase, Alert } from "@mui/material";
 import Card from "@/components/Card";
 
 interface Movie {
-  titleObject: {
     titleID: string;
     type: string;
     originalTitle: string;
@@ -12,12 +11,11 @@ interface Movie {
       avRating: number;
     };
     titlePoster: string;
-  };
-}
+};
 
 const MovieInfo: React.FC = () => {
   const [movieData, setMovieData] = useState<Movie[]>([]);
-  const [minRating, setMinRating] = useState<string>("0");
+  const [minRating, setMinRating] = useState<string>("8");
   const [inputError, setInputError] = useState<string | null>(null);
 
   const fetchData = async () => {
@@ -192,18 +190,15 @@ const MovieInfo: React.FC = () => {
         ) : (
           movieData.map(
             (item, index) =>
-              item.titleObject &&
-              item.titleObject.rating && (
+              item &&
+              item.rating && (
                 <Card
                   key={index}
-                  id={item.titleObject.titleID}
-                  type={item.titleObject.type}
-                  title={item.titleObject.originalTitle}
-                  rating={item.titleObject.rating.avRating}
-                  poster={item.titleObject.titlePoster.replace(
-                    "{width_variable}",
-                    "original"
-                  )}
+                  id={item.titleID}
+                  type={item.type}
+                  title={item.originalTitle}
+                  rating={item.rating.avRating}
+                  poster={item.titlePoster ? item.titlePoster.replace("{width_variable}", "original") : ""}
                 />
               )
           )

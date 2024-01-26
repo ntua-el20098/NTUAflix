@@ -7,12 +7,7 @@ const csv = require('csv-parser');
 const fs = require('fs');
 
 exports.getPersonDetails = async (req, res, err) => {
-    let limit = undefined;
-    if (req.query.limit) {
-        limit = Number(req.query.limit);
-        if (!Number.isInteger(limit)) return res.status(400).json({ message: 'Limit query param should be an integer' });
-    }
-
+   
     // status 400(Bad request) error handling
     if (req.params.nameID === undefined) return res.status(400).json({ message: 'nameID is required' });
     if (req.params.nameID[0] !== 'n' || req.params.nameID[1] !== 'm') {
@@ -39,13 +34,9 @@ exports.getPersonDetails = async (req, res, err) => {
         JOIN principals pr ON p.nconst = pr.nconst
         JOIN primaryprofession pp on pp.nconst = p.nconst
     WHERE
-        p.nconst = '${nameID}'` + (limit ? ' LIMIT ?' : '');
+        p.nconst = ?`;
 
-    const queryParams = [nameID];
-
-    if (limit !== undefined) {
-        queryParams.push(limit);
-    }
+    const queryParams = `${nameID}`;
 
     pool.getConnection((err, connection) => {
         if (err) return res.status(500).json({ message: 'Error in connection to the database' });
@@ -134,8 +125,7 @@ exports.getSearchPersonByName = async (req, res, err) => {
 
     if (offset !== undefined) {
         queryParams.push(offset);
-    }
-    console.log(queryParams);   
+    } 
 
     pool.getConnection((err, connection) => {
         if (err) return res.status(500).json({ message: 'Error in connection to the database' });
@@ -168,7 +158,6 @@ exports.getSearchPersonByName = async (req, res, err) => {
         });
     });
 };
-
 
 async function getPersonDetails(nconst) {
   try {
