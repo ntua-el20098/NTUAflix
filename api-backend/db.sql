@@ -30,12 +30,12 @@ SET time_zone = "+00:00";
 CREATE TABLE `akas` (
   `titleId` varchar(20) NOT NULL,
   `ordering` int(5) NOT NULL,
-  `title` varchar(255) DEFAULT NULL,
-  `region` varchar(5) DEFAULT NULL,
-  `language` varchar(5) DEFAULT NULL,
-  `types` varchar(20) DEFAULT NULL,
-  `attributes` varchar(50) DEFAULT NULL,
-  `isOriginalTitle` tinyint(1) DEFAULT NULL
+  `title` varchar(255) NOT NULL,
+  `region` varchar(5) NOT NULL,
+  `language` varchar(5) NOT NULL,
+  `types` varchar(20) NOT NULL,
+  `attributes` varchar(50) NOT NULL,
+  `isOriginalTitle` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -69,8 +69,8 @@ CREATE TABLE `crewwriters` (
 CREATE TABLE `episode` (
   `tconst` varchar(20) NOT NULL,
   `parentTconst` varchar(20) NOT NULL,
-  `seasonNumber` int(5) DEFAULT NULL,
-  `episodeNumber` int(5) DEFAULT NULL
+  `seasonNumber` int(5) NOT NULL,
+  `episodeNumber` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -103,10 +103,10 @@ CREATE TABLE `knowfortitles` (
 
 CREATE TABLE `people` (
   `nconst` varchar(20) NOT NULL,
-  `primaryName` varchar(255) DEFAULT NULL,
-  `birthYear` year(4) DEFAULT NULL,
-  `deathYear` year(4) DEFAULT NULL,
-  `img_url_asset` varchar(255) DEFAULT NULL
+  `primaryName` varchar(255) NOT NULL,
+  `birthYear` year(4) NOT NULL,
+  `deathYear` year(4) NOT NULL,
+  `img_url_asset` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -129,11 +129,11 @@ CREATE TABLE `primaryprofession` (
 CREATE TABLE `principals` (
   `nconst` varchar(20) NOT NULL,
   `tconst` varchar(20) NOT NULL,
-  `ordering` int(5) DEFAULT NULL,
-  `category` varchar(30) DEFAULT NULL,
-  `job` varchar(70) DEFAULT NULL,
-  `characters` varchar(70) DEFAULT NULL,
-  `img_url_asset` varchar(255) DEFAULT NULL
+  `ordering` int(5) NOT NULL,
+  `category` varchar(30) NOT NULL,
+  `job` varchar(70) NOT NULL,
+  `characters` varchar(70) NOT NULL,
+  `img_url_asset` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -144,8 +144,8 @@ CREATE TABLE `principals` (
 
 CREATE TABLE `rating` (
   `tconst` varchar(20) NOT NULL,
-  `averageRating` float DEFAULT NULL,
-  `numVotes` int(6) DEFAULT NULL
+  `averageRating` float NOT NULL,
+  `numVotes` int(6) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -156,14 +156,14 @@ CREATE TABLE `rating` (
 
 CREATE TABLE `title` (
   `tconst` varchar(20) NOT NULL,
-  `titleType` varchar(20) DEFAULT NULL,
-  `primaryTitle` varchar(255) DEFAULT NULL,
-  `originalTitle` varchar(255) DEFAULT NULL,
-  `isAdult` tinyint(1) DEFAULT NULL,
-  `startYear` year(4) DEFAULT NULL,
-  `endYear` year(4) DEFAULT NULL,
-  `runtimeMinutes` int(5) DEFAULT NULL,
-  `img_url_asset` varchar(255) DEFAULT NULL
+  `titleType` varchar(20) NOT NULL,
+  `primaryTitle` varchar(255) NOT NULL,
+  `originalTitle` varchar(255) NOT NULL,
+  `isAdult` tinyint(1) NOT NULL,
+  `startYear` year(4) NOT NULL,
+  `endYear` year(4) NOT NULL,
+  `runtimeMinutes` int(5) NOT NULL,
+  `img_url_asset` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
