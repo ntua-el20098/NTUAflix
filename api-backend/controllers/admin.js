@@ -1,8 +1,7 @@
 const mysql = require("mysql2");
 const { pool } = require('../utils/database');
 const { body } = require("express/lib/request");
-const { modifyTSV_Names, modifyTSV_Crew } = require('../middlewares/tsv-transformer');
-const { modifyTSV_Titles } = require('../middlewares/tsv_transformer'); 
+const { modifyTSV_Titles, modifyTSV_Names, modifyTSV_Crew, modifyTSV_Episode } = require('../middlewares/tsv-transformer');
 
 const csv = require('csv-parser');
 const fs = require('fs');
@@ -179,7 +178,7 @@ exports.upload_titlecrew = async (req, res, next) => {
 
         res.status(200).send("TSV data inserted into the database successfully.");
     } catch (error) {
-        console.error('Error uploading TSV files:', error);
+        //console.error('Error uploading TSV files:', error);
         res.status(500).send("Error uploading/parsing TSV files.");
     }
 };
@@ -187,11 +186,16 @@ exports.upload_titlecrew = async (req, res, next) => {
 //admin 6
 exports.upload_titleepisode = async (req, res, next) => {
     try {
-        console.log(req.file.path);
-        await parseAndInsertIntoDatabase(req.file.path, 'episode', ['tconst', 'parentTconst', 'seasonNumber', 'episodeNumber']);
+        //console.log(req.file.path);
+        const baseDirectory = __dirname + '/../uploads';
+        const inputFilePath = req.file.path;
+        const filePathEpisode = `${baseDirectory}/Episode.tsv`;
+        await modifyTSV_Episode(inputFilePath, filePathEpisode);
+
+        await parseAndInsertIntoDatabase(filePathEpisode, 'episode', ['tconst', 'parentTconst', 'seasonNumber', 'episodeNumber']);
         res.status(200).send("TSV data inserted into the database successfully.");
     } catch (error) {
-        console.error('Error uploading TSV files:', error);
+        //console.error('Error uploading TSV files:', error);
         res.status(500).send("Error uploading/parsing TSV files.");
     }
 };
@@ -199,11 +203,11 @@ exports.upload_titleepisode = async (req, res, next) => {
 //admin 7
 exports.upload_titleprincipals = async (req, res, next) => {
     try {
-        console.log(req.file.path);
+        //console.log(req.file.path);
         await parseAndInsertIntoDatabase(req.file.path, 'principals', ['nconst','tconst', 'ordering', 'category', 'job', 'characters','img_url_asset']);
         res.status(200).send("TSV data inserted into the database successfully.");
     } catch (error) {
-        console.error('Error uploading TSV files:', error);
+        //console.error('Error uploading TSV files:', error);
         res.status(500).send("Error uploading/parsing TSV files.");
     }
 };
@@ -211,11 +215,11 @@ exports.upload_titleprincipals = async (req, res, next) => {
 //admin 8
 exports.upload_titleratings = async (req, res, next) => {
     try {
-        console.log(req.file.path);
+        //console.log(req.file.path);
         await parseAndInsertIntoDatabase(req.file.path, 'rating', ['tconst', 'averageRating', 'numVotes']);
         res.status(200).send("TSV data inserted into the database successfully.");
     } catch (error) {
-        console.error('Error uploading TSV files:', error);
+        //console.error('Error uploading TSV files:', error);
         res.status(500).send("Error uploading/parsing TSV files.");
     }
 };
