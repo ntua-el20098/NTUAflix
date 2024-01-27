@@ -22,28 +22,36 @@ exports.getTitleDetails = async (req, res, err) => {
     const titleID = req.params.titleID;
 
     const query = `
+    
+
     SELECT
         t.tconst as titleID, 
-        t.titleType as type,
-        t.originalTitle,
-        t.img_url_asset as titlePoster,
-        t.startYear,
-        t.endYear,
-        g.genres as genreTitle,
-        a.title as akaTitle,
-        a.region as regionAbbrev,
-        p.nconst as nameID,
-        p.primaryName as name,
-        pr.category as category,
-        r.averageRating as avRating,
-        r.numVotes as nVotes
+        COALESCE(t.titleType,'') as type,
+        COALESCE(t.originalTitle, '') as originalTitle,
+        COALESCE(t.img_url_asset, '') as titlePoster,
+        CASE 
+            WHEN t.startYear = '0000' THEN ''
+            ELSE t.startYear
+        END as startYear,
+        CASE 
+            WHEN t.endYear = '0000' THEN ''
+            ELSE t.endYear
+        END as endYear,
+        COALESCE(g.genres, '') as genreTitle,
+        COALESCE(a.title, '') as akaTitle,
+        COALESCE(a.region, '') as regionAbbrev,
+        COALESCE(p.nconst, '') as nameID,
+        COALESCE(p.primaryName, '') as name,
+        COALESCE(pr.category, '') as category,
+        COALESCE(r.averageRating, '') as avRating,
+        COALESCE(r.numVotes, '') as nVotes
     FROM
         title t
-        JOIN genre g ON t.tconst = g.tconst
-        JOIN akas a ON t.tconst = a.titleId
-        JOIN principals pr ON t.tconst = pr.tconst
-        JOIN people p ON pr.nconst = p.nconst
-        JOIN rating r ON t.tconst = r.tconst
+        LEFT JOIN genre g ON t.tconst = g.tconst
+        LEFT JOIN akas a ON t.tconst = a.titleId
+        LEFT JOIN principals pr ON t.tconst = pr.tconst
+        LEFT JOIN people p ON pr.nconst = p.nconst
+        LEFT JOIN rating r ON t.tconst = r.tconst
     WHERE
         t.tconst = ?`;
 

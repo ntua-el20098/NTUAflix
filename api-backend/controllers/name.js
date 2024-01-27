@@ -46,17 +46,23 @@ exports.getPersonDetails = async (req, res, err) => {
     const query = `
     SELECT
         p.nconst as nameID, 
-        p.primaryName as name,
-        p.img_url_asset as namePoster,
-        p.birthYear as birthYr,
-        p.deathYear as deathYr,
-        pr.category as category,
-        pr.tconst as titleID,
-        pp.primaryProfession as professions
+        COALESCE(p.primaryName,'') as name,
+        COALESCE(p.img_url_asset,'') as namePoster,
+        CASE 
+            WHEN p.birthYear = '0000' THEN ''
+            ELSE p.birthYear
+        END as birthYear,
+        CASE 
+        WHEN p.deathYr = '0000' THEN ''
+        ELSE p.deathYr
+        END as deathYr,
+        COALESCE(pr.category,'') as category,
+        COALESCE(pr.tconst,'') as titleID,
+        COALESCE(pp.primaryProfession,'') as professions
     FROM
         people p
-        JOIN principals pr ON p.nconst = pr.nconst
-        JOIN primaryprofession pp on pp.nconst = p.nconst
+        LEFT JOIN principals pr ON p.nconst = pr.nconst
+        LEFT JOIN primaryprofession pp on pp.nconst = p.nconst
     WHERE
         p.nconst = ?`;
 
