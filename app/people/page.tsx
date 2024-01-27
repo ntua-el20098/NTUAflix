@@ -155,7 +155,7 @@ const PeoplePage: React.FC = () => {
     <div>
       <div
         className="input-group mb-3"
-        style={{ width: "60%", margin: "0 auto", marginTop: "40px" }}
+        style={{ width: "40%", margin: "0 auto", marginTop: "40px" }}
       >
         <span className="input-group-text">Search by name</span>
         <input
