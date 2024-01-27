@@ -22,7 +22,7 @@ exports.getPersonDetails = async (req, res, err) => {
             const csv = json2csvParser.parse(message);
             res.setHeader('Content-Type', 'text/csv');
             res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
-            return res.status(400).send(csvdata)
+            return res.status(400).send(csv)
         }
     }
     if (req.params.nameID[0] !== 'n' || req.params.nameID[1] !== 'm') {
@@ -34,7 +34,7 @@ exports.getPersonDetails = async (req, res, err) => {
             const csv = json2csvParser.parse(message);
             res.setHeader('Content-Type', 'text/csv');
             res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
-            return res.status(400).send(csvdata)
+            return res.status(400).send(csv)
         }
     }
     // if (req.params.nameID.length !== 9) {
@@ -72,7 +72,7 @@ exports.getPersonDetails = async (req, res, err) => {
                 const csv = json2csvParser.parse(message);
                 res.setHeader('Content-Type', 'text/csv');
                 res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
-                return res.status(500).send(csvdata)
+                return res.status(500).send(csv)
             }    
         }
         connection.query(query, queryParams, (err, rows) => {
@@ -87,7 +87,7 @@ exports.getPersonDetails = async (req, res, err) => {
                     const csv = json2csvParser.parse(message);
                     res.setHeader('Content-Type', 'text/csv');
                     res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
-                    return res.status(500).send(csvdata)
+                    return res.status(500).send(csv)
                 }  
             }
             //status 204(no data) error handling
@@ -100,7 +100,7 @@ exports.getPersonDetails = async (req, res, err) => {
                     const csv = json2csvParser.parse(message);
                     res.setHeader('Content-Type', 'text/csv');
                     res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
-                    return res.status(204).send(csvdata)
+                    return res.status(204).send(csv)
                 }  
             }
             try {
@@ -112,7 +112,7 @@ exports.getPersonDetails = async (req, res, err) => {
                     const csv = json2csvParser.parse(nameObject);
                     res.setHeader('Content-Type', 'text/csv');
                     res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
-                    return res.status(200).send(csvdata)
+                    return res.status(200).send(csv)
                 }
             }
             catch (error) {
@@ -124,7 +124,7 @@ exports.getPersonDetails = async (req, res, err) => {
                     const csv = json2csvParser.parse(message);
                     res.setHeader('Content-Type', 'text/csv');
                     res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
-                    return res.status(204).send(csvdata)
+                    return res.status(204).send(csv)
                 }  
             }
         });
@@ -177,7 +177,7 @@ exports.getSearchPersonByName = async (req, res, err) => {
                 const csv = json2csvParser.parse(message);
                 res.setHeader('Content-Type', 'text/csv');
                 res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
-                return res.status(400).send(csvdata)
+                return res.status(400).send(csv)
             }
         }
     }
@@ -191,7 +191,7 @@ exports.getSearchPersonByName = async (req, res, err) => {
             const csv = json2csvParser.parse(message);
             res.setHeader('Content-Type', 'text/csv');
             res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
-            return res.status(400).send(csvdata)
+            return res.status(400).send(csv)
         }
     }
     if (req.body.nqueryObject.namePart === undefined){
@@ -203,7 +203,7 @@ exports.getSearchPersonByName = async (req, res, err) => {
             const csv = json2csvParser.parse(message);
             res.setHeader('Content-Type', 'text/csv');
             res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
-            return res.status(400).send(csvdata)
+            return res.status(400).send(csv)
         }
     }     
     const namePart = req.body.nqueryObject.namePart;
@@ -244,7 +244,7 @@ exports.getSearchPersonByName = async (req, res, err) => {
                 const csv = json2csvParser.parse(message);
                 res.setHeader('Content-Type', 'text/csv');
                 res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
-                return res.status(500).send(csvdata)
+                return res.status(500).send(csv)
             }
         }    
         connection.query(query, queryParams, async (err, rows) => {
@@ -259,7 +259,7 @@ exports.getSearchPersonByName = async (req, res, err) => {
                     const csv = json2csvParser.parse(message);
                     res.setHeader('Content-Type', 'text/csv');
                     res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
-                    return res.status(500).send(csvdata)
+                    return res.status(500).send(csv)
                 }
             } 
 
@@ -274,7 +274,7 @@ exports.getSearchPersonByName = async (req, res, err) => {
                     const csv = json2csvParser.parse(message);
                     res.setHeader('Content-Type', 'text/csv');
                     res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
-                    return res.status(204).send(csvdata)
+                    return res.status(204).send(csv)
                 }
             }
             
@@ -306,7 +306,7 @@ exports.getSearchPersonByName = async (req, res, err) => {
                     const csv = json2csvParser.parse(message);
                     res.setHeader('Content-Type', 'text/csv');
                     res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
-                    return res.status(500).send(csvdata)
+                    return res.status(500).send(csv)
                 }
             }
         });
