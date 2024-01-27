@@ -22,7 +22,8 @@ const PeoplePage: React.FC = () => {
 
   useEffect(() => {
     fetchData();
-  }, [currentPage, limit, searchTerm]); // Include searchTerm in dependencies
+    window.history.pushState(null, "", `?page=${currentPage}&limit=${limit}`);
+  }, [currentPage, limit]); // Include searchTerm in dependencies
 
   const fetchData = async () => {
     try {
@@ -35,7 +36,7 @@ const PeoplePage: React.FC = () => {
           },
           body: JSON.stringify({
             nqueryObject: {
-              namePart: searchTerm, // Use the searchTerm in the body
+              namePart: searchTerm,
             },
           }),
         }
@@ -44,21 +45,39 @@ const PeoplePage: React.FC = () => {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
+      const contentType = response.headers.get("content-type");
+      const contentLength = response.headers.get("content-length");
+
+      console.log("Content-Type:", contentType);
+      console.log("Content-Length:", contentLength);
+
+      if (
+        contentType === null ||
+        contentLength === null ||
+        contentLength === "0" ||
+        !contentType.includes("application/json")
+      ) {
+        console.log("Empty response or not JSON.");
+        setActorData([]);
+        return;
+      }
 
       const data: Person[] = await response.json();
-
-      // Check if data is an array and has valid entries
-      if (Array.isArray(data) && data.length > 0) {
+      // Log the raw data to better understand the response
+      console.log("Raw Data:", data);
+      // Check if the response contains valid JSON data
+      if (Array.isArray(data)) {
         setActorData(data);
-        setError(null);
+        console.log("Parsed Data:", data);
+
+        // Check if there are more pages
+        setHasMorePages(data.length >= limit);
       } else {
-        console.log("Invalid data format or empty data:", data);
+        console.log("Invalid JSON data in response.");
         setActorData([]);
-        setError("No results found.");
       }
     } catch (error) {
       console.error("Error fetching data:", error);
-      setError("Error fetching data. Please try again later.");
     }
   };
 
@@ -146,8 +165,20 @@ const PeoplePage: React.FC = () => {
           aria-label="Name"
           aria-describedby="button-addon2"
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => {
+            setSearchTerm(e.target.value);
+          }}
         />
+        {searchTerm && ( // Display the "X" button only when searchTerm is not empty
+          <button
+            className="btn btn-outline-secondary"
+            type="button"
+            onClick={() => setSearchTerm("")} // Clear the searchTerm when clicked
+          >
+            x
+          </button>
+        )}
+
         <button
           className="btn btn-outline-secondary"
           type="button"
@@ -169,22 +200,20 @@ const PeoplePage: React.FC = () => {
         {actorData.length === 0 ? (
           <p>No results found.</p>
         ) : (
-        actorData.map((actor, index) => (
-          <Card
-            key={index}
-            name={actor.name}
-            image={
-              actor.namePoster
-                ? actor.namePoster.replace("{width_variable}", "original")
-                : fallbackPosterUrl
-            }
-            id={actor.nameID}
-            type={actor.profession ? actor.profession.split(",")[0] : ""}
-          />
-        )
-        )
+          actorData.map((actor, index) => (
+            <Card
+              key={index}
+              name={actor.name}
+              image={
+                actor.namePoster
+                  ? actor.namePoster.replace("{width_variable}", "original")
+                  : fallbackPosterUrl
+              }
+              id={actor.nameID}
+              type={actor.profession ? actor.profession.split(",")[0] : ""}
+            />
+          ))
         )}
-
       </Box>
       <nav aria-label="Page navigation example">
         <ul className="pagination justify-content-center " data-bs-theme="dark">
@@ -202,15 +231,11 @@ const PeoplePage: React.FC = () => {
               {currentPage}
             </a>
           </li>
-          <li
-            className={`page-item ${
-              actorData.length === 0 ? "disabled" : ""
-            }`}
-          >
+          <li className={`page-item ${!hasMorePages ? "disabled" : ""}`}>
             <button
               className="page-link"
               onClick={() => handlePagination(currentPage + 1)}
-              disabled={actorData.length === 0}
+              disabled={!hasMorePages}
             >
               Next
             </button>

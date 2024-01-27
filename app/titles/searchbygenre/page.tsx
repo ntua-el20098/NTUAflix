@@ -109,12 +109,6 @@ const MovieInfo: React.FC = () => {
     window.history.replaceState(null, '', `?genre=${selectedValue}`);
   };
 
-  const handleSearch = () => {
-    fetchData(); // Call the fetchData function for both cases
-    // Update URL when searching
-    window.history.replaceState(null, '', `?page=${currentPage}&limit=${limit}&genre=${selectedGenre}`);
-  };
-
   const handlePagination = (page: number) => {
     setCurrentPage(page);
     // Update URL when changing page
@@ -149,7 +143,7 @@ const MovieInfo: React.FC = () => {
               id={item.titleObject.titleID}
               type={item.titleObject.type}
               title={item.titleObject.originalTitle}
-              rating={item.titleObject.rating.avRating}
+              rating={item.titleObject.rating.avRating || "-"}
               poster={item.titleObject.titlePoster.replace('{width_variable}', 'original') || fallbackPosterUrl}
             />
           )
