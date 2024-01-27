@@ -143,7 +143,7 @@ const MovieInfo: React.FC = () => {
               id={item.titleObject.titleID}
               type={item.titleObject.type}
               title={item.titleObject.originalTitle}
-              rating={item.titleObject.rating.avRating || "-"}
+              rating={item.titleObject.rating.avRating || "N/A"}
               poster={item.titleObject.titlePoster.replace('{width_variable}', 'original') || fallbackPosterUrl}
             />
           )
