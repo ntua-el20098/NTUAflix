@@ -1,7 +1,7 @@
 "use client";  // Remove this line if not needed
 import React, { useState, useEffect, ChangeEvent } from "react";
 import { Box } from "@mui/material";
-import 'bootstrap/scss/bootstrap.scss';
+import "bootstrap/dist/css/bootstrap.min.css";
 import Card from "@/components/Card";
 
 interface Movie {
