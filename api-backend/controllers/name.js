@@ -53,9 +53,9 @@ exports.getPersonDetails = async (req, res, err) => {
             ELSE p.birthYear
         END as birthYear,
         CASE 
-        WHEN p.deathYr = '0000' THEN ''
-        ELSE p.deathYr
-        END as deathYr,
+            WHEN p.deathYear = '0000' THEN ''
+            ELSE p.deathYear
+        END as deathYear,
         COALESCE(pr.category,'') as category,
         COALESCE(pr.tconst,'') as titleID,
         COALESCE(pp.primaryProfession,'') as professions

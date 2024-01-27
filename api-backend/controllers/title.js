@@ -70,6 +70,7 @@ exports.getTitleDetails = async (req, res, err) => {
             }
             try {
                 const titleObject = processResults(rows);
+                res.setHeader('Content-Type', 'application/json');
                 return res.status(200).json({titleObject});
             }
             catch (error) {
