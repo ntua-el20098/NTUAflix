@@ -80,7 +80,7 @@ program
     .command('searchname')
     .alias('sn')
     .description('Returns the name with the specified primaryName')
-    .option('-np, --name <primaryName>', 'primaryName of the name')
+    .option('-np, --namePart <primaryName>', 'primaryName of the name')
     .action( function(options) { searchname(options) } )
 
 

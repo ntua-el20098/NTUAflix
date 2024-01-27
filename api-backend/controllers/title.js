@@ -123,6 +123,9 @@ exports.getSearchByTitle = async (req, res, err) => {
     const titlePart = req.body.tqueryObject.titlePart;
 
     let page = req.query.page;
+    const format = req.query.format
+    if(!format)
+
 
     if (!page) {
         page = 1;

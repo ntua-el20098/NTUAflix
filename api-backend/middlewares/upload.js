@@ -1,6 +1,4 @@
 const multer = require("multer");
-const { modifyTSV } = require('./tsv_transformer'); 
-const { modifyTSV_Names } = require('./tsv-transformer'); 
 
 const tsvFilter = (req, file, cb) => {
   if (file.originalname.endsWith('.tsv')) {
