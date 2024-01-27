@@ -26,6 +26,18 @@ var storage = multer.diskStorage({
     } else if (req.route.path === '/admin/upload/titleratings') {
       outputFileName = 'titleratings.tsv';
     }
+    else if (req.route.path === '/admin/upload/titleakas') {
+      outputFileName = 'titleakas.tsv';
+    }
+    else if (req.route.path === '/admin/upload/titlecrew') {
+      outputFileName = 'titlecrew.tsv';
+    }
+    else if (req.route.path === '/admin/upload/titleepisode') {
+      outputFileName = 'titleepisode.tsv';
+    }
+    else if (req.route.path === '/admin/upload/titleprincipals') {
+      outputFileName = 'titleprincipals.tsv';
+    }
     else {
       outputFileName = file.originalname;
     }
