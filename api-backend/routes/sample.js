@@ -35,6 +35,7 @@ router.post('/bygenre', titleController.getTitlesByGenre);
 router.post('/searchbyrating', titleController.getSearchByRating);
 router.post('/searchname', nameController.getSearchPersonByName);
 router.get('/getallgenres', titleController.getAllGenres);
+router.post('/searchtitle', titleController.getSearchByTitle);
 
 
 module.exports = router;

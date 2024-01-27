@@ -1,9 +1,10 @@
-"use client";
+"use client";  
 import React, { useState, useEffect, ChangeEvent } from "react";
 import { Box, InputBase, Alert } from "@mui/material";
 import Card from "@/components/Card";
 
 interface Movie {
+  titleObject: {
     titleID: string;
     type: string;
     originalTitle: string;
@@ -11,18 +12,25 @@ interface Movie {
       avRating: number;
     };
     titlePoster: string;
-};
+  };
+}
 
 const MovieInfo: React.FC = () => {
   const [movieData, setMovieData] = useState<Movie[]>([]);
-  const [minRating, setMinRating] = useState<string>("8");
+  const [minRating, setMinRating] = useState<string>("0");
   const [inputError, setInputError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [limit, setLimit] = useState<number>(24); // Default limit
+  const [hasMorePages, setHasMorePages] = useState<boolean>(true); // Track if there are more pages
+
+  const fallbackPosterUrl =
+    "https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg";
 
   const fetchData = async () => {
     try {
       const minRatingValue = minRating.toString();
       const response = await fetch(
-        "http://localhost:9876/ntuaflix_api/searchbyrating",
+        `http://localhost:9876/ntuaflix_api/searchbyrating?limit=${limit}&page=${currentPage}`,
         {
           method: "POST",
           headers: {
@@ -66,6 +74,9 @@ const MovieInfo: React.FC = () => {
       if (Array.isArray(data)) {
         setMovieData(data);
         console.log("Parsed Data:", data);
+
+        // Check if there are more pages
+        setHasMorePages(data.length >= limit);
       } else {
         console.log("Invalid JSON data in response.");
         setMovieData([]);
@@ -75,10 +86,14 @@ const MovieInfo: React.FC = () => {
     }
   };
 
+  
   useEffect(() => {
-    // Fetch data when the component mounts
+    // Fetch data when the component mounts or when the page changes
     fetchData();
-  }, []); // Empty dependency array ensures this effect runs only once on mount
+
+    // Update the URL with the current page and limit
+    window.history.pushState(null, "", `?page=${currentPage}&limit=${limit}`);
+  }, [currentPage, limit]); // Re-fetch data when the page or limit changes
 
   const handleSearch = async () => {
     // Check if minRating is a valid number
@@ -95,7 +110,7 @@ const MovieInfo: React.FC = () => {
     // Fetch data based on user's input
     try {
       const response = await fetch(
-        "http://localhost:9876/ntuaflix_api/searchbyrating",
+        `http://localhost:9876/ntuaflix_api/searchbyrating?limit=${limit}&page=1`,
         {
           method: "POST",
           headers: {
@@ -139,6 +154,15 @@ const MovieInfo: React.FC = () => {
       if (Array.isArray(data)) {
         setMovieData(data);
         console.log("Parsed Data:", data);
+
+        // Reset current page to 1 when searching
+        setCurrentPage(1);
+
+        // Update the URL with the current page and limit
+        window.history.pushState(null, "", `?page=1&limit=${limit}`);
+
+        // Check if there are more pages
+        setHasMorePages(data.length >= limit);
       } else {
         console.log("Invalid JSON data in response.");
         setMovieData([]);
@@ -146,6 +170,17 @@ const MovieInfo: React.FC = () => {
     } catch (error) {
       console.error("Error fetching data:", error);
     }
+  };
+
+  const handlePageChange = (newPage: number) => {
+    // Update the current page when the user clicks on the pagination links
+    setCurrentPage(newPage);
+
+    // Update the URL with the current page and limit
+    window.history.pushState(null, "", `?page=${newPage}&limit=${limit}`);
+
+    // Scroll to the top of the screen
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
@@ -191,14 +226,21 @@ const MovieInfo: React.FC = () => {
           movieData.map(
             (item, index) =>
               item &&
-              item.rating && (
+              item.titleObject.rating && (
                 <Card
                   key={index}
-                  id={item.titleID}
-                  type={item.type}
-                  title={item.originalTitle}
-                  rating={item.rating.avRating}
-                  poster={item.titlePoster ? item.titlePoster.replace("{width_variable}", "original") : ""}
+                  id={item.titleObject.titleID}
+                  type={item.titleObject.type}
+                  title={item.titleObject.originalTitle}
+                  rating={item.titleObject.rating.avRating}
+                  poster={
+                    item.titleObject.titlePoster
+                      ? item.titleObject.titlePoster.replace(
+                          "{width_variable}",
+                          "original"
+                        )
+                      : fallbackPosterUrl
+                  }
                 />
               )
           )
@@ -207,33 +249,27 @@ const MovieInfo: React.FC = () => {
 
       <nav aria-label="Page navigation example">
         <ul className="pagination justify-content-center " data-bs-theme="dark">
-          <li className="page-item disabled">
-            <a className="page-link">Previous</a>
+          <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
+            <button
+              className="page-link"
+              onClick={() => handlePageChange(currentPage - 1)}
+            >
+              Previous
+            </button>
           </li>
           <li className="page-item">
             <a className="page-link" href="#">
-              1
+              {currentPage}
             </a>
           </li>
-          <li className="page-item">
-            <a className="page-link" href="#">
-              2
-            </a>
-          </li>
-          <li className="page-item">
-            <a className="page-link" href="#">
-              3
-            </a>
-          </li>
-          <li className="page-item">
-            <a className="page-link" href="#">
-              4
-            </a>
-          </li>
-          <li className="page-item">
-            <a className="page-link" href="#">
+          <li className={`page-item ${!hasMorePages ? "disabled" : ""}`}>
+            <button
+              className="page-link"
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={!hasMorePages}
+            >
               Next
-            </a>
+            </button>
           </li>
         </ul>
       </nav>
@@ -242,3 +278,4 @@ const MovieInfo: React.FC = () => {
 };
 
 export default MovieInfo;
+
