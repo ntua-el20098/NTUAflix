@@ -1,4 +1,4 @@
-import 'bootstrap/scss/bootstrap.scss';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Card = ({ poster, title, id, type, rating}) => {
     return (

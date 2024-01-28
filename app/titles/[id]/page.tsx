@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import PeopleCard from "@/components/PeopleCard";
-import "bootstrap/scss/bootstrap.scss";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 interface Genre {
   genreTitle: string;
