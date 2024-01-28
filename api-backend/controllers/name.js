@@ -13,8 +13,8 @@ exports.getPersonDetails = async (req, res, err) => {
     let format = req.query.format || 'json';
     
     // status 400(Bad request) error handling
-    if (req.params.nameID === undefined){
-        const message = { message: 'nameID is required' };
+    if (!req.params.nameID){
+        const message = { message: 'nameID is required', error: err ? err : '' };
         if(format === 'json') 
             return res.status(400).json(message);
         else{
@@ -22,11 +22,11 @@ exports.getPersonDetails = async (req, res, err) => {
             const csv = json2csvParser.parse(message);
             res.setHeader('Content-Type', 'text/csv');
             res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
-            return res.status(400).send(csv)
+            return res.status(400).send(csv);
         }
     }
     if (req.params.nameID[0] !== 'n' || req.params.nameID[1] !== 'm') {
-        const message = { message: 'Invalid nameID parameter! namedID should start with nm', error: err ? err : ''};
+        const message = { message: 'Invalid nameID parameter! namedID should start with nm', error: err ? err : '' };
         if(format === 'json') 
             return res.status(400).json(message);
         else{
@@ -37,13 +37,11 @@ exports.getPersonDetails = async (req, res, err) => {
             return res.status(400).send(csv)
         }
     }
-    // if (req.params.nameID.length !== 9) {
-    //     return res.status(400).json({ message: 'Invalid nameID parameter! namedID should have 9 characters', error: err? err : ''});
-    // }
+
     const nameID = req.params.nameID;
     
-    
     const query = `
+
     SELECT
         p.nconst as nameID, 
         COALESCE(p.primaryName,'') as name,
@@ -69,8 +67,8 @@ exports.getPersonDetails = async (req, res, err) => {
     const queryParams = `${nameID}`;
 
     pool.getConnection((err, connection) => {
-        if (err){
-            const message = { message: 'Error in connection to the database' };
+        if (err) {
+            const message = { message: 'Error in connection to the database', error: err ? err : '' };
             if(format === 'json') 
                 return res.status(500).json(message);
             else{

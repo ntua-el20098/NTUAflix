@@ -8,22 +8,39 @@ const fs = require('fs');
 const { unique } = require("next/dist/build/utils");
 
 exports.getTitleDetails = async (req, res, err) => {
+
+    let format = req.query.format || 'json';
+
     //status 400 (bad request) error handling
     if (!req.params.titleID) {
-        return res.status(400).json({ message: 'Missing titleID parameter', error: err ? err : ''});
+        const message = { message: 'Missing titleID parameter', error: err ? err : ''};
+        if(format === 'json') 
+            return res.status(400).json(message);
+        else{
+            const json2csvParser = new Parser();
+            const csv = json2csvParser.parse(message);
+            res.setHeader('Content-Type', 'text/csv');
+            res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+            return res.status(400).send(csv);
+        }
     }
     if (req.params.titleID[0] !== 't' || req.params.titleID[1] !== 't') {
-        return res.status(400).json({ message: 'Invalid titleID parameter! titleID should start with tt', error: err ? err : ''});
+        const message = { message: 'Invalid titleID parameter! titleID should start with tt', error: err ? err : ''};
+        if(format === 'json') 
+            return res.status(400).json(message);
+        else{
+            const json2csvParser = new Parser();
+            const csv = json2csvParser.parse(message);
+            res.setHeader('Content-Type', 'text/csv');
+            res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+            return res.status(400).send(csv);
+        }        
     }
-    // if (req.params.titleID.length !== 9) {
-    //     return res.status(400).json({ message: 'Invalid titleID parameter! titleID should have 9 characters', error: err? err : ''});
-    // }
 
     const titleID = req.params.titleID;
 
     const query = `
     
-
     SELECT
         t.tconst as titleID, 
         COALESCE(t.titleType,'') as type,
@@ -58,25 +75,70 @@ exports.getTitleDetails = async (req, res, err) => {
     const queryParams = `${titleID}`;
 
     pool.getConnection((err, connection) => {
-        if (err) return res.status(500).json({ message: 'Error in connection to the database', error: err ? err : '' });
+        if (err) {
+            const message = { message: 'Error in connection to the database', error: err ? err : ''};
+            if(format === 'json') 
+                return res.status(500).json(message);
+            else{
+                const json2csvParser = new Parser();
+                const csv = json2csvParser.parse(message);
+                res.setHeader('Content-Type', 'text/csv');
+                res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+                return res.status(500).send(csv);
+            }
+        }
 
         connection.query(query, queryParams, (err, rows) => {
             connection.release();
 
-            if (err) return res.status(500).json({ message: 'Error in executing the query', error: err ? err : '' });
+            if (err) {
+                const message = { message: 'Error in executing the query', error: err ? err : ''};
+                if(format === 'json') 
+                    return res.status(500).json(message);
+                else{
+                    const json2csvParser = new Parser();
+                    const csv = json2csvParser.parse(message);
+                    res.setHeader('Content-Type', 'text/csv');
+                    res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+                    return res.status(500).send(csv);
+                }
+            }
             if (rows.length === 0) {
-                // Return a 204 No Content status if there are no results
-                return res.status(204).json({ message: 'No results found', error: err ? err : '' });
+                const message = { message: 'No results found', error: err ? err : ''};
+                if(format === 'json') 
+                    return res.status(204).json(message);
+                else{
+                    const json2csvParser = new Parser();
+                    const csv = json2csvParser.parse(message);
+                    res.setHeader('Content-Type', 'text/csv');
+                    res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+                    return res.status(204).send(csv);
+                }
             }
             try {
                 const titleObject = processResults(rows);
-                res.setHeader('Content-Type', 'application/json');
-                return res.status(200).json({titleObject});
+                if(format === 'json') 
+                    return res.status(200).json(titleObject);
+                else{
+                    const json2csvParser = new Parser();
+                    const csv = json2csvParser.parse(titleObject);
+                    res.setHeader('Content-Type', 'text/csv');
+                    res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+                    return res.status(200).send(csv);
+                }  
             }
             catch (error) {
-                return res.status(500).json({ message: 'Error processing title details', error: error});
+                const message = { message: 'Error processing title details', error: error};
+                if(format === 'json') 
+                    return res.status(500).json(message);
+                else{
+                    const json2csvParser = new Parser();
+                    const csv = json2csvParser.parse(message);
+                    res.setHeader('Content-Type', 'text/csv');
+                    res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+                    return res.status(500).send(csv);
+                }
             }
-
         });
     });
 };
@@ -119,22 +181,40 @@ function processResults(results) {
 exports.getSearchByTitle = async (req, res, err) => {
     let limit = undefined;
     let offset = undefined;
+    let format = req.query.format || 'json';
 
     if (req.query.limit) {
         limit = Number(req.query.limit);
-        if (!Number.isInteger(limit)) return res.status(400).json({ message: 'Limit query param should be an integer', error: (err ? err : '')});
+        if (!Number.isInteger(limit)) {
+            const message = { message: 'Limit query param should be an integer', error: (err ? err : '')};
+            if(format === 'json') 
+                return res.status(400).json(message);
+            else{
+                const json2csvParser = new Parser();
+                const csv = json2csvParser.parse(message);
+                res.setHeader('Content-Type', 'text/csv');
+                res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+                return res.status(400).send(csv);
+            }
+        }
     }
     //status 400(Bad Request)  error handling
     if (req.body.tqueryObject.titlePart === undefined) {
-        return res.status(400).json({ message: 'Missing titlePart parameter', error: err ? err : ''});
+        const message = { message: 'Missing titlePart parameter', error: err ? err : ''};
+        if(format === 'json') 
+            return res.status(400).json(message);
+        else{
+            const json2csvParser = new Parser();
+            const csv = json2csvParser.parse(message);
+            res.setHeader('Content-Type', 'text/csv');
+            res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+            return res.status(400).send(csv);
+        }
     }
 
     const titlePart = req.body.tqueryObject.titlePart;
 
     let page = req.query.page;
-    const format = req.query.format
-    if(!format)
-
 
     if (!page) {
         page = 1;
@@ -158,16 +238,46 @@ exports.getSearchByTitle = async (req, res, err) => {
     }
 
     pool.getConnection((err, connection) => {
-        if (err) return res.status(500).json({ message: 'Error in connection to the database', error: err ? err : ''});
+        if (err) {
+            const message = { message: 'Error in connection to the database', error: err ? err : ''};
+            if(format === 'json') 
+                return res.status(500).json(message);
+            else{
+                const json2csvParser = new Parser();
+                const csv = json2csvParser.parse(message);
+                res.setHeader('Content-Type', 'text/csv');
+                res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+                return res.status(500).send(csv);
+            }
+        }
         
         connection.query(query, queryParams, async (err, rows) => {
             connection.release();
 
-            if (err) return res.status(500).json({ message: 'Error in executing the query', error: err ? err : ''});
+            if (err) {
+                const message = { message: 'Error in executing query', error: err ? err : ''};
+                if(format === 'json') 
+                    return res.status(500).json(message);
+                else{
+                    const json2csvParser = new Parser();
+                    const csv = json2csvParser.parse(message);
+                    res.setHeader('Content-Type', 'text/csv');
+                    res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+                    return res.status(500).send(csv);
+                }
+            }
 
             if (rows.length === 0) {
-                // Return a 204 No Content status if there are no results
-                return res.status(204).json({ message: 'No results found', error: err ? err : ''});
+                const message = { message: 'No results found', error: err ? err : ''};
+                if(format === 'json') 
+                    return res.status(204).json(message);
+                else{
+                    const json2csvParser = new Parser();
+                    const csv = json2csvParser.parse(message);
+                    res.setHeader('Content-Type', 'text/csv');
+                    res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+                    return res.status(204).send(csv);
+                }
             }
 
             const tconsts = rows.map(row => row.tconst);
@@ -177,9 +287,26 @@ exports.getSearchByTitle = async (req, res, err) => {
                     const titleDetails = await getTitleDetails(n);
                     titleObjects.push(titleDetails);
                 }
-                return res.status(200).json(titleObjects);
+                if(format === 'json') 
+                    return res.status(200).json(titleObjects);
+                else{
+                    const json2csvParser = new Parser();
+                    const csv = json2csvParser.parse(titleObjects);
+                    res.setHeader('Content-Type', 'text/csv');
+                    res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+                    return res.status(200).send(csv);
+                }
             } catch (error) {
-                return res.status(500).json({ message: 'Error processing name details', error: error });
+                const message = { message: 'Error processing title details', error: error};
+                if(format === 'json') 
+                    return res.status(500).json(message);
+                else{
+                    const json2csvParser = new Parser();
+                    const csv = json2csvParser.parse(message);
+                    res.setHeader('Content-Type', 'text/csv');
+                    res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+                    return res.status(500).send(csv);
+                }
             }
         });
     });
@@ -188,16 +315,37 @@ exports.getSearchByTitle = async (req, res, err) => {
 exports.getTitlesByGenre = async (req, res, next) => {
     let limit = undefined;
     let offset = undefined;
+    let format = req.query.format || 'json';
 
     if (req.query.limit) {
         limit = Number(req.query.limit);
-        if (!Number.isInteger(limit)) return res.status(400).json({ message: 'Limit query param should be an integer', error: (err ? err : '')});
+        if (!Number.isInteger(limit)) {
+            const message = { message: 'Limit query param should be an integer', error: (err ? err : '')};
+            if(format === 'json') 
+                return res.status(400).json(message);
+            else{
+                const json2csvParser = new Parser();
+                const csv = json2csvParser.parse(message);
+                res.setHeader('Content-Type', 'text/csv');
+                res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+                return res.status(400).send(csv);
+            }
+        }
     }
 
     const { qgenre, minrating, yrFrom, yrTo } = req.body.gqueryObject;
 
     if (!qgenre || !minrating) {
-        return res.status(400).json({ message: 'Invalid or missing input parameters', error: err ? err : ''});
+        const message = { message: 'Missing genre or minrating object request param', error: err ? err : ''};
+        if(format === 'json') 
+            return res.status(400).json(message);
+        else{
+            const json2csvParser = new Parser();
+            const csv = json2csvParser.parse(message);
+            res.setHeader('Content-Type', 'text/csv');
+            res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+            return res.status(400).send(csv);
+        }
     }
 
     const attributes = [qgenre, minrating, yrFrom, yrTo].flat().filter(attr => attr !== undefined);
@@ -208,7 +356,16 @@ exports.getTitlesByGenre = async (req, res, next) => {
         (attributes.length === 3 && uniqueAttributes.length > 3) ||
         (attributes.length === 4 && uniqueAttributes.length > 3 && yrFrom === yrTo)
     ) {
-        return res.status(400).json({ message: 'Duplicate parameters detected', error: err ? err : ''});
+        const message = { message: 'Duplicate attributes found in the request', error: err ? err : ''};
+        if(format === 'json') 
+            return res.status(400).json(message);
+        else{
+            const json2csvParser = new Parser();
+            const csv = json2csvParser.parse(message);
+            res.setHeader('Content-Type', 'text/csv');
+            res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+            return res.status(400).send(csv);
+        }
     }
 
     let page = req.query.page;
@@ -248,14 +405,45 @@ exports.getTitlesByGenre = async (req, res, next) => {
     }
     
     pool.getConnection((err, connection) => {
-        if (err) return res.status(500).json({ message: 'Error in connection to the database', error: err ? err : ''});
+        if (err) {
+            const message = { message: 'Error in connection to the database', error: err ? err : ''};
+            if(format === 'json') 
+                return res.status(500).json(message);
+            else{
+                const json2csvParser = new Parser();
+                const csv = json2csvParser.parse(message);
+                res.setHeader('Content-Type', 'text/csv');
+                res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+                return res.status(500).send(csv);
+            }
+        }
 
         connection.query(query, queryParams, async (err, rows) => {
             connection.release();
-            if (err) return res.status(500).json({ message: 'Error in executing query', error: err ? err : ''});
+            if (err) {
+                const message = { message: 'Error in executing query', error: err ? err : ''};
+                if(format === 'json') 
+                    return res.status(500).json(message);
+                else{
+                    const json2csvParser = new Parser();
+                    const csv = json2csvParser.parse(message);
+                    res.setHeader('Content-Type', 'text/csv');
+                    res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+                    return res.status(500).send(csv);
+                }
+            }
 
             if (rows.length === 0) {
-                return res.status(204).json({ message: 'No results found', error: err ? err : ''});
+                const message = { message: 'No results found', error: err ? err : ''};
+                if(format === 'json') 
+                    return res.status(204).json(message);
+                else{
+                    const json2csvParser = new Parser();
+                    const csv = json2csvParser.parse(message);
+                    res.setHeader('Content-Type', 'text/csv');
+                    res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+                    return res.status(204).send(csv);
+                }
             }
 
             const tconsts = rows.map(row => row.tconst);
@@ -266,9 +454,26 @@ exports.getTitlesByGenre = async (req, res, next) => {
                     const titleDetails = await getTitleDetails(n);
                     titleObjects.push(titleDetails);
                 }
-                return res.status(200).json(titleObjects);
+                if(format === 'json') 
+                    return res.status(200).json(titleObjects);
+                else{
+                    const json2csvParser = new Parser();
+                    const csv = json2csvParser.parse(titleObjects);
+                    res.setHeader('Content-Type', 'text/csv');
+                    res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+                    return res.status(200).send(csv);
+                }
             } catch (error) {
-                return res.status(500).json({ message: 'Error processing name details', error: error });
+                const message = { message: 'Error processing title details', error: error};
+                if(format === 'json') 
+                    return res.status(500).json(message);
+                else{
+                    const json2csvParser = new Parser();
+                    const csv = json2csvParser.parse(message);
+                    res.setHeader('Content-Type', 'text/csv');
+                    res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+                    return res.status(500).send(csv);
+                }
             }
         });
     });
@@ -288,15 +493,37 @@ async function getTitleDetails(tconst) {
 exports.getSearchByRating = async (req, res, next) => {
     let limit = undefined;
     let offset = undefined;
+    let format = req.query.format || 'json';
+
     if (req.query.limit) {
         limit = Number(req.query.limit);
-        if (!Number.isInteger(limit)) return res.status(400).json({ message: 'Limit query param should be an integer', error: (err ? err : '')});
+        if (!Number.isInteger(limit)) {
+            const message = { message: 'Limit query param should be an integer', error: (err ? err : '')};
+            if(format === 'json') 
+                return res.status(400).json(message);
+            else{
+                const json2csvParser = new Parser();
+                const csv = json2csvParser.parse(message);
+                res.setHeader('Content-Type', 'text/csv');
+                res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+                return res.status(400).send(csv);
+            }
+        }
     }
 
     const { minrating } = req.body.gqueryObject;
 
     if (!minrating) {
-        return res.status(400).json({ message: 'Minrating object request param should be an integer', error: (err ? err : '')});
+        const message = { message: 'Missing minrating object request param', error: err ? err : ''};
+        if(format === 'json') 
+            return res.status(400).json(message);
+        else{
+            const json2csvParser = new Parser();
+            const csv = json2csvParser.parse(message);
+            res.setHeader('Content-Type', 'text/csv');
+            res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+            return res.status(400).send(csv);
+        }
     }
 
     let page = req.query.page;
@@ -304,9 +531,7 @@ exports.getSearchByRating = async (req, res, next) => {
     if (!page) {
         page = 1;
     }
-
     offset = (page - 1) * limit;
-
 
     const query = `
         SELECT t.tconst
@@ -326,14 +551,45 @@ exports.getSearchByRating = async (req, res, next) => {
     }
 
     pool.getConnection((err, connection) => {
-        if (err) return res.status(500).json({ message: 'Error in connection to the database', error: err ? err : ''});
+        if (err) {
+            const message = { message: 'Error in connection to the database', error: err ? err : ''};
+            if(format === 'json') 
+                return res.status(500).json(message);
+            else{
+                const json2csvParser = new Parser();
+                const csv = json2csvParser.parse(message);
+                res.setHeader('Content-Type', 'text/csv');
+                res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+                return res.status(500).send(csv);
+            }
+        }
 
         connection.query(query, queryParams, async (err, rows) => {
             connection.release();
-            if (err) return res.status(500).json({ message: 'Error in executing query', error: err ? err : ''});
+            if (err) {
+                const message = { message: 'Error in executing query', error: err ? err : ''};
+                if(format === 'json') 
+                    return res.status(500).json(message);
+                else{
+                    const json2csvParser = new Parser();
+                    const csv = json2csvParser.parse(message);
+                    res.setHeader('Content-Type', 'text/csv');
+                    res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+                    return res.status(500).send(csv);
+                }
+            }
 
             if (rows.length === 0) {
-                return res.status(204).json({ message: 'No results found', error: err ? err : ''});
+                const message = { message: 'No results found', error: err ? err : ''};
+                if(format === 'json') 
+                    return res.status(204).json(message);
+                else{
+                    const json2csvParser = new Parser();
+                    const csv = json2csvParser.parse(message);
+                    res.setHeader('Content-Type', 'text/csv');
+                    res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+                    return res.status(204).send(csv);
+                }
             }
             
             const tconsts = rows.map(row => row.tconst);
@@ -344,33 +600,91 @@ exports.getSearchByRating = async (req, res, next) => {
                     const titleDetails = await getTitleDetails(n);
                     titleObjects.push(titleDetails);
                 }
-                return res.status(200).json(titleObjects);
+                if(format === 'json') 
+                    return res.status(200).json(titleObjects);
+                else{
+                    const json2csvParser = new Parser();
+                    const csv = json2csvParser.parse(titleObjects);
+                    res.setHeader('Content-Type', 'text/csv');
+                    res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+                    return res.status(200).send(csv);
+                }
             } catch (error) {
-                return res.status(500).json({ message: 'Error processing name details', error: error });
+                const message = { message: 'Error processing title details', error: error};
+                if(format === 'json') 
+                    return res.status(500).json(message);
+                else{
+                    const json2csvParser = new Parser();
+                    const csv = json2csvParser.parse(message);
+                    res.setHeader('Content-Type', 'text/csv');
+                    res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+                    return res.status(500).send(csv);
+                }
             }
         });
     });
 }
 
 exports.getAllGenres = async (req, res, next) => {
+    let format = req.query.format || 'json';
+
     const query = `
         SELECT DISTINCT g.genres
         FROM genre g
     `;
 
     pool.getConnection((err, connection) => {
-        if (err) return res.status(500).json({ message: 'Error in connection to the database', error: err ? err : ''});
+        if (err) {
+            const message = { message: 'Error in connection to the database', error: err ? err : ''};
+            if(format === 'json') 
+                return res.status(500).json(message);
+            else{
+                const json2csvParser = new Parser();
+                const csv = json2csvParser.parse(message);
+                res.setHeader('Content-Type', 'text/csv');
+                res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+                return res.status(500).send(csv);
+            }
+        }
 
         connection.query(query, async (err, rows) => {
             connection.release();
-            if (err) return res.status(500).json({ message: 'Error in executing query', error: err ? err : ''});
+            if (err) {
+                const message = { message: 'Error in executing query', error: err ? err : ''};
+                if(format === 'json') 
+                    return res.status(500).json(message);
+                else{
+                    const json2csvParser = new Parser();
+                    const csv = json2csvParser.parse(message);
+                    res.setHeader('Content-Type', 'text/csv');
+                    res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+                    return res.status(500).send(csv);
+                }
+            }
 
             if (rows.length === 0) {
-                return res.status(204).json({ message: 'No results found', error: err ? err : ''});
+                const message = { message: 'No results found', error: err ? err : ''};
+                if(format === 'json') 
+                    return res.status(204).json(message);
+                else{
+                    const json2csvParser = new Parser();
+                    const csv = json2csvParser.parse(message);
+                    res.setHeader('Content-Type', 'text/csv');
+                    res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+                    return res.status(204).send(csv);
+                }
             }
             
             const genres = rows.map(row => row.genres);
-            return res.status(200).json(genres);
+            if(format === 'json') 
+                return res.status(200).json(genres);
+            else{
+                const json2csvParser = new Parser();
+                const csv = json2csvParser.parse(genres);
+                res.setHeader('Content-Type', 'text/csv');
+                res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+                return res.status(200).send(csv);
+            }
         });
     });
 }
