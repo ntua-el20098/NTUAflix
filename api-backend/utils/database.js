@@ -6,7 +6,7 @@ const pool = mysql.createPool({
     port: 3306,
     user: "root",
     password: "",
-    database: "tl",
+    database: "Ntuaflix",
 });
 
 module.exports = { pool };
