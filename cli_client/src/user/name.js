@@ -4,6 +4,7 @@ const errorHandler = require('../../lib/errorHandler');
 
 module.exports = function name(options) {
     const nameID = options.nameID
+    const format = options.format
     const url = constructURL('/name/', nameID)
     const config = {
         method: 'GET',

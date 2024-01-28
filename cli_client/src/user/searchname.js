@@ -10,7 +10,9 @@ module.exports = function title(options) {
         }
     };
 
-    const url = constructURL('/searchname' )
+    const format = options.format;
+
+    const url = constructURL('/searchname');
     const config = {
         method: 'GET',
         url: url,
