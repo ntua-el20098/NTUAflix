@@ -2,6 +2,7 @@ const mysql = require("mysql2");
 const { pool } = require('../utils/database');
 const { body } = require("express/lib/request");
 const { modifyTSV_Titles, modifyTSV_Names, modifyTSV_Crew, modifyTSV_Episode } = require('../middlewares/tsv-transformer');
+const { Parser } = require('json2csv');
 
 const csv = require('csv-parser');
 const fs = require('fs');
@@ -15,10 +16,7 @@ exports.healthcheck = async (req, res, next) => {
 
     try {
       const [rows, fields] = await pool.promise().query('SELECT 1');
-      const message = {
-        status: 'OK',
-        dataconnection: ['connection string'],
-      };
+      const message = { status: 'OK', dataconnection: ['connection string'] };
 
       if (format == 'json') {
         res.json(message);
