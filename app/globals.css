@@ -58,7 +58,29 @@
   transform: scale(1.05);
 }
 
+.container {
+  margin: 20px auto 80px;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: row;
+  gap: 60px;
+}
 
+.pre-cast-card-container {
+  
+  overflow-x: visible;
+  overflow-y: hidden;
+  white-space: nowrap;
+}
+
+.cast-card-container {
+  margin: 20px 20px  ;
+  flex-direction: row;
+  gap: 20px;
+  overflow-x: visible;
+  overflow-y: visible;
+  white-space: nowrap;
+}
 
 @layer utilities {
   .text-balance {
