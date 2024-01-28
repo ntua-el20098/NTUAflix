@@ -11,7 +11,7 @@ const { exec } = require("child_process");
           'se2326 newcrew --filename "truncated_data/truncated_title.crew.tsv"',
           'se2326 newepisode --filename "truncated_data/truncated_title.episode.tsv"',
           'se2326 newprincipals --filename "truncated_data/truncated_title.principals.tsv"',
-          'se2326 newakas --filename "truncated_data/truncated_title.akas.tsv"',
+          'se2326 newakas --filename "truncated_data/truncated_title.akas.tsv"'
         ];
 
         // Execute each command independently
