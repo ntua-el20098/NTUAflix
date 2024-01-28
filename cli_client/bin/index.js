@@ -73,6 +73,7 @@ program
     .alias('n')
     .description('Returns the name with the specified nconst')
     .option('-nid, --nameID <nconst>', 'nconst of the name')
+    .option('-f, --format <string>', 'format of the response')
     .action( function(options) { name(options) } )
 
 // search name
@@ -81,6 +82,7 @@ program
     .alias('sn')
     .description('Returns the name with the specified primaryName')
     .option('-np, --namePart <primaryName>', 'primaryName of the name')
+    .option('-f, --format <string>', 'format of the response')
     .action( function(options) { searchname(options) } )
 
 

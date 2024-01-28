@@ -28,7 +28,7 @@ module.exports = function (scope, param1, param2) {
         // create url for searchtitle
     }
     else if(scope === '/searchname'){
-        // create url for searchname 
+
     }
     else if(scope === '/bygenre'){
         // create url for bygenre 
