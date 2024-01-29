@@ -9,8 +9,12 @@ const fs = require('fs');
 const e = require("cors");
 
 exports.getPersonDetails = async (req, res, err) => {
-   
     let format = req.query.format || 'json';
+
+    if(!(format === 'json' || format === 'csv')) {
+        const message = { message: 'Invalid format parameter! format should be json or csv', error: err ? err : '' };
+        return res.status(400).send(message);
+    }
     
     // status 400(Bad request) error handling
     if (!req.params.nameID){
@@ -166,8 +170,12 @@ function processPersonResults(results) {
 exports.getSearchPersonByName = async (req, res, err) => {
     let limit = undefined;
     let offset = undefined;
-
     let format = req.query.format || 'json';
+
+    if(!(format === 'json' || format === 'csv')) {
+        const message = { message: 'Invalid format parameter! format should be json or csv', error: err ? err : '' };
+        return res.status(400).send(message);
+    }
 
 
     if (req.query.limit) {
