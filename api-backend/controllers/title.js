@@ -9,7 +9,7 @@ const fs = require('fs');
 const { unique } = require("next/dist/build/utils");
 
 exports.getTitleDetails = async (req, res, err) => {
-    let format = req.query.format;
+    let format = req.query.format || 'json';
 
     if(!(format === 'json' || format === 'csv')) {
         const message = { message: 'Invalid format parameter! format should be json or csv', error: err ? err : '' };
@@ -186,7 +186,7 @@ function processResults(results) {
 exports.getSearchByTitle = async (req, res, err) => {
     let limit = undefined;
     let offset = undefined;
-    let format = req.query.format;
+    let format = req.query.format || 'json';
 
     if(!(format === 'json' || format === 'csv')) {
         const message = { message: 'Invalid format parameter! format should be json or csv', error: err ? err : '' };
@@ -325,7 +325,7 @@ exports.getSearchByTitle = async (req, res, err) => {
 exports.getTitlesByGenre = async (req, res, next) => {
     let limit = undefined;
     let offset = undefined;
-    let format = req.query.format;
+    let format = req.query.format || 'json';
     
     if(!(format === 'json' || format === 'csv')) {
         const message = { message: 'Invalid format parameter! format should be json or csv', error: err ? err : '' };
@@ -508,7 +508,7 @@ async function getTitleDetails(tconst) {
 exports.getSearchByRating = async (req, res, next) => {
     let limit = undefined;
     let offset = undefined;
-    let format = req.query.format;
+    let format = req.query.format || 'json';
     
     if(!(format === 'json' || format === 'csv')) {
         const message = { message: 'Invalid format parameter! format should be json or csv', error: err ? err : '' };
@@ -646,7 +646,7 @@ exports.getSearchByRating = async (req, res, next) => {
 }
 
 exports.getAllGenres = async (req, res, next) => {
-    let format = req.query.format;
+    let format = req.query.format || 'json';
     
     if(!(format === 'json' || format === 'csv')) {
         const message = { message: 'Invalid format parameter! format should be json or csv', error: err ? err : '' };
