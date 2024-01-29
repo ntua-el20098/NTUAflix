@@ -8,8 +8,12 @@ const fs = require('fs');
 const { unique } = require("next/dist/build/utils");
 
 exports.getTitleDetails = async (req, res, err) => {
+    let format = req.query.format;
 
-    let format = req.query.format || 'json';
+    if(!(format === 'json' || format === 'csv')) {
+        const message = { message: 'Invalid format parameter! format should be json or csv', error: err ? err : '' };
+        return res.status(400).send(message);
+    }
 
     //status 400 (bad request) error handling
     if (!req.params.titleID) {
@@ -181,7 +185,12 @@ function processResults(results) {
 exports.getSearchByTitle = async (req, res, err) => {
     let limit = undefined;
     let offset = undefined;
-    let format = req.query.format || 'json';
+    let format = req.query.format;
+
+    if(!(format === 'json' || format === 'csv')) {
+        const message = { message: 'Invalid format parameter! format should be json or csv', error: err ? err : '' };
+        return res.status(400).send(message);
+    }
 
     if (req.query.limit) {
         limit = Number(req.query.limit);
@@ -315,7 +324,12 @@ exports.getSearchByTitle = async (req, res, err) => {
 exports.getTitlesByGenre = async (req, res, next) => {
     let limit = undefined;
     let offset = undefined;
-    let format = req.query.format || 'json';
+    let format = req.query.format;
+    
+    if(!(format === 'json' || format === 'csv')) {
+        const message = { message: 'Invalid format parameter! format should be json or csv', error: err ? err : '' };
+        return res.status(400).send(message);
+    }
 
     if (req.query.limit) {
         limit = Number(req.query.limit);
@@ -493,7 +507,12 @@ async function getTitleDetails(tconst) {
 exports.getSearchByRating = async (req, res, next) => {
     let limit = undefined;
     let offset = undefined;
-    let format = req.query.format || 'json';
+    let format = req.query.format;
+    
+    if(!(format === 'json' || format === 'csv')) {
+        const message = { message: 'Invalid format parameter! format should be json or csv', error: err ? err : '' };
+        return res.status(400).send(message);
+    }
 
     if (req.query.limit) {
         limit = Number(req.query.limit);
@@ -626,7 +645,12 @@ exports.getSearchByRating = async (req, res, next) => {
 }
 
 exports.getAllGenres = async (req, res, next) => {
-    let format = req.query.format || 'json';
+    let format = req.query.format;
+    
+    if(!(format === 'json' || format === 'csv')) {
+        const message = { message: 'Invalid format parameter! format should be json or csv', error: err ? err : '' };
+        return res.status(400).send(message);
+    }
 
     const query = `
         SELECT DISTINCT g.genres

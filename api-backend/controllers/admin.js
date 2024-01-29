@@ -12,7 +12,12 @@ const e = require("express");
 
 //admin 1
 exports.healthcheck = async (req, res, next) => {
-  let format = req.query.format || 'json';
+  let format = req.query.format;
+  
+  if(!(format === 'json' || format === 'csv')) {
+    const message = { message: 'Invalid format parameter! format should be json or csv', error: err ? err : '' };
+    return res.status(400).send(message);
+  }
 
     try {
       const [rows, fields] = await pool.promise().query('SELECT 1');
@@ -51,7 +56,12 @@ exports.healthcheck = async (req, res, next) => {
 
 //admin 9
 exports.resetall = async (req, res, next) => {
-  let format = req.query.format || 'json';
+  let format = req.query.format;
+
+  if(!(format === 'json' || format === 'csv')) {
+    const message = { message: 'Invalid format parameter! format should be json or csv', error: err ? err : '' };
+    return res.status(400).send(message);
+  }
 
   try {
     const [rows1, fields1] = await pool.promise().query('DELETE FROM genre');
@@ -161,7 +171,12 @@ function parseAndInsertIntoDatabase(filePath, tableName, columnMappings) {
 
 //admin 2
 exports.upload_titlebasics = async (req, res, next) => {
-  let format = req.query.format || 'json';
+  let format = req.query.format;
+
+  if(!(format === 'json' || format === 'csv')) {
+    const message = { message: 'Invalid format parameter! format should be json or csv', error: err ? err : '' };
+    return res.status(400).send(message);
+  }
 
     try {
       const baseDirectory = __dirname + '/../uploads';
@@ -203,7 +218,12 @@ exports.upload_titlebasics = async (req, res, next) => {
 
 //admin 3
 exports.upload_titleakas = async (req, res, next) => {
-  let format = req.query.format || 'json';
+  let format = req.query.format;
+
+  if(!(format === 'json' || format === 'csv')) {
+    const message = { message: 'Invalid format parameter! format should be json or csv', error: err ? err : '' };
+    return res.status(400).send(message);
+  }
 
     try {
       await parseAndInsertIntoDatabase(req.file.path, 'akas', ['titleId', 'ordering', 'title', 'region', 'language', 'types', 'attributes', 'isOriginalTitle']);
@@ -239,7 +259,12 @@ exports.upload_titleakas = async (req, res, next) => {
 
 //admin 4
 exports.upload_namebasics = async (req, res, next) => {
-  let format = req.query.format || 'json';
+  let format = req.query.format;
+
+  if(!(format === 'json' || format === 'csv')) {
+    const message = { message: 'Invalid format parameter! format should be json or csv', error: err ? err : '' };
+    return res.status(400).send(message);
+  }
 
     try {  
       const baseDirectory = __dirname + '/../uploads';
@@ -283,7 +308,12 @@ exports.upload_namebasics = async (req, res, next) => {
 
 //admin 5
 exports.upload_titlecrew = async (req, res, next) => {
-  let format = req.query.format || 'json';
+  let format = req.query.format;
+
+  if(!(format === 'json' || format === 'csv')) {
+    const message = { message: 'Invalid format parameter! format should be json or csv', error: err ? err : '' };
+    return res.status(400).send(message);
+  }
 
     try {
       const baseDirectory = __dirname + '/../uploads';
@@ -325,7 +355,12 @@ exports.upload_titlecrew = async (req, res, next) => {
 
 //admin 6
 exports.upload_titleepisode = async (req, res, next) => {
-  let format = req.query.format || 'json';
+  let format = req.query.format;
+
+  if(!(format === 'json' || format === 'csv')) {
+    const message = { message: 'Invalid format parameter! format should be json or csv', error: err ? err : '' };
+    return res.status(400).send(message);
+  }
 
     try {
       //console.log(req.file.path);
@@ -366,7 +401,12 @@ exports.upload_titleepisode = async (req, res, next) => {
 
 //admin 7
 exports.upload_titleprincipals = async (req, res, next) => {
-  let format = req.query.format || 'json';
+  let format = req.query.format;
+
+  if(!(format === 'json' || format === 'csv')) {
+    const message = { message: 'Invalid format parameter! format should be json or csv', error: err ? err : '' };
+    return res.status(400).send(message);
+  }
 
     try {
       console.log(req.file.path);
@@ -402,7 +442,12 @@ exports.upload_titleprincipals = async (req, res, next) => {
 
 //admin 8
 exports.upload_titleratings = async (req, res, next) => {
-  let format = req.query.format || 'json';
+  let format = req.query.format;
+
+  if(!(format === 'json' || format === 'csv')) {
+    const message = { message: 'Invalid format parameter! format should be json or csv', error: err ? err : '' };
+    return res.status(400).send(message);
+  }
 
     try {
       console.log(req.file.path);
