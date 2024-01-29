@@ -2,6 +2,7 @@ const mysql = require("mysql2");
 const { pool } = require('../utils/database');
 const { body } = require("express/lib/request");
 const axios = require('axios');
+const { Parser } = require('json2csv');
 
 const csv = require('csv-parser');
 const fs = require('fs');
