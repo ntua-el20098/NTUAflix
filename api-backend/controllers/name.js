@@ -11,7 +11,7 @@ const e = require("cors");
 exports.getPersonDetails = async (req, res, err) => {
     let format = req.query.format || 'json';
 
-    if(!(format === 'json' || format === 'csv')) {
+    if(!(format === 'json' || format === 'csv') || format === '') {
         const message = { message: 'Invalid format parameter! format should be json or csv', error: err ? err : '' };
         return res.status(400).send(message);
     }
