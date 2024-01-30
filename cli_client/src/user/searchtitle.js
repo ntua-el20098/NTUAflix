@@ -1,9 +1,11 @@
 const axios = require('axios');
 const constructURL = require('../../lib/constructURL');
+const json2csv = require('json2csv').parse;
 const errorHandler = require('../../lib/errorHandler');
 
-module.exports = function title(options) {
+module.exports = function searchtitle(options) {
     console.log(options.titlePart);
+    const format = options.format || 'json';
     options = {
         tqueryObject: {
             titlePart: options.titlePart
@@ -17,11 +19,23 @@ module.exports = function title(options) {
         port: 9876,
         data : options
     };
-    axios(config)
+    if(format == 'json'){
+        axios(config)
+            .then(res => {
+                console.log(JSON.stringify(res.data, null, 2));
+            })
+            .catch(err => {
+                errorHandler(err);
+            });
+    }
+    else if(format == 'csv'){
+        axios(config)
         .then(res => {
-            console.log(JSON.stringify(res.data, null, 2));
+            const csvdata = json2csv(res.data);
+            console.log(csvdata);
         })
         .catch(err => {
             errorHandler(err);
-        });
+        });        
+    }
 }

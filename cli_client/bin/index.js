@@ -46,6 +46,7 @@ program
     .alias('t')
     .description('Returns the title with the specified tconst')
     .option('-tid, --titleID <tconst>', 'tconst of the title')
+    .option('--format <format>', 'format of the response')
     .action(function (options) { title(options) } )
 
 // searchtitle
@@ -54,6 +55,7 @@ program
     .alias('st')
     .description('Returns the title with the specified primaryTitle')
     .option('-tp, --titlePart <primaryTitle>', 'primaryTitle of the title')
+    .option('--format <format>', 'format of the response')
     .action( function(options) { searchtitle(options) } )
 
 // bygenre
@@ -65,6 +67,7 @@ program
     .option('-m, --min <minYear>', 'Minimum year of the title')
     .option('-f, --from <fromYear>', 'From year of the title')
     .option('-t, --to <toYear>', 'To year of the title')
+    .option('--format <format>', 'format of the response')
     .action( function(options) { bygenre(options) } )
 
 // name
@@ -73,7 +76,7 @@ program
     .alias('n')
     .description('Returns the name with the specified nconst')
     .option('-nid, --nameID <nconst>', 'nconst of the name')
-    .option('-f, --format <string>', 'format of the response')
+    .option('--format <format>', 'format of the response')
     .action( function(options) { name(options) } )
 
 // search name
@@ -82,8 +85,8 @@ program
     .alias('sn')
     .description('Returns the name with the specified primaryName')
     .option('-np, --namePart <primaryName>', 'primaryName of the name')
-    .option('-f, --format <string>', 'format of the response')
-    .action( function(options) { searchname(options) } )
+    .option('--format <format>', 'format of the response')
+    .action( function(options) { searchname(options); } )
 
 
 // resetall
