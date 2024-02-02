@@ -38,6 +38,7 @@ program
     .command('healthcheck')
     .alias('hc')
     .description('Confirms end-to-end connectivity between the user and the database')
+    .option('--format <format>', 'format of the response')
     .action( function(options) { healthcheck(options) } )
 
 // title
@@ -64,7 +65,7 @@ program
     .alias('bg')
     .description('Returns the titles with the specified genre')
     .option('-g, --genre <genre>', 'Genre of the title')
-    .option('-m, --min <minYear>', 'Minimum year of the title')
+    .option('-m, --min <minrating>', 'Minimum year of the title')
     .option('-f, --from <fromYear>', 'From year of the title')
     .option('-t, --to <toYear>', 'To year of the title')
     .option('--format <format>', 'format of the response')
@@ -94,6 +95,7 @@ program
     .command('resetall')
     .alias('rsall')
     .description('Deletes all data from the database')
+    .option('--format <format>', 'format of the response')
     .action( function(options) { resetall(options) } )
 
 // newtitles
@@ -102,6 +104,7 @@ program
     .alias('nt')
     .description('Adds a new title to the database')
     .option('-f, --filename <file>', 'path to the file')
+    .option('--format <format>', 'format of the response')
     .action( function(options) { newtitles(options) } )
 
 // newakas
@@ -110,6 +113,7 @@ program
     .alias('na')
     .description('Adds a new alternate title to the database')
     .option('-f, --filename <file>', 'path to the file')
+    .option('--format <format>', 'format of the response')
     .action( function(options) { newakas(options) } )
 // newnames
 program
@@ -117,6 +121,7 @@ program
     .alias('nn')
     .description('Adds a new name to the database')
     .option('-f, --filename <file>', 'path to the file')
+    .option('--format <format>', 'format of the response')
     .action( function(options) { newnames(options) } )
 
 // newcrew
@@ -125,6 +130,7 @@ program
     .alias('nc')
     .description('Adds a new crew member to the database')
     .option('-f, --filename <file>', 'path to the file')
+    .option('--format <format>', 'format of the response')
     .action( function(options) { newcrew(options) } )
 
 // newepisode
@@ -133,6 +139,7 @@ program
     .alias('ne')
     .description('Adds a new episode to the database')
     .option('-f, --filename <file>', 'path to the file')
+    .option('--format <format>', 'format of the response')
     .action( function(options) { newepisode(options) } )
 
 // newprincipals
@@ -141,6 +148,7 @@ program
     .alias('s')
     .description('Adds a new principal to the database')
     .option('-f, --filename <file>', 'path to the file')
+    .option('--format <format>', 'format of the response')
     .action( function(options) { newprincipals(options) } )
 
 // newratings
@@ -150,6 +158,7 @@ program
     .description('Adds a new rating to the database')
     .option('-f, --filename <file>', 'path to the file')
     .requiredOption('-f, --filename <file>', 'path to the file')
+    .option('--format <format>', 'format of the response')
     .action( function(options) { newratings(options) } )
 
 program

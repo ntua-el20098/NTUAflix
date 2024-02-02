@@ -31,4 +31,8 @@ module.exports = function title(options) {
             errorHandler(err);
         });
     }
+    else{
+        console.error('Invalid Format');
+        process.exit(1);
+    }
 }

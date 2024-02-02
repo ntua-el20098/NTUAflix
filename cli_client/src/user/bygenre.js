@@ -47,5 +47,9 @@ module.exports = function bygenre(options) {
             errorHandler(err);
         });
     }
+    else{
+        console.error('Invalid Format');
+        process.exit(1);
+    }
 
 }
