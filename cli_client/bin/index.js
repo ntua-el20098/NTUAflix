@@ -23,7 +23,6 @@ const bygenre = require('../src/user/bygenre');
 const name = require('../src/user/name');
 const searchname = require('../src/user/searchname');
 
-
 clear();
 /*
 console.log(
