@@ -1,4 +1,5 @@
 const constructURL = require('../lib/constructURL');
+const name = require('../src/user/name');
 
 describe('healthcheck URL ', () => {
     it('healthcheck', () => {
@@ -7,3 +8,16 @@ describe('healthcheck URL ', () => {
     });
 });
 
+describe('name url ', () => {
+    it('name', () => {
+        expect(constructURL('/name/', 'nm0615736') )
+        .toBe('http://localhost:9876/ntuaflix_api/name/nm0615736');
+    });
+});
+
+describe('title url ', () => {
+    it('title', () => {
+        expect(constructURL('/title/', 'tt0015414') )
+        .toBe('http://localhost:9876/ntuaflix_api/title/tt0015414');
+    });
+});
