@@ -26,151 +26,151 @@ const MovieInfo: React.FC = () => {
   const fallbackPosterUrl =
     "https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg";
 
-  const fetchData = async () => {
-    try {
-      const minRatingValue = minRating.toString();
-      const response = await fetch(
-        `http://localhost:9876/ntuaflix_api/searchbyrating?limit=${limit}&page=${currentPage}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            gqueryObject: {
-              minrating: minRatingValue,
+    const fetchData = async () => {
+      try {
+        const minRatingValue = minRating.toString();
+        const response = await fetch(
+          `http://localhost:9876/ntuaflix_api/searchbyrating?limit=${limit}&page=${currentPage}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
             },
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const contentType = response.headers.get("content-type");
-      const contentLength = response.headers.get("content-length");
-
-      console.log("Content-Type:", contentType);
-      console.log("Content-Length:", contentLength);
-
-      if (
-        contentType === null ||
-        contentLength === null ||
-        contentLength === "0" ||
-        !contentType.includes("application/json")
-      ) {
-        console.log("Empty response or not JSON.");
-        setMovieData([]);
-        return;
-      }
-
-      const data: Movie[] = await response.json();
-
-      // Log the raw data to better understand the response
-      console.log("Raw Data:", data);
-
-      // Check if the response contains valid JSON data
-      if (Array.isArray(data)) {
-        setMovieData(data);
-        console.log("Parsed Data:", data);
-
-        // Check if there are more pages
-        setHasMorePages(data.length >= limit);
-      } else {
-        console.log("Invalid JSON data in response.");
-        setMovieData([]);
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
+            body: JSON.stringify({
+              gqueryObject: {
+                minrating: minRatingValue,
+              },
+            }),
+          }
+        );
   
-  useEffect(() => {
-    // Fetch data when the component mounts or when the page changes
-    fetchData();
-
-    // Update the URL with the current page and limit
-    window.history.pushState(null, "", `?page=${currentPage}&limit=${limit}`);
-  }, [currentPage, limit]); // Re-fetch data when the page or limit changes
-
-  const handleSearch = async () => {
-    // Check if minRating is a valid number
-    const minRatingValue = parseFloat(minRating);
-    if (isNaN(minRatingValue)) {
-      // Handle the case where the input is not a valid number
-      setInputError("Please enter a valid number for minimum rating.");
-      return;
-    }
-
-    // Clear any previous input error
-    setInputError(null);
-
-    // Fetch data based on user's input
-    try {
-      const response = await fetch(
-        `http://localhost:9876/ntuaflix_api/searchbyrating?limit=${limit}&page=1`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            gqueryObject: {
-              minrating: minRatingValue.toString(),
-            },
-          }),
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
-      );
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+  
+        const contentType = response.headers.get("content-type");
+        const contentLength = response.headers.get("content-length");
+  
+        console.log("Content-Type:", contentType);
+        console.log("Content-Length:", contentLength);
+  
+        if (
+          contentType === null ||
+          contentLength === null ||
+          contentLength === "0" ||
+          !contentType.includes("application/json")
+        ) {
+          console.log("Empty response or not JSON.");
+          setMovieData([]);
+          return;
+        }
+  
+        const data: Movie[] = await response.json();
+  
+        // Log the raw data to better understand the response
+        console.log("Raw Data:", data);
+  
+        // Check if the response contains valid JSON data
+        if (Array.isArray(data)) {
+          setMovieData(data);
+          console.log("Parsed Data:", data);
+  
+          // Check if there are more pages
+          setHasMorePages(data.length >= limit);
+        } else {
+          console.log("Invalid JSON data in response.");
+          setMovieData([]);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
       }
-
-      const contentType = response.headers.get("content-type");
-      const contentLength = response.headers.get("content-length");
-
-      console.log("Content-Type:", contentType);
-      console.log("Content-Length:", contentLength);
-
-      if (
-        contentType === null ||
-        contentLength === null ||
-        contentLength === "0" ||
-        !contentType.includes("application/json")
-      ) {
-        console.log("Empty response or not JSON.");
-        setMovieData([]);
+    };
+  
+    useEffect(() => {
+      // Fetch data when the component mounts or when the page changes
+      fetchData();
+  
+      // Update the URL with the current page and limit
+      window.history.pushState(null, "", `?page=${currentPage}&limit=${limit}`);
+    }, [currentPage, limit]); // Re-fetch data when the page or limit changes
+  
+    const handleSearch = async () => {
+      // Check if minRating is a valid number
+      const minRatingValue = parseFloat(minRating);
+      if (isNaN(minRatingValue)) {
+        // Handle the case where the input is not a valid number
+        setInputError("Please enter a valid number for minimum rating.");
         return;
       }
-
-      const data: Movie[] = await response.json();
-
-      // Log the raw data to better understand the response
-      console.log("Raw Data:", data);
-
-      // Check if the response contains valid JSON data
-      if (Array.isArray(data)) {
-        setMovieData(data);
-        console.log("Parsed Data:", data);
-
-        // Reset current page to 1 when searching
-        setCurrentPage(1);
-
-        // Update the URL with the current page and limit
-        window.history.pushState(null, "", `?page=1&limit=${limit}`);
-
-        // Check if there are more pages
-        setHasMorePages(data.length >= limit);
-      } else {
-        console.log("Invalid JSON data in response.");
-        setMovieData([]);
+  
+      // Clear any previous input error
+      setInputError(null);
+  
+      // Fetch data based on user's input
+      try {
+        const response = await fetch(
+          `http://localhost:9876/ntuaflix_api/searchbyrating?limit=${limit}&page=1`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              gqueryObject: {
+                minrating: minRatingValue.toString(),
+              },
+            }),
+          }
+        );
+  
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+  
+        const contentType = response.headers.get("content-type");
+        const contentLength = response.headers.get("content-length");
+  
+        console.log("Content-Type:", contentType);
+        console.log("Content-Length:", contentLength);
+  
+        if (
+          contentType === null ||
+          contentLength === null ||
+          contentLength === "0" ||
+          !contentType.includes("application/json")
+        ) {
+          console.log("Empty response or not JSON.");
+          setMovieData([]);
+          return;
+        }
+  
+        const data: Movie[] = await response.json();
+  
+        // Log the raw data to better understand the response
+        console.log("Raw Data:", data);
+  
+        // Check if the response contains valid JSON data
+        if (Array.isArray(data)) {
+          setMovieData(data);
+          console.log("Parsed Data:", data);
+  
+          // Reset current page to 1 when searching
+          setCurrentPage(1);
+  
+          // Update the URL with the current page and limit
+          window.history.pushState(null, "", `?page=1&limit=${limit}`);
+  
+          // Check if there are more pages
+          setHasMorePages(data.length >= limit);
+        } else {
+          console.log("Invalid JSON data in response.");
+          setMovieData([]);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
       }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+    };
+  
 
   const handlePageChange = (newPage: number) => {
     // Update the current page when the user clicks on the pagination links
