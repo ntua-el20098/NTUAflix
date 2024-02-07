@@ -54,84 +54,81 @@ function Page({ params }: { params: { id: string } }) {
   const fallbackPosterUrl =
     "https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg";
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:9876/ntuaflix_api/title/${params.id}`
-        );
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const data: { titleObject: MovieData } = await response.json();
-        setMovieData(data.titleObject);
-        console.log("Fetched data:", data.titleObject);
-
-        if (data.nameObject.nameTitles && data.nameObject.nameTitles.length > 0) {
-        const castDataPromises = data.titleObject.principals.map(async (person) => {
-          try {
-            const castResponse = await fetch(
-              `http://localhost:9876/ntuaflix_api/name/${person.nameID}`
-            );
-            if (!castResponse.ok) {
-              throw new Error(`HTTP error! Status: ${castResponse.status}`);
-            }
-        
-            const castData: { nameID: string; namePoster: string } = await castResponse.json();
-            console.log("Fetched cast poster:", castData.namePoster);
-        
-            // Update the person in the principals array with the fetched poster data
-            const updatedPrincipals = movieData?.principals.map((p) =>
-              p.nameID === person.nameID ? { ...p, poster: castData.namePoster } : p
-            );
-        
-            // Set the updated movie data
-            setMovieData((prevMovieData) => ({
-              ...prevMovieData!,
-              principals: updatedPrincipals || [],
-            }));
-        
-            return castData;
-          
-
-          } catch (error) {
-            console.error("Error fetching cast data:", error);
-            return null;
+    
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const response = await fetch(
+            `http://localhost:9876/ntuaflix_api/title/${params.id}`
+          );
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
           }
-        });
-
-
-        // Wait for all cast data promises to resolve
-        const castResults = await Promise.all(castDataPromises);
-
-        // Filter out null results
-        const validCastResults = castResults.filter(
-          (result) => result !== null
-        ) as Array<{ nameID: string; namePoster: string }>;
-
-        setCastData(validCastResults);
-        // Update the principals array with the fetched poster data
-        const updatedPrincipals = data.titleObject.principals.map(
-          (person, index) => ({
-            ...person,
-            poster: validCastResults[index]?.namePoster || "", // Use the fetched poster or an empty string if not available
-          })
-        );
-
-        // Set the updated movie data
-        setMovieData({
-          ...data.titleObject,
-          principals: updatedPrincipals,
-        });
-
-        console.log("Fetched cast data:", validCastResults);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, [params.id]);
+          const data: { titleObject: MovieData } = await response.json();
+          setMovieData(data.titleObject);
+          console.log("Fetched data:", data.titleObject);
+    
+          const castDataPromises = data.titleObject.principals.map(async (person) => {
+            try {
+              const castResponse = await fetch(
+                `http://localhost:9876/ntuaflix_api/name/${person.nameID}`
+              );
+              if (!castResponse.ok) {
+                throw new Error(`HTTP error! Status: ${castResponse.status}`);
+              }
+    
+              const castData: { nameObject: { namePoster: string } } = await castResponse.json();
+              console.log("Fetched cast poster:", castData.nameObject.namePoster);
+    
+              // Update the person in the principals array with the fetched poster data
+              const updatedPrincipals = movieData?.principals.map((p) =>
+                p.nameID === person.nameID ? { ...p, poster: castData.nameObject.namePoster } : p
+              );
+    
+              // Set the updated movie data
+              setMovieData((prevMovieData) => ({
+                ...prevMovieData!,
+                principals: updatedPrincipals || [],
+              }));
+    
+              return castData.nameObject.namePoster;
+            } catch (error) {
+              console.error("Error fetching cast data:", error);
+              return null;
+            }
+          });
+    
+          // Wait for all cast data promises to resolve
+          const castResults = await Promise.all(castDataPromises);
+    
+          // Filter out null results
+          const validCastResults = castResults.filter((result) => result !== null) as string[];
+    
+          // Update the state with an array of objects with nameID and namePoster properties
+          setCastData(validCastResults.map((poster, index) => ({ nameID: `${index}`, namePoster: poster })));
+    
+          // Update the principals array with the fetched poster data
+          const updatedPrincipals = data.titleObject.principals.map(
+            (person, index) => ({
+              ...person,
+              poster: validCastResults[index] || "", // Use the fetched poster or an empty string if not available
+            })
+          );
+    
+          // Set the updated movie data
+          setMovieData({
+            ...data.titleObject,
+            principals: updatedPrincipals,
+          });
+    
+          console.log("Fetched cast data:", validCastResults);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
+    
+      fetchData();
+    }, [params.id]);
 
   useEffect(() => {
     const fetchSimilarMovies = async () => {

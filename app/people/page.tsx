@@ -4,10 +4,12 @@ import { Box, InputBase, Alert } from "@mui/material";
 import Card from "@/components/allpeoplecard";
 
 interface Person {
-  nameID: string;
-  name: string;
-  namePoster: string;
-  profession: string;
+  nameObject: {
+    nameID: string;
+    name: string;
+    namePoster: string;
+    profession: string;
+  };
 }
 
 const PeoplePage: React.FC = () => {
@@ -15,15 +17,19 @@ const PeoplePage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(24);
   const [error, setError] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState<string>(""); // Added state for search term
-  const [hasMorePages, setHasMorePages] = useState<boolean>(true); // Track if there are more pages
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [hasMorePages, setHasMorePages] = useState<boolean>(true);
   const fallbackPosterUrl =
     "https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg";
 
   useEffect(() => {
-    fetchData();
-    window.history.pushState(null, "", `?page=${currentPage}&limit=${limit}`);
-  }, [currentPage, limit]); // Include searchTerm in dependencies
+    const fetchDataAndNavigate = async () => {
+      await fetchData();
+      window.history.pushState(null, "", `?page=${currentPage}&limit=${limit}`);
+    };
+
+    fetchDataAndNavigate();
+  }, [currentPage, limit]);
 
   const fetchData = async () => {
     try {
@@ -83,7 +89,6 @@ const PeoplePage: React.FC = () => {
 
   const handlePagination = (page: number) => {
     setCurrentPage(page);
-
     window.history.pushState(null, "", `?page=${page}&limit=${limit}`);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -99,11 +104,12 @@ const PeoplePage: React.FC = () => {
           },
           body: JSON.stringify({
             nqueryObject: {
-              namePart: searchTerm, // Use the searchTerm in the body
+              namePart: searchTerm,
             },
           }),
         }
       );
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -132,7 +138,6 @@ const PeoplePage: React.FC = () => {
       // Check if the response contains valid JSON data
       if (Array.isArray(data)) {
         setActorData(data);
-        console.log("Parsed Data:", data);
 
         // Reset current page to 1 when searching
         setCurrentPage(1);
@@ -203,14 +208,21 @@ const PeoplePage: React.FC = () => {
           actorData.map((actor, index) => (
             <Card
               key={index}
-              name={actor.name}
+              name={actor.nameObject.name}
               image={
-                actor.namePoster
-                  ? actor.namePoster.replace("{width_variable}", "original")
+                actor.nameObject.namePoster
+                  ? actor.nameObject.namePoster.replace(
+                      "{width_variable}",
+                      "original"
+                    )
                   : fallbackPosterUrl
               }
-              id={actor.nameID}
-              type={actor.profession ? actor.profession.split(",")[0] : ""}
+              id={actor.nameObject.nameID}
+              type={
+                actor.nameObject.profession
+                  ? actor.nameObject.profession.split(",")[0]
+                  : ""
+              }
             />
           ))
         )}
