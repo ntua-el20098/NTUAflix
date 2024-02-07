@@ -8,7 +8,7 @@ const csv = require('csv-parser');
 const fs = require('fs');
 const { unique } = require("next/dist/build/utils");
 
-exports.getTitleDetails = async (req, res, err) => {
+exports.getTitleDetails = async (req, res, err) => { 
     let format = req.query.format || 'json';
 
     if(!(format === 'json' || format === 'csv')) {

@@ -21,7 +21,12 @@ exports.healthcheck = async (req, res, next) => {
 
     try {
       const [rows, fields] = await pool.promise().query('SELECT 1');
-      const message = { status: 'OK', dataconnection: ['connection string'] };
+      const message = { status: 'OK',   dataconnection: {
+        host: pool.config.connectionConfig.host,
+        user: pool.config.connectionConfig.user,
+        database: pool.config.connectionConfig.database,
+        // add any other properties you need
+      } };
 
       if (format == 'json') {
         res.json(message);
@@ -36,8 +41,12 @@ exports.healthcheck = async (req, res, next) => {
     } 
     catch (error) {
       const message = {
-        status: 'failed',
-        dataconnection: ['connection string'],
+        status: 'failed',  dataconnection: {
+          host: pool.config.connectionConfig.host,
+          user: pool.config.connectionConfig.user,
+          database: pool.config.connectionConfig.database,
+          // add any other properties you need
+        }
       };
 
       console.error(error);
