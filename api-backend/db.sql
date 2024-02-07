@@ -226,7 +226,7 @@ ALTER TABLE `primaryprofession`
 -- Ευρετήρια για πίνακα `principals`
 --
 ALTER TABLE `principals`
-  ADD PRIMARY KEY (`nconst`,`tconst`),
+  ADD PRIMARY KEY (`nconst`,`tconst`,`category`),
   ADD KEY `tconst` (`tconst`);
 
 --

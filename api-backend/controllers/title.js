@@ -47,37 +47,83 @@ exports.getTitleDetails = async (req, res, err) => {
     const query = `
     
     SELECT
-        t.tconst as titleID, 
-        COALESCE(t.titleType,'') as type,
-        COALESCE(t.originalTitle, '') as originalTitle,
-        COALESCE(t.img_url_asset, '') as titlePoster,
-        CASE 
-            WHEN t.startYear = '0000' THEN ''
-            ELSE t.startYear
-        END as startYear,
-        CASE 
-            WHEN t.endYear = '0000' THEN ''
-            ELSE t.endYear
-        END as endYear,
-        COALESCE(g.genres, '') as genreTitle,
-        COALESCE(a.title, '') as akaTitle,
-        COALESCE(a.region, '') as regionAbbrev,
-        COALESCE(p.nconst, '') as nameID,
-        COALESCE(p.primaryName, '') as name,
-        COALESCE(pr.category, '') as category,
-        COALESCE(r.averageRating, '') as avRating,
-        COALESCE(r.numVotes, '') as nVotes
-    FROM
-        title t
-        LEFT JOIN genre g ON t.tconst = g.tconst
-        LEFT JOIN akas a ON t.tconst = a.titleId
-        LEFT JOIN principals pr ON t.tconst = pr.tconst
-        LEFT JOIN people p ON pr.nconst = p.nconst
-        LEFT JOIN rating r ON t.tconst = r.tconst
-    WHERE
-        t.tconst = ?`;
+    t.tconst as titleID, 
+    COALESCE(t.titleType,'') as type,
+    COALESCE(t.originalTitle, '') as originalTitle,
+    COALESCE(t.img_url_asset, '') as titlePoster,
+    CASE 
+        WHEN t.startYear = '0000' THEN ''
+        ELSE t.startYear
+    END as startYear,
+    CASE 
+        WHEN t.endYear = '0000' THEN ''
+        ELSE t.endYear
+    END as endYear,
+    COALESCE(g.genres, '') as genreTitle,
+    COALESCE(a.title, '') as akaTitle,
+    COALESCE(a.region, '') as regionAbbrev,
+    COALESCE(p.nconst, '') as nameID,
+    COALESCE(p.primaryName, '') as name,
+    COALESCE(pr.category, '') as category,
+    COALESCE(r.averageRating, '') as avRating,
+    COALESCE(r.numVotes, '') as nVotes
+FROM
+    title t
+    LEFT JOIN genre g ON t.tconst = g.tconst
+    LEFT JOIN akas a ON t.tconst = a.titleId
+    LEFT JOIN principals pr ON t.tconst = pr.tconst
+    LEFT JOIN people p ON pr.nconst = p.nconst
+    LEFT JOIN rating r ON t.tconst = r.tconst
+WHERE
+    t.tconst = ?
 
-    const queryParams = `${titleID}`;
+UNION ALL
+
+SELECT
+    c.tconst as titleID,
+    null as type,
+    null as originalTitle,
+    null as titlePoster,
+    null as startYear,
+    null as endYear,
+    null as genreTitle,
+    null as akaTitle,
+    null as regionAbbrev,
+    p.nconst as nameID,
+    p.primaryName as name,
+    'director' as category,
+    null as avRating,
+    null as nVotes
+FROM
+    crewdirectors c
+    JOIN people p ON c.directors = p.nconst
+WHERE
+    c.tconst = ?
+
+UNION ALL
+
+    SELECT
+        c.tconst as titleID,
+        null as type,
+        null as originalTitle,
+        null as titlePoster,
+        null as startYear,
+        null as endYear,
+        null as genreTitle,
+        null as akaTitle,
+        null as regionAbbrev,
+        p.nconst as nameID,
+        p.primaryName as name,
+        'writer' as category,
+        null as avRating,
+        null as nVotes
+    FROM
+        crewwriters c
+        JOIN people p ON c.writers = p.nconst
+    WHERE
+        c.tconst = ?`;
+
+    const queryParams = [`${titleID}`, `${titleID}`, `${titleID}`];
 
     pool.getConnection((err, connection) => {
         if (err) {
@@ -123,10 +169,10 @@ exports.getTitleDetails = async (req, res, err) => {
             try {
                 const titleObject = processResults(rows);
                 if(format === 'json') 
-                    return res.status(200).json(titleObject);
+                    return res.status(200).json({titleObject});
                 else{
                     const json2csvParser = new Parser();
-                    const csv = json2csvParser.parse(titleObject);
+                    const csv = json2csvParser.parse({titleObject});
                     res.setHeader('Content-Type', 'text/csv');
                     res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
                     return res.status(200).send(csv);
@@ -168,16 +214,36 @@ function processResults(results) {
     };
 
     // Process genres
-    const uniqueGenres = new Set(results.map(result => result.genreTitle));
+    const uniqueGenres = new Set(results.filter(result => result.genreTitle != null).map(result => result.genreTitle));
     formattedResponse.genres = [...uniqueGenres].map(genreTitle => ({ genreTitle }));
 
     // Process titleAkas
-    const uniqueTitleAkas = new Set(results.map(result => JSON.stringify({ akaTitle: result.akaTitle, regionAbbrev: result.regionAbbrev })));
+    const uniqueTitleAkas = new Set(results.filter(result => result.akaTitle != null && result.regionAbbrev != null).map(result => JSON.stringify({ akaTitle: result.akaTitle, regionAbbrev: result.regionAbbrev })));
     formattedResponse.titleAkas = [...uniqueTitleAkas].map(aka => JSON.parse(aka));
 
     // Process principals
-    const uniquePrincipals = new Set(results.map(result => JSON.stringify({ nameID: result.nameID, name: result.name, category: result.category })));
-    formattedResponse.principals = [...uniquePrincipals].map(principal => JSON.parse(principal));
+// Group by nameID and name
+const groupedResults = results.reduce((acc, result) => {
+    const key = `${result.nameID}-${result.name}`;
+    if (!acc[key]) {
+        acc[key] = { nameID: result.nameID, name: result.name, category: [result.category] };
+    } else {
+        // Check if the category already exists for this person
+        if (!acc[key].category.includes(result.category)) {
+            acc[key].category.push(result.category);
+        }
+    }
+    return acc;
+}, {});
+
+// Convert to array and join categories with comma
+const uniquePrincipals = Object.values(groupedResults).map(result => ({
+    nameID: result.nameID,
+    name: result.name,
+    category: result.category.join(', ')
+}));
+
+formattedResponse.principals = uniquePrincipals;
 
     return formattedResponse;
 }
