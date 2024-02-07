@@ -3,7 +3,7 @@ const constructURL = require('../../lib/constructURL');
 const errorHandler = require('../../lib/errorHandler');
 const json2csv = require('json2csv').parse;
 
-module.exports = function resetall() {
+module.exports = function resetall(options) {
     const format = options.format || 'json';
     const url = constructURL('/admin/resetall');
     const config = {
