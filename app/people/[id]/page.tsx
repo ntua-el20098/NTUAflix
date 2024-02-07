@@ -34,18 +34,18 @@ function Page({ params }: { params: { id: string } }) {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
-        const data: PersonData = await response.json();
+        const data: { nameObject: PersonData } = await response.json();
 
         // Split professions, remove duplicates, and join back
-        const uniqueProfessions = [...new Set(data.profession.split(','))];
+        const uniqueProfessions = [...new Set(data.nameObject.profession.split(','))];
         const formattedProfession = uniqueProfessions.join(', ');
 
-        setPersonData({ ...data, profession: formattedProfession });
+        setPersonData({ ...data.nameObject, profession: formattedProfession });
 
-        // Check if nameTitles is not an empty string before fetching appears in data
-        if (data.nameTitles && data.nameTitles.length > 0) {
+        // Check if nameTitles is not an empty array before fetching appears in data
+        if (data.nameObject.nameTitles && data.nameObject.nameTitles.length > 0) {
           // Fetch movie details for each titleID in nameTitles
-          const movieDetailsPromises = data.nameTitles.map(async (title) => {
+          const movieDetailsPromises = data.nameObject.nameTitles.map(async (title) => {
             const titleResponse = await fetch(
               `http://localhost:9876/ntuaflix_api/title/${title.titleID}`
             );

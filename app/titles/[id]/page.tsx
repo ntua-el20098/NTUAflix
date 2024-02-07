@@ -67,20 +67,39 @@ function Page({ params }: { params: { id: string } }) {
         setMovieData(data.titleObject);
         console.log("Fetched data:", data.titleObject);
 
-        // Fetch cast data
-        const castDataPromises = data.titleObject.principals.map(
-          async (person) => {
+        if (data.nameObject.nameTitles && data.nameObject.nameTitles.length > 0) {
+        const castDataPromises = data.titleObject.principals.map(async (person) => {
+          try {
             const castResponse = await fetch(
               `http://localhost:9876/ntuaflix_api/name/${person.nameID}`
             );
-            if (castResponse.ok) {
-              const castData: { nameID: string; namePoster: string } =
-                await castResponse.json();
-              return castData;
+            if (!castResponse.ok) {
+              throw new Error(`HTTP error! Status: ${castResponse.status}`);
             }
+        
+            const castData: { nameID: string; namePoster: string } = await castResponse.json();
+            console.log("Fetched cast poster:", castData.namePoster);
+        
+            // Update the person in the principals array with the fetched poster data
+            const updatedPrincipals = movieData?.principals.map((p) =>
+              p.nameID === person.nameID ? { ...p, poster: castData.namePoster } : p
+            );
+        
+            // Set the updated movie data
+            setMovieData((prevMovieData) => ({
+              ...prevMovieData!,
+              principals: updatedPrincipals || [],
+            }));
+        
+            return castData;
+          
+
+          } catch (error) {
+            console.error("Error fetching cast data:", error);
             return null;
           }
-        );
+        });
+
 
         // Wait for all cast data promises to resolve
         const castResults = await Promise.all(castDataPromises);
@@ -171,7 +190,6 @@ function Page({ params }: { params: { id: string } }) {
         <div className="container mx-auto min-h-screen flex items-center justify-center relative">
           <div className="mr-8 mt-4">
             {" "}
-            {/* Added right margin and top margin */}
             <img
               src={
                 movieData.titlePoster.replace("{width_variable}", "original") ||
@@ -223,34 +241,34 @@ function Page({ params }: { params: { id: string } }) {
         </div>
       )}
 
-      {movieData && (
-        <>
-          <ul className="list-group ">
-            <li className="list-group-item">
-              <h2 className="text-2xl font-bold mt-8">Cast</h2>
-            </li>
-            <li className="list-group-item">
-              <div className="pre-cast-card-container">
-                <div className="cast-card-container flex items-center ">
-                  {movieData.principals.map((person, index) => (
-                    <PeopleCard
-                      key={index}
-                      id={person.nameID}
-                      name={person.name}
-                      type={person.category}
-                      image={
-                        person.poster &&
-                        person.poster.replace("{width_variable}", "original") ||
-                        fallbackPosterUrl
-                      }
-                    />
-                  ))}
-                </div>
-              </div>
-            </li>
-          </ul>
-        </>
-      )}
+{movieData && (
+  <>
+    <ul className="list-group ">
+      <li className="list-group-item">
+        <h2 className="text-2xl font-bold mt-8">Cast</h2>
+      </li>
+      <li className="list-group-item">
+        <div className="pre-cast-card-container">
+          <div className="cast-card-container flex items-center ">
+            {movieData.principals.map((person, index) => (
+              <PeopleCard
+                key={index}
+                id={person.nameID}
+                name={person.name}
+                type={person.category}
+                image={
+                  person.poster &&
+                  person.poster.replace("{width_variable}", "original") ||
+                  fallbackPosterUrl
+                }
+              />
+            ))}
+          </div>
+        </div>
+      </li>
+    </ul>
+  </>
+)}
 
       {similarMovies.length > 0 && (
         <>
