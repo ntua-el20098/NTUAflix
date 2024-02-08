@@ -20,7 +20,7 @@ module.exports = function newakas(options) {
     // Append the file to the FormData object
     formData.append('file', fileStream);
     const format = options.format || 'json';
-    const url = constructURL('/admin/upload/titleakas' )
+    const url = constructURL('/admin/', 'upload/titleakas' )
     const config = {
         method: 'POST',
         url: url,

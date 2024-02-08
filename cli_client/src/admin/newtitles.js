@@ -18,7 +18,7 @@ module.exports = function newtitles(options) {
     // Append the file to the FormData object
     formData.append('file', fileStream);
 
-    const url = constructURL('/admin/upload/titlebasics' )
+    const url = constructURL('/admin/' , 'upload/titlebasics' )
     const config = {
         method: 'POST',
         url: url,

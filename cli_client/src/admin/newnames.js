@@ -19,7 +19,7 @@ module.exports = function newnames(options) {
     // Append the file to the FormData object
     formData.append('file', fileStream);
 
-    const url = constructURL('/admin/upload/namebasics' )
+    const url = constructURL('/admin/', 'upload/namebasics' )
     const config = {
         method: 'POST',
         url: url,

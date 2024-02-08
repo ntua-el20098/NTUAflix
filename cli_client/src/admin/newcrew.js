@@ -19,7 +19,7 @@ module.exports = function newcrew(options) {
     // Append the file to the FormData object
     formData.append('file', fileStream);
 
-    const url = constructURL('/admin/upload/titlecrew' )
+    const url = constructURL('/admin/', 'upload/titlecrew' )
     const config = {
         method: 'POST',
         url: url,

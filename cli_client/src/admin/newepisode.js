@@ -18,7 +18,7 @@ module.exports = function newepisode(options) {
     const formData = new FormData();
     // Append the file to the FormData object
     formData.append('file', fileStream);
-    const url = constructURL('/admin/upload/titleepisode' )
+    const url = constructURL('/admin/', 'upload/titleepisode' )
     const config = {
         method: 'POST',
         url: url,

@@ -19,7 +19,7 @@ module.exports = function newratings(options) {
     // Append the file to the FormData object
     formData.append('file', fileStream);
 
-    const url = constructURL('/admin/upload/titleratings' )
+    const url = constructURL('/admin/', 'upload/titleratings' )
     const config = {
         method: 'POST',
         url: url,

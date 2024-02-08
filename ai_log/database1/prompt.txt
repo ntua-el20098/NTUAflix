@@ -1,0 +1,344 @@
+USER:
+i am going to set the database for my project:
+i tried this:
+Table Title:
+create table [if not exists] Title(
+tconst varchar(20),
+titleType varchar(20),
+primaryTitle varchar(255),
+originalTitle varchar(255),
+isAdult bool,
+startYear year,
+endYear year,
+runtimeMinutes int(5),
+img_url_asset varchar(255);
+
+but i get this error:
+ERROR 1064 (42000): You have an error in your SQL syntax;
+check the manual that corresponds to your MariaDB server version for the right syntax to use near '[if not exists] Title(
+tconst varchar(20),
+titleType varchar(20),
+primaryTitl...' at line 1
+
+and the primaey key is tconst
+
+______________________________________________________________________________________________________________
+CHATGPT:
+It looks like you're using square brackets, which are not typically used for SQL syntax in MariaDB. 
+The correct syntax for creating a table with the "if not exists" condition should be:
+
+```sql
+CREATE TABLE IF NOT EXISTS Title (
+    tconst VARCHAR(20) PRIMARY KEY,
+    titleType VARCHAR(20),
+    primaryTitle VARCHAR(255),
+    originalTitle VARCHAR(255),
+    isAdult BOOLEAN,
+    startYear YEAR,
+    endYear YEAR,
+    runtimeMinutes INT(5),
+    img_url_asset VARCHAR(255)
+);
+```
+
+Changes made:
+1. Removed square brackets around "if not exists."
+2. Made the `tconst` column the primary key using the `PRIMARY KEY` constraint.
+3. Changed `bool` to `BOOLEAN` for the `isAdult` column.
+4. Removed the semicolon (;) at the end of the column list.
+
+This should create the table as intended. Make sure to adjust the data types and constraints based on 
+your specific requirements.
+
+______________________________________________________________________________________________________________
+USER:
+i have this table:
+Table Genre:
+CREATE TABLE IF NOT EXISTS Genre (
+   tconst VARCHAR(20),
+   genre VARCHAR(20)
+);
+
+i want primary key: tconst , genre and tconst referece to table Title
+
+______________________________________________________________________________________________________________
+CHATGPT:
+To achieve your goal of creating a table `Genre` with a composite primary key `(tconst, genre)` where `tconst` 
+references the `Title` table, you can use the following SQL statement:
+
+```sql
+CREATE TABLE IF NOT EXISTS Genre (
+    tconst VARCHAR(20),
+    genre VARCHAR(20),
+    PRIMARY KEY (tconst, genre),
+    FOREIGN KEY (tconst) REFERENCES Title(tconst)
+);
+```
+
+In this statement:
+
+- `PRIMARY KEY (tconst, genre)` defines a composite primary key using both `tconst` and `genre`.
+- `FOREIGN KEY (tconst) REFERENCES Title(tconst)` establishes a foreign key relationship between the `tconst` 
+column in the `Genre` table and the `tconst` column in the `Title` table.
+
+Make sure that the `tconst` column in the `Title` table is defined as a primary key. If it's not, you may need 
+to adjust the structure of the `Title` table accordingly:
+
+```sql
+CREATE TABLE IF NOT EXISTS Title (
+    tconst VARCHAR(20) PRIMARY KEY,
+    titleType VARCHAR(20),
+    primaryTitle VARCHAR(255),
+    originalTitle VARCHAR(255),
+    isAdult BOOLEAN,
+    startYear YEAR,
+    endYear YEAR,
+    runtimeMinutes INT(5),
+    img_url_asset VARCHAR(255)
+);
+```
+
+This ensures that `tconst` is the primary key in the `Title` table, and you can then reference it 
+as a foreign key in the `Genre` table.
+
+______________________________________________________________________________________________________________
+USER:
+i have this code:
+CREATE TABLE IF NOT EXISTS People(
+    nconst VARCHAR(20),
+    primaryName VARCHAR(255)
+    birthYear YEAR,
+    deathYear YEAR,
+    img_url_asset VARCHAR(255)
+);
+
+and this error:
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds 
+to your MariaDB server version for the right syntax to use near 'YEAR,
+    deathYear YEAR,
+    img_url_asset VARCHAR(255)
+)' at line 4
+
+______________________________________________________________________________________________________________
+CHATGPT:
+It looks like you are missing a comma after the `primaryName` column. Here's the corrected version of your code:
+
+```sql
+CREATE TABLE IF NOT EXISTS People(
+    nconst VARCHAR(20),
+    primaryName VARCHAR(255),
+    birthYear YEAR,
+    deathYear YEAR,
+    img_url_asset VARCHAR(255)
+);
+```
+
+I added a comma after `primaryName VARCHAR(255)`. This should resolve the syntax error you encountered.
+
+______________________________________________________________________________________________________________
+USER:
+in this table:
+CREATE TABLE IF NOT EXISTS Title (
+    tconst VARCHAR(20) PRIMARY KEY,
+    titleType VARCHAR(20),
+    primaryTitle VARCHAR(255),
+    originalTitle VARCHAR(255),
+    isAdult BOOL,
+    startYear YEAR,
+    endYear YEAR,
+    runtimeMinutes INT(5),
+    img_url_asset VARCHAR(255)
+);
+
+i want to add this data:
+tt0034841 |short |Hen Hop |Hen Hop	|0	|1994 |null	|4	|https://image.tmdb.org/t/p/{width_variable}/88EH2TVg6fGK7SnGXcfQ05MD2Rk.jpg
+
+and this data:
+tt0040844	|short	|Crossroads of Laredo	|Crossroads of Laredo	|0	|1995	|null	|30	|https://image.tmdb.org/t/p/{width_variable}/atrGjxMSp6y4jvs7nojUrlsGFUb.jpg
+
+______________________________________________________________________________________________________________
+CHATGPT:
+To add data to your `Title` table, you can use the `INSERT INTO` statement. Here's an example for the data you provided:
+
+```sql
+-- Inserting the first row
+INSERT INTO Title (tconst, titleType, primaryTitle, originalTitle, isAdult, startYear, endYear, runtimeMinutes, img_url_asset)
+VALUES ('tt0034841', 'short', 'Hen Hop', 'Hen Hop', 0, 1994, NULL, 4, 'https://image.tmdb.org/t/p/{width_variable}/88EH2TVg6fGK7SnGXcfQ05MD2Rk.jpg');
+
+-- Inserting the second row
+INSERT INTO Title (tconst, titleType, primaryTitle, originalTitle, isAdult, startYear, endYear, runtimeMinutes, img_url_asset)
+VALUES ('tt0040844', 'short', 'Crossroads of Laredo', 'Crossroads of Laredo', 0, 1995, NULL, 30, 'https://image.tmdb.org/t/p/{width_variable}/atrGjxMSp6y4jvs7nojUrlsGFUb.jpg');
+```
+
+This assumes that the `tconst` column is a primary key, and it is unique for each row. If you attempt to insert data with a 
+`tconst` value that already exists in the table, you will get a duplicate key error.
+
+Make sure to replace the `{width_variable}` in the URLs with the actual variable you intend to use. Additionally, 
+confirm that the `Title` table structure matches the columns and data types specified in your `CREATE TABLE` statement.
+
+
+______________________________________________________________________________________________________________
+USER:
+can i insert them all in once?
+
+______________________________________________________________________________________________________________
+CHATGPT:
+Yes, you can insert multiple rows at once using a single `INSERT INTO` statement with multiple sets of values. 
+Here's how you can do it for the data you provided:
+
+```sql
+INSERT INTO Title (tconst, titleType, primaryTitle, originalTitle, isAdult, startYear, endYear, runtimeMinutes, img_url_asset)
+VALUES
+    ('tt0034841', 'short', 'Hen Hop', 'Hen Hop', 0, 1994, NULL, 4, 'https://image.tmdb.org/t/p/{width_variable}/88EH2TVg6fGK7SnGXcfQ05MD2Rk.jpg'),
+    ('tt0040844', 'short', 'Crossroads of Laredo', 'Crossroads of Laredo', 0, 1995, NULL, 30, 'https://image.tmdb.org/t/p/{width_variable}/atrGjxMSp6y4jvs7nojUrlsGFUb.jpg');
+```
+
+This single statement will insert both rows into the `Title` table. Each set of values in the `VALUES` clause 
+corresponds to a separate row.
+
+Make sure to replace `{width_variable}` in the URLs with the actual variable you intend to use. 
+Also, verify that the data types and structure of the `Title` table match the values you are trying to insert.
+
+______________________________________________________________________________________________________________
+USER:
+there:
+INSERT INTO Title (tconst, titleType, primaryTitle, originalTitle, isAdult, startYear, endYear, runtimeMinutes, img_url_asset)
+VALUES
+    ('tt0097925', 'tvEpisode', 'La mujer lunΓ΅tica', 'La mujer lunΓ΅tica, 0, 1990, NULL, 60, 'https://image.tmdb.org/t/p/{width_variable}/o0GFTzMjcwdWRcK1Vxd3pDFht8s.jpg'),
+    ('tt0095670', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'https://image.tmdb.org/t/p/{width_variable}/o0GFTzMjcwdWRcK1Vxd3pDFht8s.jpg');
+
+i have some syntax error
+
+______________________________________________________________________________________________________________
+CHATGPT:
+It looks like there's an issue with the second row of data you're trying to insert. Specifically, there's a missing single quote for the `img_url_asset` value. Also, you might want to set the `isAdult` column to `0` in the first row.
+
+Here's the corrected version:
+
+```sql
+INSERT INTO Title (tconst, titleType, primaryTitle, originalTitle, isAdult, startYear, endYear, runtimeMinutes, img_url_asset)
+VALUES
+    ('tt0097925', 'tvEpisode', 'La mujer lunΓ΅tica', 'La mujer lunΓ΅tica', 0, 1990, NULL, 60, 'https://image.tmdb.org/t/p/{width_variable}/o0GFTzMjcwdWRcK1Vxd3pDFht8s.jpg'),
+    ('tt0095670', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'https://image.tmdb.org/t/p/{width_variable}/o0GFTzMjcwdWRcK1Vxd3pDFht8s.jpg');
+```
+
+In the second row, I assumed you want to insert `NULL` values for the columns that don't have specific values. If you have specific values for those columns, replace `NULL` accordingly.
+
+Also, remember to replace `{width_variable}` in the URLs with the actual variable you intend to use.
+
+______________________________________________________________________________________________________________
+USER:
+i have this table:
+CREATE TABLE IF NOT EXISTS Akas(
+    tconst VARCHAR(20),
+    ordering INT(5),
+    title VARCHAR(255),
+    region VARCHAR(5),
+    language VARCHAR(5),
+    types VARCHAR(10),
+    attributes VARCHAR(50),
+    isOriginalTitle BOOL,
+    PRIMARY KEY (tconst),
+    FOREIGN KEY (tconst) REFERENCES Title(tconst)
+);
+
+and this data:
+tt0034841	1	Hen Hop	\N	\N	original	\N	1
+tt0034841	2	Hen Hop	FR	\N	imdbDisplay	\N	0
+tt0034841	3	To pidima tis kotas	GR	\N	festival	\N	0
+tt0034841	4	Hen Hop	CA	\N	\N	\N	0
+tt0040844	1	Crossroads of Laredo	\N	\N	original	\N	1
+tt0040844	2	The Streets of Laredo	US	\N	working	\N	0
+tt0040844	3	Crossroads of Laredo	US	\N	imdbDisplay	\N	0
+tt0097924	1	La donna inattesa	IT	\N	\N	\N	0
+tt0097924	2	Die Frau deines Lebens - Die Unerwartete	XWG	\N	\N	\N	0
+tt0097924	3	La mujer inesperada	\N	\N	original	\N	1
+tt0097924	4	La mujer inesperada	ES	\N	\N	\N	0
+tt0097925	1	La femme imprévisible	FR	\N	\N	\N	0
+tt0097925	2	Die Frau deines Lebens - Die Verrückte	XWG	\N	\N	\N	0
+tt0097925	3	La mujer lunática	ES	\N	\N	\N	0
+tt0097925	4	La mujer lunática	\N	\N	original	\N	1
+tt0098987	11	The Adventures of Ford Fairlane	AU	\N	imdbDisplay	\N	0
+tt0098987	12	Las aventuras de Ford Fairlane	ES	\N	imdbDisplay	\N	0
+tt0098987	13	Przygody Forda Fairlane'a	PL	\N	imdbDisplay	\N	0
+tt0098987	14	The Adventures of Ford Fairlane	\N	\N	original	\N	1
+tt0098987	15	Ford Fairlane - rokkidekkari	FI	\N	\N	\N	0
+tt0098987	16	フォード・フェアレーンの冒険	JP	ja	imdbDisplay	\N	0
+tt0098987	17	Ford Fairlane	SE	\N	\N	theatrical title	0
+tt0098987	18	Пригоди Форда Ферлейна	UA	\N	imdbDisplay	\N	0
+tt0098987	19	Les aventures de Ford Fairlane	FR	\N	imdbDisplay	\N	0
+tt0098987	1	Ford Fairlane - Rock'n' Roll Detective	XWG	\N	\N	\N	0
+tt0098987	20	The Adventures of Ford Fairlane	CA	fr	imdbDisplay	\N	0
+tt0098987	21	Le avventure di Ford Fairlane	IT	\N	\N	\N	0
+tt0098987	22	Ford Fairlane - Rock'n' Roll Detective	DE	\N	imdbDisplay	\N	0
+tt0098987	23	As Aventuras de Ford Fairlane	BR	\N	imdbDisplay	\N	0
+tt0098987	24	Ford Fairlane - rock 'n' roll detektiv	DK	\N	imdbDisplay	\N	0
+tt0098987	25	The Adventures of Ford Fairlane	GB	\N	imdbDisplay	\N	0
+tt0098987	26	Ford Fairlane kalandjai	HU	\N	\N	\N	0
+tt0098987	2	Ford Fairlane: policía del mundo rock	PE	\N	imdbDisplay	\N	0
+tt0098987	3	Ford Fairlane	PL	\N	alternative	\N	0
+tt0098987	4	Приключенията на Форд Феърлейн	BG	bg	imdbDisplay	\N	0
+tt0098987	5	The Adventures of Ford Fairlane	CA	en	imdbDisplay	\N	0
+tt0098987	6	The Adventures of Ford Fairlane	US	\N	imdbDisplay	\N	0
+tt0098987	7	Ford Fairlane	NO	\N	imdbDisplay	\N	0
+tt0098987	8	Ford Fairlane: Rock'n Roll Dedektifi	TR	tr	imdbDisplay	\N	0
+tt0098987	9	Ford Fairlane: Rock'n Roll Detective	FR	\N	alternative	\N	0
+
+where /N  i meed NULL
+
+______________________________________________________________________________________________________________
+CHATGPT:
+If you want to use `NULL` instead of `\N` for representing null values, you can modify your `INSERT INTO` statements accordingly. Here's the updated version:
+
+```sql
+INSERT INTO Akas(tconst, ordering, title, region, language, types, attributes, isOriginalTitle)
+VALUES
+    ('tt0034841', 1, 'Hen Hop', NULL, NULL, 'original', NULL, 1),
+    ('tt0034841', 2, 'Hen Hop', 'FR', NULL, 'imdbDisplay', NULL, 0),
+    ('tt0034841', 3, 'To pidima tis kotas', 'GR', NULL, 'festival', NULL, 0),
+    ('tt0034841', 4, 'Hen Hop', 'CA', NULL, NULL, NULL, 0),
+    ('tt0040844', 1, 'Crossroads of Laredo', NULL, NULL, 'original', NULL, 1),
+    ('tt0040844', 2, 'The Streets of Laredo', 'US', NULL, 'working', NULL, 0),
+    ('tt0040844', 3, 'Crossroads of Laredo', 'US', NULL, 'imdbDisplay', NULL, 0),
+    ('tt0097924', 1, 'La donna inattesa', 'IT', NULL, NULL, NULL, 0),
+    ('tt0097924', 2, 'Die Frau deines Lebens - Die Unerwartete', 'XWG', NULL, NULL, NULL, 0),
+    ('tt0097924', 3, 'La mujer inesperada', NULL, NULL, 'original', NULL, 1),
+    ('tt0097924', 4, 'La mujer inesperada', 'ES', NULL, NULL, NULL, 0),
+    ('tt0097925', 1, 'La femme imprévisible', 'FR', NULL, NULL, NULL, 0),
+    ('tt0097925', 2, 'Die Frau deines Lebens - Die Verrückte', 'XWG', NULL, NULL, NULL, 0),
+    ('tt0097925', 3, 'La mujer lunática', 'ES', NULL, NULL, NULL, 0),
+    ('tt0097925', 4, 'La mujer lunática', NULL, NULL, 'original', NULL, 1),
+    ('tt0098987', 11, 'The Adventures of Ford Fairlane', 'AU', NULL, 'imdbDisplay', NULL, 0),
+    ('tt0098987', 12, 'Las aventuras de Ford Fairlane', 'ES', NULL, 'imdbDisplay', NULL, 0),
+    ('tt0098987', 13, 'Przygody Forda Fairlane\'a', 'PL', NULL, 'imdbDisplay', NULL, 0),
+    ('tt0098987', 14, 'The Adventures of Ford Fairlane', NULL, NULL, 'original', NULL, 1),
+    ('tt0098987', 15, 'Ford Fairlane - rokkidekkari', 'FI', NULL, NULL, NULL, 0),
+    ('tt0098987', 16, 'フォード・フェアレーンの冒険', 'JP', 'ja', 'imdbDisplay', NULL, 0),
+    ('tt0098987', 17, 'Ford Fairlane', 'SE', NULL, NULL, 'theatrical title', 0),
+    ('tt0098987', 18, 'Пригоди Форда Ферлейна', 'UA', NULL, 'imdbDisplay', NULL, 0),
+    ('tt0098987', 19, 'Les aventures de Ford Fairlane', 'FR', NULL, 'imdbDisplay', NULL, 0),
+    ('tt0098987', 1, 'Ford Fairlane - Rock\'n\' Roll Detective', 'XWG', NULL, NULL, NULL, 0),
+    ('tt0098987', 20, 'The Adventures of Ford Fairlane', 'CA', 'fr', 'imdbDisplay', NULL, 0),
+    ('tt0098987', 21, 'Le avventure di Ford Fairlane', 'IT', NULL, NULL, NULL, 0),
+    ('tt0098987', 22, 'Ford Fairlane - Rock\'n\' Roll Detective', 'DE', NULL, 'imdbDisplay', NULL, 0),
+    ('tt0098987', 23, 'As Aventuras de Ford Fairlane', 'BR', NULL, 'imdbDisplay', NULL, 0),
+    ('tt0098987', 24, 'Ford Fairlane - rock \'n\' roll detektiv', 'DK', NULL, 'imdbDisplay', NULL, 0),
+    ('tt0098987', 25, 'The Adventures of Ford Fairlane', 'GB', NULL, 'imdbDisplay', NULL, 0),
+    ('tt0098987', 26, 'Ford Fairlane kalandjai', 'HU', NULL, NULL, NULL, 0),
+    ('tt0098987', 2, 'Ford Fairlane: policía del mundo rock', 'PE', NULL, 'imdbDisplay', NULL, 0),
+    ('tt0098987', 3, 'Ford Fairlane', 'PL', NULL, 'alternative', NULL, 0),
+    ('tt0098987', 4, 'Приключенията на Форд Феърлейн', 'BG', 'bg', 'imdbDisplay', NULL, 0),
+    ('tt0098987', 5, 'The Adventures of Ford Fairlane', 'CA', 'en', 'imdbDisplay', NULL, 0),
+    ('tt0098987', 6, 'The Adventures of Ford Fairlane', 'US', NULL, 'imdbDisplay', NULL, 0),
+    ('tt0098987', 7, 'Ford Fairlane', 'NO', NULL, 'imdbDisplay', NULL, 0),
+    ('tt0098987', 8, 'Ford Fairlane: Rock\'n Roll Dedektifi', 'TR', 'tr', 'imdbDisplay', NULL, 0),
+    ('tt0098987', 9, 'Ford Fairlane: Rock\'n Roll Detective', 'FR', NULL, 'alternative', NULL, 0);
+```
+
+I replaced `\N` with `NULL` in the `INSERT INTO` statements. Note that if your database system is case-sensitive, 
+you might need to use `null` instead of `NULL`. Adjust accordingly based on your database system.
+
+
+
+
+

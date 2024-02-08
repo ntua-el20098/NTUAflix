@@ -1,14 +1,20 @@
-module.exports = function (scope, param1, param2) {
+module.exports = function (scope, param1) {
     let base = 'http://localhost:9876/ntuaflix_api';
 
     // create url with scope
     base = base + scope;
 
-
-    if (scope === '/admin/'){
+    if (scope === '/admin/' && param1 === 'healthcheck'){
         base = base + 'healthcheck';
     }
+
     // create url for healthcheck
+
+    else if (scope === '/admin/' && param1 === 'resetall'){
+        base = base + 'resetall';
+    }
+
+    // create url for resetall
 
     else if (scope === '/title/'){
         // create url for title
@@ -33,26 +39,26 @@ module.exports = function (scope, param1, param2) {
     else if(scope === '/bygenre'){
         // create url for bygenre 
     }
-    else if (scope === '/admin/upload/titlebasics') {
-        // create url for upload newtitles
+    else if (scope === '/admin/' && param1 === 'upload/titlebasics') {
+        base = base + 'upload/titlebasics';
     }
-    else if(scope === '/admin/upload/namebasics') {
-        // create url for upload newnames
+    else if(scope === '/admin/' && param1 === 'upload/namebasics') {
+        base = base + 'upload/namebasics';
     }
-    else if(scope === '/admin/upload/titleepisode') {
-        // create url for upload newepisode
+    else if(scope === '/admin/' && param1 === 'upload/titleepisode') {
+        base = base + 'upload/titleepisode';
     }
-    else if(scope === '/admin/upload/titleakas') {
-        // create url for upload newakas
+    else if(scope === '/admin/' && param1 === 'upload/titleakas') {
+        base = base + 'upload/titleakas';
     }
-    else if(scope === '/admin/upload/titlecrew') {
-        // create url for upload newcrew
+    else if(scope === '/admin/' && param1 === 'upload/titlecrew') {
+        base = base + 'upload/titlecrew';
     }
-    else if(scope === '/admin/upload/titleprincipals') {
-        // create url for upload newprincipals
+    else if(scope === '/admin/' && param1 === 'upload/titleprincipals') {
+        base = base + 'upload/titleprincipals';
     }
-    else if(scope === '/admin/upload/titleratings') {
-        // create url for upload newratings
+    else if(scope === '/admin/' && param1 === 'upload/titleratings') {
+        base = base + 'upload/titleratings';
     }
     else if(scope === '/bygenre') {
         // create url for bygenre

@@ -1,0 +1,146 @@
+----------------------------------------------------------------------------------------
+USER:
+for my ntuaflix project
+I have the following functional requirements:
+
+List of recorded functional requirements
+
+N Title
+1 Selection of the N movies with the best ratings for a genre
+2 Movie recommender with Machine Learning
+3 User identity certification
+4 Finding the most highly rated movie of each actor / contributor
+5 Find the latest movie of each actor / contributor
+6 To produce a list of the N highest rated movies of each actor / contributor
+7 To produce a list of the N types of films of each actor / contributor whose films he participates in have a better rate
+8 Finding the movies users have watched
+9 Record movies that users watch
+10 Calculation of user profile based on the movies he has already seen. For example, the profile likes 20% action movies, 15% thrillers, 40% comedies, etc.
+11 Based on the user profile to recommend movies that suit him when he does not know what to choose.
+12 Calculation of an actor's / contributor's profile based on the films he has participated in. For example, the actor has done 20% action films, 15% thrillers, 40% comedies, etc.
+13 Adding movies that the user intends to see, of the "watch later" type, to more than one list
+14 Adding "like" or "dislike" to movies
+15 Create friends, so you can see what everyone has on their list and make recommendations based on their friends' lists
+16 Search for movies with criteria of actors / contributors
+17 Search for movies by genre criteria
+18 Search for films by year of release criteria
+19 Additional grading of parts of the film (eg interesting beginning, weak middle, terrible ending)
+20 Chatbots for chatting with the user, suggesting a movie, etc
+21 Movie Recommendations to users
+22 Suggesting movies based on what you've said you like ("likes" / "dislikes")
+23 Calculation of links between each film and its contributors
+24 Calculation of links between each coefficient and its films
+25 When we select an actor / contributor, his biography should be displayed.
+26 Graphical visualization of the movies the user likes and the categories they share
+27 Credentialing of users
+28 To renew the films
+29 Discussion of the film by users on the film page
+30 View full movie details
+
+
+I would like you to create me 3 use cases
+without needing User ID Certification
+
+----------------------------------------------------------------------------------------
+CHATGPT:
+
+Use Case 1: Movie Recommendations Based on User Preferences
+
+Actor: System, User
+
+Preconditions:
+- The system has access to a database of movies and user preferences.
+- The user has provided preferences or rated movies.
+
+Main Flow:
+1. User interacts with the system to request movie recommendations.
+2. The system prompts the user to input preferences or ratings if not already provided.
+3. The system analyzes the user's preferences or ratings.
+4. Based on the analysis, the system suggests a list of movies that align with the user's preferences.
+5. User reviews the recommended movies and selects ones of interest.
+6. The system updates the user's profile based on their selections.
+
+Postconditions:
+- The user receives personalized movie recommendations based on their preferences.
+- The user's profile is updated with their movie preferences.
+
+Alternative Flow:
+- If the user has not provided preferences or ratings, the system may suggest popular or trending movies instead.
+
+Use Case 2: Movie Search by Genre and Year
+
+Actor: System, User
+
+Preconditions:
+- The system has access to a database of movies categorized by genre and release year.
+
+Main Flow:
+1. User interacts with the system to search for movies by genre and/or release year.
+2. The system prompts the user to specify the genre and/or release year criteria.
+3. User provides the desired genre and/or release year.
+4. The system retrieves movies matching the specified criteria.
+5. The system displays a list of movies that match the search criteria to the user.
+6. User selects a movie from the list to view details or add to their watchlist.
+
+Postconditions:
+- The user receives a list of movies matching their search criteria.
+- The user can view details or add selected movies to their watchlist.
+
+Alternative Flow:
+- If no movies match the specified criteria, the system informs the user and prompts them to refine their search.
+
+Use Case 3: Movie Discussion Forum
+
+Actor: System, User
+
+Preconditions:
+- The system has a forum feature enabled for users to discuss movies.
+- Users are logged into the system.
+
+Main Flow:
+1. User accesses the movie discussion forum feature within the system.
+2. The system presents a list of movies that users are currently discussing or have discussed recently.
+3. User selects a movie from the list to view ongoing discussions or start a new discussion thread.
+4. User participates in existing discussions by posting comments or reactions.
+5. User starts a new discussion thread by creating a topic related to the selected movie.
+6. Other users can join the discussion by posting comments or reactions.
+
+Postconditions:
+- Users engage in discussions about movies within the system.
+- Discussion threads are created and maintained for each movie.
+
+Alternative Flow:
+- If no discussions exist for a selected movie, the system prompts the user to initiate a new discussion thread.
+
+----------------------------------------------------------------------------------------
+USER:
+
+can you change the use use 1 because i dont want a Recommender
+
+----------------------------------------------------------------------------------------
+CHATGPT:
+Certainly! Here's the revised Use Case 1 without the movie recommender functionality:
+
+Use Case 1: Movie Selection Based on Genre and Rating
+
+Actor: System, User
+
+Preconditions:
+- The system has access to a database of movies categorized by genre and rated by users.
+- The user has expressed an interest in finding movies based on specific genres and ratings.
+
+Main Flow:
+1. User interacts with the system to request a list of movies based on genre and rating.
+2. The system prompts the user to specify the desired genre and minimum rating criteria.
+3. User provides the desired genre and minimum rating.
+4. The system retrieves movies matching the specified genre and rating criteria.
+5. The system presents a list of movies that meet the user's criteria to the user.
+6. User reviews the list of movies and selects ones of interest.
+7. The system provides additional details about the selected movies if requested.
+
+Postconditions:
+- The user receives a list of movies matching their specified genre and rating criteria.
+- The user can review the list and select movies of interest for further exploration.
+
+Alternative Flow:
+- If no movies match the specified criteria, the system informs the user and prompts them to refine their search by adjusting the genre or minimum rating.

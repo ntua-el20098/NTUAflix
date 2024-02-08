@@ -5,7 +5,8 @@ const json2csv = require('json2csv').parse;
 
 module.exports = function resetall(options) {
     const format = options.format || 'json';
-    const url = constructURL('/admin/resetall');
+    const url = constructURL('/admin/', 'resetall');
+    console.log(url);
     const config = {
         method: 'POST',
         url: url,
