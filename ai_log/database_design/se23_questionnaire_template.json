@@ -1,0 +1,19 @@
+{
+    "answers": {
+        "phase": "design",
+        "action": "design decision",
+        "scope": "database design",
+        "action experience": "fair",
+        "prog lang": "sql",
+        "other prog lang": "<fill in>",
+        "tool": "chat gpt 3.x",
+        "other tool": "<fill in>",
+        "tool option": "free",
+        "tool experience": "enough",
+        "time allocated (h)": "0.3",
+        "time saved estimate (h)": "0.2", 
+        "quality of ai help": "minor modifications needed",
+        "generic feeling": "needs work",
+        "notes": "<fill in>"
+    }
+}
