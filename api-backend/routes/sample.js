@@ -10,12 +10,12 @@ const adminController = require('../controllers/admin');   //admin controller
 const router = express.Router();
 //title endpoints
 router.get('/title/:titleID', titleController.getTitleDetails );
-router.get('/bygenre', titleController.getTitlesByGenre);
 router.get('/searchtitle', titleController.getSearchByTitle);
+router.get('/bygenre', titleController.getTitlesByGenre);
 
 //name endpoints
-router.get('/searchname', nameController.getSearchPersonByName);
 router.get('/name/:nameID', nameController.getPersonDetails);
+router.get('/searchname', nameController.getSearchPersonByName);
 
 //admin endpoints
 router.post('/admin/healthcheck', adminController.healthcheck);
