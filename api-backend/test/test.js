@@ -1,3 +1,4 @@
+const { describe } = require('node:test');
 const app = require('../app');
 const request = require('supertest');
 
@@ -74,6 +75,129 @@ describe('Test (GET Request: {baseurl}/title/:titleID)', () => {
 });
 
 // Test 2: GET Request to {baseurl}/searchtitle
+const namePart = 'american';
+const expected_json_return2 =
+[
+    {
+        "titleObject": {
+            "titleID": "tt0099028",
+            "type": "movie",
+            "originalTitle": "American Dream",
+            "titlePoster": "https://image.tmdb.org/t/p/{width_variable}/da6DPUrYsi3K2HzwalUpphtOHec.jpg",
+            "startYear": "1990",
+            "endYear": "",
+            "genres": [
+                {
+                    "genreTitle": "Documentary"
+                }
+            ],
+            "titleAkas": [
+                {
+                    "akaTitle": "American Dream",
+                    "regionAbbrev": "US"
+                },
+                {
+                    "akaTitle": "Αμερικάνικο όνειρο",
+                    "regionAbbrev": "GR"
+                },
+                {
+                    "akaTitle": "Американская мечта",
+                    "regionAbbrev": "SUHH"
+                },
+                {
+                    "akaTitle": "Amerykański sen",
+                    "regionAbbrev": "PL"
+                },
+                {
+                    "akaTitle": "American Dream",
+                    "regionAbbrev": "GB"
+                },
+                {
+                    "akaTitle": "American Dream",
+                    "regionAbbrev": ""
+                }
+            ],
+            "principals": [
+                {
+                    "nameID": "nm0004453",
+                    "name": "Arthur Cohn",
+                    "category": "producer"
+                },
+                {
+                    "nameID": "nm0135199",
+                    "name": "Cathy Caplan",
+                    "category": "director"
+                },
+                {
+                    "nameID": "nm0359735",
+                    "name": "Thomas Haneke",
+                    "category": "director"
+                },
+                {
+                    "nameID": "nm0465932",
+                    "name": "Barbara Kopple",
+                    "category": "director"
+                },
+                {
+                    "nameID": "nm0798023",
+                    "name": "Lawrence Silk",
+                    "category": "director"
+                },
+                {
+                    "nameID": "nm0806498",
+                    "name": "Michael Small",
+                    "category": "composer"
+                },
+                {
+                    "nameID": "nm14905879",
+                    "name": "Wayne Goodnature",
+                    "category": "self"
+                },
+                {
+                    "nameID": "nm14905883",
+                    "name": "Lewie Anderson",
+                    "category": "self"
+                },
+                {
+                    "nameID": "nm14905884",
+                    "name": "R.J. Bergstrom",
+                    "category": "self"
+                },
+                {
+                    "nameID": "nm14905885",
+                    "name": "Ron Bergstrom",
+                    "category": "self"
+                }
+            ],
+            "rating": {
+                "avRating": "7.8",
+                "nVotes": "972"
+            }
+        }
+    }
+];
+
+describe ('Test (GET Request: {baseurl}/searchname)', () => {
+    it('Should return data with status 200', (done) => {
+        request(app)
+        .get('/ntuaflix_api/searchname')
+        .send(
+            {
+                tqueryObject: {
+                    titlePart: "american dream"
+                }
+            }
+        )
+        .end((err, res) => {
+            response = res.body;
+            expect(res.status).toBe(200);
+            done()
+        })
+    })
+    it('Should return an object', () => {
+        expect(response).toMatchObject(expected_json_return2);
+    })
+});
 
 // Test 3: GET Request to {baseurl}/bygenre
 
