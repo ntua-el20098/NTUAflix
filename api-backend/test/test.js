@@ -392,7 +392,7 @@ describe ('Test (GET Request: {baseurl}/searchname)', () => {
         .send(
             {
                 "nqueryObject": {
-                    "namePart": "georgette"
+                    "namePart": "get"
                 }
             }
         )
