@@ -278,7 +278,7 @@ exports.getSearchPersonByName = async (req, res, err) => {
                 return res.status(500).send(csv);
             }
         }
-        connection.query(query, queryParams, (err, rows) => {
+        connection.query(query, queryParams, async (err, rows) => {
             connection.release();
 
             if (err){
@@ -307,6 +307,10 @@ exports.getSearchPersonByName = async (req, res, err) => {
                 }
             }
             
+            /*
+
+
+
             // Map over the nconst values and call getPersonDetails for each one
             const nameDetailsPromises = rows.map(row => getPersonDetails(row.nconst).catch(error => {
                 console.error('Error fetching person details for', row.nconst);
@@ -340,6 +344,39 @@ exports.getSearchPersonByName = async (req, res, err) => {
                         return res.status(500).send(csv);
                     }
                 });
+                
+                
+                
+                */
+
+            const nconsts = rows.map(row => row.nconst);
+            const nameObjects = [];
+            try {
+                for (const n of nconsts) {
+                    const personDetails = await getPersonDetails(n);
+                    nameObjects.push(personDetails);
+                }
+                if(format === 'json') 
+                    return res.status(200).json(nameObjects);
+                else{
+                    const json2csvParser = new Parser();
+                    const csv = json2csvParser.parse(nameObjects);
+                    res.setHeader('Content-Type', 'text/csv');
+                    res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+                    return res.status(200).send(csv);
+                }
+            } catch (error) {
+                const message = { message: 'Error processing title details', error: error};
+                if(format === 'json') 
+                    return res.status(500).json(message);
+                else{
+                    const json2csvParser = new Parser();
+                    const csv = json2csvParser.parse(message);
+                    res.setHeader('Content-Type', 'text/csv');
+                    res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+                    return res.status(500).send(csv);
+                }
+            }
         });
     });
 };

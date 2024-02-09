@@ -75,7 +75,6 @@ describe('Test (GET Request: {baseurl}/title/:titleID)', () => {
 });
 
 // Test 2: GET Request to {baseurl}/searchtitle
-const namePart = 'american';
 const expected_json_return2 =
 [
     {
@@ -180,11 +179,11 @@ const expected_json_return2 =
 describe ('Test (GET Request: {baseurl}/searchname)', () => {
     it('Should return data with status 200', (done) => {
         request(app)
-        .get('/ntuaflix_api/searchname')
+        .get('/ntuaflix_api/searchtitle')
         .send(
             {
-                tqueryObject: {
-                    titlePart: "american dream"
+                "tqueryObject": {
+                    "titlePart": "american"
                 }
             }
         )
@@ -200,6 +199,135 @@ describe ('Test (GET Request: {baseurl}/searchname)', () => {
 });
 
 // Test 3: GET Request to {baseurl}/bygenre
+const expected_json_return3 =
+[
+    {
+        "titleObject": {
+            "titleID": "tt0090144",
+            "type": "short",
+            "originalTitle": "Le temps des bouffons",
+            "titlePoster": "https://image.tmdb.org/t/p/{width_variable}/7PVsQkiQsMf5j4pviQgEKJh4BPo.jpg",
+            "startYear": "1993",
+            "endYear": "",
+            "genres": [
+                {
+                    "genreTitle": "Documentary"
+                },
+                {
+                    "genreTitle": "Short"
+                }
+            ],
+            "titleAkas": [
+                {
+                    "akaTitle": "Le temps des bouffons",
+                    "regionAbbrev": "CA"
+                }
+            ],
+            "principals": [
+                {
+                    "nameID": "nm0265853",
+                    "name": "Pierre Falardeau",
+                    "category": "actor, director"
+                },
+                {
+                    "nameID": "nm10165788",
+                    "name": "Roger D. Landry",
+                    "category": "self"
+                }
+            ],
+            "rating": {
+                "avRating": "8.1",
+                "nVotes": "233"
+            }
+        }
+    },
+    {
+        "titleObject": {
+            "titleID": "tt0095571",
+            "type": "short",
+            "originalTitle": "The Making of Monsters",
+            "titlePoster": "https://image.tmdb.org/t/p/{width_variable}/zgenzvJ09QuRaduURuBuQzmM4jy.jpg",
+            "startYear": "1991",
+            "endYear": "",
+            "genres": [
+                {
+                    "genreTitle": "Short"
+                }
+            ],
+            "titleAkas": [
+                {
+                    "akaTitle": "The Making of Monsters",
+                    "regionAbbrev": "CA"
+                }
+            ],
+            "principals": [
+                {
+                    "nameID": "nm0026523",
+                    "name": "Christopher Anderson",
+                    "category": "actor"
+                },
+                {
+                    "nameID": "nm0036732",
+                    "name": "Stewart Arnott",
+                    "category": "actor"
+                },
+                {
+                    "nameID": "nm0340742",
+                    "name": "John Greyson",
+                    "category": "director, writer"
+                },
+                {
+                    "nameID": "nm0417284",
+                    "name": "Miume Jan",
+                    "category": "editor"
+                },
+                {
+                    "nameID": "nm0528508",
+                    "name": "Laurie Lynd",
+                    "category": "producer"
+                },
+                {
+                    "nameID": "nm0532024",
+                    "name": "Lee MacDougall",
+                    "category": "actor"
+                },
+                {
+                    "nameID": "nm0770765",
+                    "name": "Glenn Schellenberg",
+                    "category": "composer"
+                }
+            ],
+            "rating": {
+                "avRating": "8.4",
+                "nVotes": "41"
+            }
+        }
+    }
+];
+
+describe('Test (GET Request: {baseurl}/bygenre)', () => {
+    it('Should return data with status 200', (done) => {
+        request(app)
+        .get('/ntuaflix_api/bygenre?limit=2')
+        .send(
+            {
+                "gqueryObject": {
+                  "qgenre": "Short",
+                  "minrating": "8"
+                }
+            }
+        )
+        .end((err, res) => {
+            response = res.body;
+            expect(res.status).toBe(200);
+            done()
+        })
+    })
+    it('Should return an object', () => {
+        expect(response).toMatchObject(expected_json_return3);
+    })
+});
+
 
 // Test 4: GET Request to {baseurl}/name/:nameID
 const nameID = 'nm0615736';
@@ -237,3 +365,44 @@ describe('Test (GET Request: {baseurl}/name/:nameID)', () => {
 });
 
 // Test 5: GET Request to {baseurl}/searchname
+const expected_json_return5 =
+[
+    {
+        "nameObject": {
+            "nameID": "nm0214172",
+            "name": "Georgette Dee",
+            "namePoster": "",
+            "birthYr": 1958,
+            "deathYr": 0,
+            "profession": "actress,writer",
+            "nameTitles": [
+                {
+                    "titleID": "tt0099013",
+                    "category": "actress"
+                }
+            ]
+        }
+    }
+]
+
+describe ('Test (GET Request: {baseurl}/searchname)', () => {
+    it('Should return data with status 200', (done) => {
+        request(app)
+        .get('/ntuaflix_api/searchname')
+        .send(
+            {
+                "nqueryObject": {
+                    "namePart": "georgette"
+                }
+            }
+        )
+        .end((err, res) => {
+            response = res.body;
+            expect(res.status).toBe(200);
+            done()
+        })
+    })
+    it('Should return an object', () => {
+        expect(response).toMatchObject(expected_json_return5);
+    })
+});
