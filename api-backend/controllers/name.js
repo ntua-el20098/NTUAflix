@@ -262,8 +262,7 @@ exports.getSearchPersonByName = async (req, res, err) => {
 
     if (offset !== undefined) {
         queryParams.push(offset);
-    }
-    console.log(queryParams);   
+    }  
 
     pool.getConnection((err, connection) => {
         if (err){
