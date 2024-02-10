@@ -406,6 +406,4 @@ describe ('Test (GET Request: {baseurl}/searchname)', () => {
         expect(response).toMatchObject(expected_json_return5);
     })
     
-
-    
 });
