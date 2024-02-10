@@ -6,6 +6,7 @@
 -- Χρόνος δημιουργίας: 25 Ιαν 2024 στις 14:05:41
 -- Έκδοση διακομιστή: 10.4.27-MariaDB
 -- Έκδοση PHP: 8.2.0
+-- Έκδοση PHP: 8.2.0
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
