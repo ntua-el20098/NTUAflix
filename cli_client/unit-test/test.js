@@ -1,5 +1,4 @@
 const constructURL = require('../lib/constructURL');
-const name = require('../src/user/name');
 
 describe('healthcheck URL ', () => {
     it('healthcheck', () => {
