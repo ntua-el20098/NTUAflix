@@ -4,7 +4,7 @@ const { exec } = require("child_process");
 
         const commands = [
           "se2326 healthcheck",
-          "se2326 resetall",
+          //"se2326 resetall",
           'se2326 newtitles --filename "truncated_data/truncated_title.basics.tsv"',
           'se2326 newnames --filename "truncated_data/truncated_name.basics.tsv"',
           'se2326 newratings --filename "truncated_data/truncated_title.ratings.tsv"',
