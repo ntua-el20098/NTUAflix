@@ -29,14 +29,14 @@ exports.healthcheck = async (req, res, next) => {
       } };
 
       if (format == 'json') {
-        res.json(message);
+        res.status(200).json(message);
       } 
       else {
         const json2csvParser = new Parser();
         const csv = json2csvParser.parse(message);
         res.setHeader('Content-Type', 'text/csv');
         res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
-        res.send(csv);
+        res.status(200).send(csv);
       }
     } 
     catch (error) {
@@ -51,14 +51,14 @@ exports.healthcheck = async (req, res, next) => {
 
       console.error(error);
       if (format == 'json') {
-        res.json(message);
+        res.status(500).json(message);
       } 
       else {
         const json2csvParser = new Parser();
         const csv = json2csvParser.parse(message);
         res.setHeader('Content-Type', 'text/csv');
         res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
-        res.send(csv);
+        res.status(500).send(csv);
       }
     }
 };
@@ -197,8 +197,8 @@ exports.upload_titlebasics = async (req, res, next) => {
       await parseAndInsertIntoDatabase(filePathGenres, 'genre', ['tconst', 'genres']);
 
       const message = "TSV data inserted into the database successfully.";
-      if (format == 'json') {
-        res.status(200).json(message);
+      if (format === 'json') {
+        res.status(200).json({message});
       }
       else {
         const json2csvParser = new Parser();
@@ -212,7 +212,7 @@ exports.upload_titlebasics = async (req, res, next) => {
       const message = "Error uploading/parsing TSV files.";
 
       console.error('Error uploading TSV files:', error);
-      if (format == 'json') {
+      if (format === 'json') {
         res.status(500).json(message);
       }
       else {
@@ -231,14 +231,14 @@ exports.upload_titleakas = async (req, res, next) => {
 
   if(!(format === 'json' || format === 'csv')) {
     const message = { message: 'Invalid format parameter! format should be json or csv', error: err ? err : '' };
-    return res.status(400).send(message);
+    return res.status(400).send(message); // 400 Bad Request
   }
 
     try {
       await parseAndInsertIntoDatabase(req.file.path, 'akas', ['titleId', 'ordering', 'title', 'region', 'language', 'types', 'attributes', 'isOriginalTitle']);
       
       const message = "TSV data inserted into the database successfully.";
-      if (format == 'json') {
+      if (format === 'json') {
         res.status(200).json(message);
       }
       else {  
