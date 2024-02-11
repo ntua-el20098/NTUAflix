@@ -56,18 +56,7 @@ exports.getPersonDetails = async (req, res, err) => {
             return res.status(400).send(csv);
         }
     }
-    if (req.params.nameID.length !== 9) {
-        const message ={ message: 'Invalid nameID parameter! namedID should have 9 characters', error: err? err : ''};
-        if(format === 'json')
-            return res.status(400).json(message);
-        else{
-            const json2csvParser = new Parser();
-            const csv = json2csvParser.parse(message);
-            res.setHeader('Content-Type', 'text/csv');
-            res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
-            return res.status(400).send(csv);
-        }
-    }
+
     const nameID = req.params.nameID;
     
     
@@ -365,7 +354,7 @@ exports.getSearchPersonByName = async (req, res, err) => {
                     return res.status(200).send(csv);
                 }
             } catch (error) {
-                const message = { message: 'Error processing title details', error: error};
+                const message = { message: 'Error processing name details', error: error};
                 if(format === 'json') 
                     return res.status(500).json(message);
                 else{

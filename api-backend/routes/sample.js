@@ -9,7 +9,7 @@ const adminController = require('../controllers/admin');   //admin controller
 
 const router = express.Router();
 //title endpoints
-router.get('/title/:titleID', titleController.getTitleDetails );
+router.get('/title/:titleID', titleController.getTitleDetails);
 router.get('/searchtitle', titleController.getSearchByTitle);
 router.get('/bygenre', titleController.getTitlesByGenre);
 
@@ -27,7 +27,6 @@ router.post('/admin/upload/titlecrew', upload.single("file"), adminController.up
 router.post('/admin/upload/titleepisode', upload.single("file"), adminController.upload_titleepisode);
 router.post('/admin/upload/titleprincipals', upload.single("file"), adminController.upload_titleprincipals);
 router.post('/admin/upload/titleratings', upload.single("file"), adminController.upload_titleratings);
-router.post('/admin/resetall', adminController.resetall);
 
 //front-end endpoints
 router.post('/bygenre', titleController.getTitlesByGenre);
