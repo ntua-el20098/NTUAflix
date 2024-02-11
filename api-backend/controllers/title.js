@@ -388,7 +388,7 @@ exports.getSearchByTitle = async (req, res, err) => {
     });
 };
 
-exports.getTitlesByGenre = async (req, res, next) => {
+exports.getTitlesByGenre = async (req, res, err) => {
     let limit = undefined;
     let offset = undefined;
     let format = req.query.format || 'json';
