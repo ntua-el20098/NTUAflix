@@ -51,24 +51,25 @@ function Page({ params }: { params: { id: string } }) {
     Array<{ nameID: string; namePoster: string }>
   >([]);
   const [similarMovies, setSimilarMovies] = useState<SimilarMovies[]>([]);
+  const [showTranslations, setShowTranslations] = useState(false); // Added state
   const fallbackPosterUrl =
     "https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg";
 
-    
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const response = await fetch(
-            `http://localhost:9876/ntuaflix_api/title/${params.id}`
-          );
-          if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-          }
-          const data: { titleObject: MovieData } = await response.json();
-          setMovieData(data.titleObject);
-          console.log("Fetched data:", data.titleObject);
-    
-          const castDataPromises = data.titleObject.principals.map(async (person) => {
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:9876/ntuaflix_api/title/${params.id}`
+        );
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data: { titleObject: MovieData } = await response.json();
+        setMovieData(data.titleObject);
+        console.log("Fetched data:", data.titleObject);
+
+        const castDataPromises = data.titleObject.principals.map(
+          async (person) => {
             try {
               const castResponse = await fetch(
                 `http://localhost:9876/ntuaflix_api/name/${person.nameID}`
@@ -76,110 +77,136 @@ function Page({ params }: { params: { id: string } }) {
               if (!castResponse.ok) {
                 throw new Error(`HTTP error! Status: ${castResponse.status}`);
               }
-    
-              const castData: { nameObject: { namePoster: string } } = await castResponse.json();
-              console.log("Fetched cast poster:", castData.nameObject.namePoster);
-    
+
+              const castData: { nameObject: { namePoster: string } } =
+                await castResponse.json();
+              console.log(
+                "Fetched cast poster:",
+                castData.nameObject.namePoster
+              );
+
               // Update the person in the principals array with the fetched poster data
               const updatedPrincipals = movieData?.principals.map((p) =>
-                p.nameID === person.nameID ? { ...p, poster: castData.nameObject.namePoster } : p
+                p.nameID === person.nameID
+                  ? { ...p, poster: castData.nameObject.namePoster }
+                  : p
               );
-    
+
               // Set the updated movie data
               setMovieData((prevMovieData) => ({
                 ...prevMovieData!,
                 principals: updatedPrincipals || [],
               }));
-    
+
               return castData.nameObject.namePoster;
             } catch (error) {
               console.error("Error fetching cast data:", error);
               return null;
             }
-          });
-    
-          // Wait for all cast data promises to resolve
-          const castResults = await Promise.all(castDataPromises);
-    
-          // Filter out null results
-          const validCastResults = castResults.filter((result) => result !== null) as string[];
-    
-          // Update the state with an array of objects with nameID and namePoster properties
-          setCastData(validCastResults.map((poster, index) => ({ nameID: `${index}`, namePoster: poster })));
-    
-          // Update the principals array with the fetched poster data
-          const updatedPrincipals = data.titleObject.principals.map(
-            (person, index) => ({
-              ...person,
-              poster: validCastResults[index] || "", // Use the fetched poster or an empty string if not available
-            })
-          );
-    
-          // Set the updated movie data
-          setMovieData({
-            ...data.titleObject,
-            principals: updatedPrincipals,
-          });
-    
-          console.log("Fetched cast data:", validCastResults);
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        }
-      };
-    
-      fetchData();
-    }, [params.id]);
+          }
+        );
+
+        // Wait for all cast data promises to resolve
+        const castResults = await Promise.all(castDataPromises);
+
+        // Filter out null results
+        const validCastResults = castResults.filter(
+          (result) => result !== null
+        ) as string[];
+
+        // Update the state with an array of objects with nameID and namePoster properties
+        setCastData(
+          validCastResults.map((poster, index) => ({
+            nameID: `${index}`,
+            namePoster: poster,
+          }))
+        );
+
+        // Update the principals array with the fetched poster data
+        const updatedPrincipals = data.titleObject.principals.map(
+          (person, index) => ({
+            ...person,
+            poster: validCastResults[index] || "", // Use the fetched poster or an empty string if not available
+          })
+        );
+
+        // Set the updated movie data
+        setMovieData({
+          ...data.titleObject,
+          principals: updatedPrincipals,
+        });
+
+        console.log("Fetched cast data:", validCastResults);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [params.id]);
 
   useEffect(() => {
     const fetchSimilarMovies = async () => {
       if (movieData && movieData.genres && movieData.genres.length > 0) {
         // Filter out empty genres
-        const nonEmptyGenres = movieData.genres.filter((genre) => genre.genreTitle.trim() !== "");
-  
+        const nonEmptyGenres = movieData.genres.filter(
+          (genre) => genre.genreTitle.trim() !== ""
+        );
+
         if (nonEmptyGenres.length > 0) {
           const similarMoviesPromises = nonEmptyGenres.map(async (genre) => {
-            const response = await fetch("http://localhost:9876/ntuaflix_api/bygenre?limit=3", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                gqueryObject: {
-                  qgenre: genre.genreTitle,
-                  minrating: "0",
+            const response = await fetch(
+              "http://localhost:9876/ntuaflix_api/bygenre?limit=3",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
                 },
-              }),
-            });
-  
+                body: JSON.stringify({
+                  gqueryObject: {
+                    qgenre: genre.genreTitle,
+                    minrating: "0",
+                  },
+                }),
+              }
+            );
+
             if (response.ok) {
-              const genreMovies: { titleObject: SimilarMovies }[] = await response.json();
+              const genreMovies: { titleObject: SimilarMovies }[] =
+                await response.json();
               return genreMovies.map((item) => item.titleObject);
             }
             return [];
           });
-  
+
           const similarMoviesResults = await Promise.all(similarMoviesPromises);
           const flattenedSimilarMovies = similarMoviesResults.flat();
-  
+
           // Filter out the current movie from similar movies
           const filteredSimilarMovies = flattenedSimilarMovies
-            .filter((similarMovie) => similarMovie.titleID !== movieData.titleID)
+            .filter(
+              (similarMovie) => similarMovie.titleID !== movieData.titleID
+            )
             .filter(
               (value, index, self) =>
                 self.findIndex((m) => m.titleID === value.titleID) === index
             );
-  
+
           setSimilarMovies(filteredSimilarMovies);
           console.log("Fetched similar movies data:", filteredSimilarMovies);
         }
       }
     };
-  
+
     // Check if genres list is not empty before making the fetch request
     if (movieData && movieData.genres && movieData.genres.length > 0) {
       fetchSimilarMovies();
     }
   }, [movieData]);
+
+  const handleTranslationsButtonClick = () => {
+    setShowTranslations((prevShowTranslations) => !prevShowTranslations);
+  };
 
   return (
     <div className="relative px-4 md:px-0">
@@ -231,6 +258,36 @@ function Page({ params }: { params: { id: string } }) {
                       {movieData.rating.nVotes} votes)
                     </div>
                   </li>
+                  <li className="list-group-item">
+                    <button
+                      className="btn btn-secondary"
+                      onClick={handleTranslationsButtonClick}
+                    >
+                      See Title Translations
+                    </button>
+                    {showTranslations && (
+                      <div style={{ maxHeight: "150px", overflowY: "auto", marginTop: 8 }}>
+                        <table className="table table-bordered">
+                          <thead>
+                            <tr>
+                              
+                              <th scope="col">Region</th>
+                              <th scope="col">Title</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {movieData.titleAkas.map((aka, index) => (
+                              <tr key={index}>
+                  
+                                <td>{aka.regionAbbrev || "N/A"}</td>
+                                <td>{aka.akaTitle || "N/A"}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                  </li>
                 </ul>
               </div>
             </div>
@@ -238,34 +295,37 @@ function Page({ params }: { params: { id: string } }) {
         </div>
       )}
 
-{movieData && (
-  <>
-    <ul className="list-group ">
-      <li className="list-group-item">
-        <h2 className="text-2xl font-bold mt-8">Cast</h2>
-      </li>
-      <li className="list-group-item">
-        <div className="pre-cast-card-container">
-          <div className="cast-card-container flex items-center ">
-            {movieData.principals.map((person, index) => (
-              <PeopleCard
-                key={index}
-                id={person.nameID}
-                name={person.name}
-                type={person.category}
-                image={
-                  person.poster &&
-                  person.poster.replace("{width_variable}", "original") ||
-                  fallbackPosterUrl
-                }
-              />
-            ))}
-          </div>
-        </div>
-      </li>
-    </ul>
-  </>
-)}
+      {movieData && (
+        <>
+          <ul className="list-group ">
+            <li className="list-group-item">
+              <h2 className="text-2xl font-bold mt-8">Cast</h2>
+            </li>
+            <li className="list-group-item">
+              <div className="pre-cast-card-container">
+                <div className="cast-card-container flex items-center ">
+                  {movieData.principals.map((person, index) => (
+                    <PeopleCard
+                      key={index}
+                      id={person.nameID}
+                      name={person.name}
+                      type={person.category}
+                      image={
+                        (person.poster &&
+                          person.poster.replace(
+                            "{width_variable}",
+                            "original"
+                          )) ||
+                        fallbackPosterUrl
+                      }
+                    />
+                  ))}
+                </div>
+              </div>
+            </li>
+          </ul>
+        </>
+      )}
 
       {similarMovies.length > 0 && (
         <>
@@ -283,8 +343,11 @@ function Page({ params }: { params: { id: string } }) {
                       name={similarMovie.originalTitle}
                       type={similarMovie.type}
                       image={
-                        similarMovie.titlePoster &&
-                        similarMovie.titlePoster.replace("{width_variable}", "original") ||
+                        (similarMovie.titlePoster &&
+                          similarMovie.titlePoster.replace(
+                            "{width_variable}",
+                            "original"
+                          )) ||
                         fallbackPosterUrl
                       }
                     />

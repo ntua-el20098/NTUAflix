@@ -2,9 +2,12 @@
 import { useEffect, useState } from "react";
 import MovieCard from "@/components/Moviecard";
 import "bootstrap/dist/css/bootstrap.min.css";
-import TitleCard from "@/components/Onetitlecard";
+import TitleCardRating from "@/components/Onetitlecard";
+import TitleCardYear from "@/components/Onetitlecarddate";
 
 interface AppearsIn {
+  startYear: string;
+  avRating: string;
   titleID: string;
   category: string;
   titlePoster: string;
@@ -25,6 +28,8 @@ interface PersonData {
 function Page({ params }: { params: { id: string } }) {
   const [personData, setPersonData] = useState<PersonData | null>(null);
   const [movieDetails, setMovieDetails] = useState<AppearsIn[]>([]);
+  const [highestRated, setHighestRated] = useState<AppearsIn | null>(null);
+  const [mostRecent, setMostRecent] = useState<AppearsIn | null>(null);
   const fallbackPosterUrl =
     "https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg";
 
@@ -60,13 +65,37 @@ function Page({ params }: { params: { id: string } }) {
               );
               if (titleResponse.ok) {
                 const titleData: {
-                  titleObject: { titlePoster: string; originalTitle: string };
+                  titleObject: {
+                    titlePoster: string;
+                    originalTitle: string;
+                    startYear: string;
+                    rating: { avRating: string };
+                  };
                 } = await titleResponse.json();
-                return {
+
+                const updatedTitle = {
                   ...title,
                   titlePoster: titleData.titleObject.titlePoster,
                   originalTitle: titleData.titleObject.originalTitle,
+                  startYear: titleData.titleObject.startYear,
+                  avRating: titleData.titleObject.rating.avRating,
                 };
+
+                // Update most recent and highest rated titles
+                if (
+                  !mostRecent ||
+                  titleData.titleObject.startYear > mostRecent.startYear
+                ) {
+                  setMostRecent(updatedTitle);
+                }
+                if (
+                  !highestRated ||
+                  titleData.titleObject.rating.avRating > highestRated.avRating
+                ) {
+                  setHighestRated(updatedTitle);
+                }
+
+                return updatedTitle;
               }
               return title;
             }
@@ -84,7 +113,7 @@ function Page({ params }: { params: { id: string } }) {
     };
 
     fetchData();
-  }, [params.id]);
+  }, [params.id, mostRecent, highestRated]);
 
   return (
     <div className="relative px-4 md:px-0">
@@ -171,24 +200,34 @@ function Page({ params }: { params: { id: string } }) {
           </ul>
         </>
       )}
-      {movieDetails.length > 0 && (
+      {mostRecent && highestRated && (
         <div className="cardcontainer">
-          <TitleCard
+          <TitleCardRating
             text="Highest Rated"
             key={1}
             id={1}
-            name={"movie.originalTitle"}
-            type={"movie.category"}
-            image={"movie.titlePoster"}
+            name={highestRated.originalTitle}
+            type={highestRated.category}
+            image={
+              highestRated.titlePoster.replace(
+                "{width_variable}",
+                "original"
+              ) || fallbackPosterUrl
+            }
+            rating={highestRated.avRating}
           />
 
-          <TitleCard
+          <TitleCardYear
             text="Most Recent"
-            key={1}
-            id={1}
-            name={"movie.originalTitle"}
-            type={"movie.category"}
-            image={"movie.titlePoster"}
+            key={2}
+            id={2}
+            name={mostRecent.originalTitle}
+            type={mostRecent.category}
+            image={
+              mostRecent.titlePoster.replace("{width_variable}", "original") ||
+              fallbackPosterUrl
+            }
+            year={mostRecent.startYear}
           />
         </div>
       )}

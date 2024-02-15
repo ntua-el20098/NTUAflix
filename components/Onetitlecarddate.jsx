@@ -1,7 +1,7 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap CSS
 
-const Card = ({ text, image, name, id, type, rating }) => {
+const Card = ({ text, image, name, id, type, year }) => {
   return (
     <a
       href={`/titles/${id}`}
@@ -15,7 +15,7 @@ const Card = ({ text, image, name, id, type, rating }) => {
               src={image}
               className="card-img-top"
               alt={name}
-              style={{ height: "250px",width: "250px", objectFit: "cover" }}
+              style={{ height: "250px", width: "250px", objectFit: "cover" }}
             />
           </div>
           <div className="col-md-8">
@@ -25,13 +25,12 @@ const Card = ({ text, image, name, id, type, rating }) => {
               <div className="mt-auto">
                 <span className="badge bg-secondary float-end">{type}</span>
               </div>
-
               <div>
                 <span
                   style={{ marginLeft: "5px" }}
                   className="badge bg-secondary"
                 >
-                  Rating: {rating} ⭐
+                  Released: {year}{" "}
                 </span>
               </div>
             </div>
