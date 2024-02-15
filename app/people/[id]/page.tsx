@@ -204,8 +204,7 @@ function Page({ params }: { params: { id: string } }) {
         <div className="cardcontainer">
           <TitleCardRating
             text="Highest Rated"
-            key={1}
-            id={1}
+            id={highestRated.titleID}
             name={highestRated.originalTitle}
             type={highestRated.category}
             image={
@@ -219,8 +218,7 @@ function Page({ params }: { params: { id: string } }) {
 
           <TitleCardYear
             text="Most Recent"
-            key={2}
-            id={2}
+            id={highestRated.titleID}
             name={mostRecent.originalTitle}
             type={mostRecent.category}
             image={

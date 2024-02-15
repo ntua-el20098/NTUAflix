@@ -260,10 +260,10 @@ function Page({ params }: { params: { id: string } }) {
                   </li>
                   <li className="list-group-item">
                     <button
-                      className="btn btn-secondary"
+                      className="btn btn-outline-secondary"
                       onClick={handleTranslationsButtonClick}
                     >
-                      See Title Translations
+                      Title Translations
                     </button>
                     {showTranslations && (
                       <div style={{ maxHeight: "150px", overflowY: "auto", marginTop: 8 }}>
