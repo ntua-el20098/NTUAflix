@@ -87,3 +87,16 @@
     text-wrap: balance;
   }
 }
+
+.cardcontainer {
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+}
+
+.onecardcontainer {
+  display: flex;
+  justify-content: center;
+  width: 30px;
+  margin: auto;
+}
