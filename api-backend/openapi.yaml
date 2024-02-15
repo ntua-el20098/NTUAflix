@@ -1,0 +1,1162 @@
+openapi: 3.0.0
+info:
+  title: NTUAflix API
+  version: 1.0.0
+  description: The NTUAflix API provides access to a database of movies, TV shows, actors and film industry professionals. Designed to offer information on titles, cast, crew, production details and user ratings. The API enables developers to integrate this data set into their applications.
+servers:
+  - url: http://localhost:9876/ntuaflix_api
+    description: Development server
+paths:
+  /admin/healhcheck:
+    post:
+      tags:
+        - Admin
+      summary: Healthcheck
+      description: Check if the server is up and running
+      parameters:
+        - in: query
+          name: format
+          required: false
+          schema:
+            type: string
+          description: Response format. Can be 'csv' for CSV format or 'json' for JSON format, defaults to JSON.
+      responses:
+        '200':
+          description: The server is up and running
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: The status of the server can be "OK" or "failed"
+                    example: "OK"
+                  message:
+                    type: string
+                    description: A message from the server
+            text/csv:
+              schema:
+                type: string
+                example: "status, message\nOK,status: 'failed',  dataconnection: {host: pool.config.connectionConfig.host, user: pool.config.connectionConfig.user, database: pool.config.connectionConfig.database,"
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A message from the server
+                    example: "Invalid format parameter! format should be json or csv', error: err ? err : ''"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A message from the server, error message
+                error:
+                  type: string
+                  description: The error message
+
+  /admin/resetall:
+    post:
+      tags:
+        - Admin
+      summary: Reset all data
+      description: Reset all data in the database
+      responses:
+        '200':
+          description: The server is up and running
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    description: If the reset was successful
+                    example: "OK"
+                  message:
+                    type: string
+                    description: A message from the server
+                    example: "All tables have been reset"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A message from the server, error message
+                    example: "All tables have not been reset"
+                error:
+                  type: string
+                  description: The error message
+
+  /admin/upload/titlebasics:
+    post:
+      tags:
+        - Admin
+      summary: Upload title basics
+      description: Allows to admin to upload a TSV file with title basics
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The TSV file with title basics data to upload
+      responses:
+        '200':
+          description: File processed successfully and data inserted into the database
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A message success from the server
+                    example: "TSV data inserted into the database successfully."
+        '400':
+          description: Bad request, no file uploaded or invalid format
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A error message from the server
+                    example: "Invalid format parameter! format should be json or csv"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A message from the server, error message
+                    example: "Error uploading/parsing TSV files."
+                error:
+                  type: string
+                  description: The error message
+
+  /admin/upload/titleakas:
+    post:
+      tags:
+        - Admin
+      summary: Upload title akas
+      description: Allows to admin to upload a TSV file with title akas
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The TSV file with title akas data to upload
+      responses:
+        '200':
+          description: File processed successfully and data inserted into the database
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A message success from the server
+                    example: "TSV data inserted into the database successfully."
+        '400':
+          description: Bad request, no file uploaded or invalid format
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A error message from the server
+                    example: "Invalid format parameter! format should be json or csv"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A message from the server, error message
+                    example: "Error uploading/parsing TSV files."
+                error:
+                  type: string
+                  description: The error message
+
+  /admin/upload/namebasics:
+    post:
+      tags:
+        - Admin
+      summary: Upload name basics
+      description: Allows to admin to upload a TSV file with name basics
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The TSV file with name basics data to upload
+      responses:
+        '200':
+          description: File processed successfully and data inserted into the database
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A message success from the server
+                    example: "TSV data inserted into the database successfully."
+        '400':
+          description: Bad request, no file uploaded or invalid format
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A error message from the server
+                    example: "Invalid format parameter! format should be json or csv"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A message from the server, error message
+                    example: "Error uploading/parsing TSV files."
+                error:
+                  type: string
+                  description: The error message
+
+  /admin/upload/titlecrew:
+    post:
+      tags:
+        - Admin
+      summary: Upload title crew
+      description: Allows to admin to upload a TSV file with title crew
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The TSV file with title crew data to upload
+      responses:
+        '200':
+          description: File processed successfully and data inserted into the database
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A message success from the server
+                    example: "TSV data inserted into the database successfully."
+        '400':
+          description: Bad request, no file uploaded or invalid format
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A error message from the server
+                    example: "Invalid format parameter! format should be json or csv"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A message from the server, error message
+                    example: "Error uploading/parsing TSV files."
+                error:
+                  type: string
+                  description: The error message
+
+  /admin/upload/titleepisode:
+    post:
+      tags:
+        - Admin
+      summary: Upload title episode
+      description: Allows to admin to upload a TSV file with title episode
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The TSV file with title episode data to upload
+      responses:
+        '200':
+          description: File processed successfully and data inserted into the database
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A message success from the server
+                    example: "TSV data inserted into the database successfully."
+        '400':
+          description: Bad request, no file uploaded or invalid format
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A error message from the server
+                    example: "Invalid format parameter! format should be json or csv"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A message from the server, error message
+                    example: "Error uploading/parsing TSV files."
+                error:
+                  type: string
+                  description: The error message
+
+  /admin/upload/titleprincipals:
+    post:
+      tags:
+        - Admin
+      summary: Upload title principals
+      description: Allows to admin to upload a TSV file with title principals
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The TSV file with title principals data to upload
+      responses:
+        '200':
+          description: File processed successfully and data inserted into the database
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A message success from the server
+                    example: "TSV data inserted into the database successfully."
+        '400':
+          description: Bad request, no file uploaded or invalid format
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A error message from the server
+                    example: "Invalid format parameter! format should be json or csv"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A message from the server, error message
+                    example: "Error uploading/parsing TSV files."
+                error:
+                  type: string
+                  description: The error message
+
+  /admin/upload/titleratings:
+    post:
+      tags:
+        - Admin
+      summary: Upload title ratings
+      description: Allows to admin to upload a TSV file with title ratings
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: The TSV file with title ratings data to upload
+      responses:
+        '200':
+          description: File processed successfully and data inserted into the database
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A message success from the server
+                    example: "TSV data inserted into the database successfully."
+        '400':
+          description: Bad request, no file uploaded or invalid format
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A error message from the server
+                    example: "Invalid format parameter! format should be json or csv"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A message from the server, error message
+                    example: "Error uploading/parsing TSV files."
+                error:
+                  type: string
+                  description: The error message
+
+  /title/{titleID}:
+    get:
+      tags:
+        - Titles
+      summary: Get title Information by ID
+      description: Returns the title information for a given title ID, including title type, original title, start year, end year, genres, title akas, principals and rating.
+      parameters:
+        - in: path
+          name: titleID
+          required: true
+          schema:
+            type: string
+          description: The unique ID of the title
+        - in: query
+          name: format
+          required: false
+          schema:
+            type: string
+          description: Response format. Can be 'csv' for CSV format or 'json' for JSON format, defaults to JSON.
+      responses:
+        '200':
+          description: The title was found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  titleObject:
+                    type: object
+                    properties:
+                      titleID:
+                        type: string
+                        description: The unique ID of the title
+                        example: "tt0000929"
+                      type:
+                        type: string
+                        description: The type of the title
+                        example: "short"
+                      originalTitle:
+                        type: string
+                        description: The original title of the title
+                        example: "Klebolin klebt alles"
+                      titlePoster:
+                        type: string
+                        description: The original title of the title
+                        example: "https://image.tmdb.org/t/p/{width_variable}/88EH2TVg6fGK7SnGXcfQ05MD2Rk.jpg"
+                      startYear:
+                        type: string
+                        description: The start year of the title
+                        example: "1990"
+                      endYear:
+                        type: string
+                        description: The end year of the title
+                        example: "\\N"
+                      genres:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            genreTitle:
+                              type: string
+                              description: The genre of the title
+                              example: "Comedy"
+                      titleAkas:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            akaTitle:
+                              type: string
+                              description: The aka title of the title
+                              example: "Willys Streiche: Klebolin klebt alles"
+                            region:
+                              type: string
+                              description: The region of the aka title
+                              example: "DE"
+                      principals:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            nameID:
+                              type: string
+                              description: The unique ID of the name
+                              example: "nm00000191"
+                            name:
+                              type: string
+                              description: The name of the person
+                              example: "Federico Fellini"
+                            category:
+                              type: string
+                              description: The category of the person
+                              example: "director" 
+                      rating:
+                        type: object
+                        properties:
+                          avRating:
+                            type: string
+                            description: The average rating of the title
+                            example: "6.1"
+                          nVotes:
+                            type: string
+                            description: The number of votes of the title
+                            example: "7"
+            text/csv:
+              schema:
+                type: string
+                example: "titleID, type, originalTitle, titlePoster, startYear, endYear, genres, titleAkas, principals, rating"
+        '204':
+          description: The title was not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A message from the server
+                    example: "No results found"
+        '400':
+          description: The title was not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A message from the server
+                    example: "Invalid titleID parameter! titleID should start with tt"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A message from the server, error message
+                    example: "Error processing title details"
+                error:
+                  type: string
+                  description: The error message
+
+  /searchtitle:
+    get:
+      tags:
+        - Titles
+      summary: Search title by Part of the Title Name
+      description: Search and return the titles where the original title contains the given string. Supports JSON and CSV formats.
+      parameters:
+        - in: query
+          name: format
+          required: false
+          schema:
+            type: string
+          description: Response format. Can be 'csv' for CSV format or 'json' for JSON format, defaults to JSON.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                titlePart:
+                  type: string
+                  description: The part of the title name to search for
+                  example: "Klebolin"
+      responses:
+        '200':
+          description: Titles found matching the search
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  titleObject:
+                    type: obrect
+                    properties:
+                      titleID:
+                        type: string
+                        description: The unique ID of the title
+                        example: "tt0000929"
+                      type:
+                        type: string
+                        description: The type of the title
+                        example: "short"
+                      originalTitle:
+                        type: string
+                        description: The original title of the title
+                        example: "Klebolin klebt alles"
+                      titlePoster:
+                        type: string
+                        description: The original title of the title
+                        example: "https://image.tmdb.org/t/p/{width_variable}/88EH2TVg6fGK7SnGXcfQ05MD2Rk.jpg"
+                      startYear:
+                        type: string
+                        description: The start year of the title
+                        example: "1990"
+                      endYear:
+                        type: string
+                        description: The end year of the title
+                        example: "\\N"
+                      genres:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            genreTitle:
+                              type: string
+                              description: The genre of the title
+                              example: "Comedy"
+                      titleAkas:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            akaTitle:
+                              type: string
+                              description: The aka title of the title
+                              example: "Willys Streiche: Klebolin klebt alles"
+                            region:
+                              type: string
+                              description: The region of the aka title
+                              example: "DE"
+                      principals:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            nameID:
+                              type: string
+                              description: The unique ID of the name
+                              example: "nm00000191"
+                            name:
+                              type: string
+                              description: The name of the person
+                              example: "Federico Fellini"
+                            category:
+                              type: string
+                              description: The category of the person
+                              example: "director"
+                      rating:
+                        type: object
+                        properties:
+                          avRating:
+                            type: string
+                            description: The average rating of the title
+                            example: "6.1"
+                          nVotes:
+                            type: string
+                            description: The number of votes of the title
+                            example: "7"
+            text/csv:
+              schema:
+                type: string
+                example: "titleID, type, originalTitle, titlePoster, startYear, endYear, genres, titleAkas, principals, rating"
+        '204':
+          description: No titles found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A message from the server
+                    example: "No results found"
+        '400':
+          description: No title part provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A message from the server
+                    example: "Missing titlePart parameter"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A message from the server, error message
+                error:
+                  type: string
+                  description: The error message
+
+  /bygenre:
+    get:
+      tags:
+        - Titles
+      summary: Search title by Genre
+      description: Search and return the titles that belong to the given genre. Supports JSON and CSV formats.
+      parameters:
+        - in: query
+          name: format
+          required: false
+          schema:
+            type: string
+          description: Response format. Can be 'csv' for CSV format or 'json' for JSON format, defaults to JSON.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                qgerneObject:
+                  type: object
+                  properties:
+                    qgerne:
+                      type: string
+                      description: The genre of the title
+                      example: "Comedy"
+                    minRating:
+                      type: string
+                      description: The minimum rating of the title
+                      example: "6.0"
+                    yrFrom:
+                      type: string
+                      description: The start year of the title, optional
+                      example: "1980"
+                    yrTo:
+                      type: string
+                      description: The end year of the title, optional
+                      example: "1990"
+      responses:
+        '200':
+          description: Titles found matching the search
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  titleObject:
+                    type: obrect
+                    properties:
+                      titleID:
+                        type: string
+                        description: The unique ID of the title
+                        example: "tt0000929"
+                      type:
+                        type: string
+                        description: The type of the title
+                        example: "short"
+                      originalTitle:
+                        type: string
+                        description: The original title of the title
+                        example: "Klebolin klebt alles"
+                      titlePoster:
+                        type: string
+                        description: The original title of the title
+                        example: "https://image.tmdb.org/t/p/{width_variable}/88EH2TVg6fGK7SnGXcfQ05MD2Rk.jpg"
+                      startYear:
+                        type: string
+                        description: The start year of the title
+                        example: "1990"
+                      endYear:
+                        type: string
+                        description: The end year of the title
+                        example: "\\N"
+                      genres:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            genreTitle:
+                              type: string
+                              description: The genre of the title
+                              example: "Comedy"
+                      titleAkas:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            akaTitle:
+                              type: string
+                              description: The aka title of the title
+                              example: "Willys Streiche: Klebolin klebt alles"
+                            region:
+                              type: string
+                              description: The region of the aka title
+                              example: "DE"
+                      principals:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            nameID:
+                              type: string
+                              description: The unique ID of the name
+                              example: "nm00000191"
+                            name:
+                              type: string
+                              description: The name of the person
+                              example: "Federico Fellini"
+                            category: 
+                              type: string
+                              description: The category of the person
+                              example: "director"
+                      rating:
+                        type: object
+                        properties:
+                          avRating:
+                            type: string
+                            description: The average rating of the title
+                            example: "6.1"
+                          nVotes:
+                            type: string
+                            description: The number of votes of the title
+                            example: "7"
+            text/csv:
+              schema:
+                type: string
+                example: "titleID, type, originalTitle, titlePoster, startYear, endYear, genres, titleAkas, principals, rating"
+        '204':
+          description: No titles found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A message from the server
+                    example: "No results found"
+        '400':
+          description: No genre provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A message from the server
+                    example: "Missing genre or minrating object request param"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A message from the server, error message
+                error:
+                  type: string
+                  description: The error message
+
+  /name/{nameID}:
+    get:
+      tags:
+        - Names
+      summary: Get name Information by ID
+      description: Returns the name information for a given name ID, including name, birth year, death year, profession and titles. Supports JSON and CSV formats.
+      parameters:
+        - in: path
+          name: nameID
+          required: true
+          schema:
+            type: string
+          description: The unique ID of the name
+        - in: query
+          name: format
+          required: false
+          schema:
+            type: string
+          description: Response format. Can be 'csv' for CSV format or 'json' for JSON format, defaults to JSON.
+      responses:
+        '200':
+          description: The name was found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  nameObject:
+                    type: object
+                    properties:
+                      nameID:
+                        type: string
+                        description: The unique ID of the name
+                        example: "nm00000191"
+                      name:
+                        type: string
+                        description: The name of the person
+                        example: "Federico Fellini"
+                      birthYr:
+                        type: string
+                        description: The birth year of the person
+                        example: "1920"
+                      deathYr:
+                        type: string
+                        description: The death year of the person
+                        example: "1993"
+                      profession:
+                        type: string
+                        description: The primary profession of the person
+                        example: "director"
+                      nameTitles:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            titleID:
+                              type: string
+                              description: The unique ID of the title
+                              example: "tt0000929"
+                            category:
+                              type: string
+                              description: The category of the title
+                              example: "director"
+            text/csv:
+              schema:
+                type: string
+                example: "nameID, name, birthYr, deathYr, profession, nameTitles"
+        '204':
+          description: The name was not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A message from the server
+                    example: "No results found"
+        '400':
+          description: The name was not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A message from the server
+                    example: "Invalid nameID parameter! namedID should start with nm"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A message from the server, error message
+                error:
+                  type: string
+                  description: The error message
+
+  /searchname:
+    get:
+      tags:
+        - Names
+      summary: Search name by Part of the Name
+      description: Search and return the names where the name contains the given string. Supports JSON and CSV formats.
+      parameters:
+        - in: query
+          name: format
+          required: false
+          schema:
+            type: string
+          description: Response format. Can be 'csv' for CSV format or 'json' for JSON format, defaults to JSON.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                namePart:
+                  type: string
+                  description: The part of the name to search for
+                  example: "Fellini"
+      responses:
+        '200':
+          description: Names found matching the search
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  nqueryObject:
+                    type: object
+                    items:
+                      type: object
+                      properties:
+                        nameID:
+                          type: string
+                          description: The unique ID of the name
+                          example: "nm00000191"
+                        name:
+                          type: string
+                          description: The name of the person
+                          example: "Federico Fellini"
+                        namePoster:
+                          type: string
+                          description: The name of the person
+                          example: "https://image.tmdb.org/t/p/{width_variable}/nbkNJ8dr6j5vSZ3M6SKwp0F7Q1P.jpg"
+                        birthYr:
+                          type: string
+                          description: The birth year of the person
+                          example: "1920"
+                        deathYr:
+                          type: string
+                          description: The death year of the person
+                          example: "1993"
+                        profession:
+                          type: string
+                          description: The primary profession of the person
+                          example: "director"
+                        nameTitles:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              titleID:
+                                type: string
+                                description: The unique ID of the title
+                                example: "tt0000929"
+                              category:
+                                type: string
+                                description: The category of the title
+                                example: "director"
+            text/csv:
+              schema:
+                type: string
+                example: "nameID, name, namePoster, birthYr, deathYr, profession, nameTitles"
+        '204':
+          description: No names found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A message from the server
+                    example: "No results found"
+        '400':
+          description: No name part provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A message from the server
+                    example: "namePart is required"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A message from the server, error message
+                error:
+                  type: string
+                  description: The error message
