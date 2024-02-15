@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import MovieCard from "@/components/Moviecard";
 import "bootstrap/dist/css/bootstrap.min.css";
+import TitleCard from "@/components/Onetitlecard";
 
 interface AppearsIn {
   titleID: string;
@@ -169,6 +170,27 @@ function Page({ params }: { params: { id: string } }) {
             </li>
           </ul>
         </>
+      )}
+      {movieDetails.length > 0 && (
+        <div className="cardcontainer">
+          <TitleCard
+            text="Highest Rated"
+            key={1}
+            id={1}
+            name={"movie.originalTitle"}
+            type={"movie.category"}
+            image={"movie.titlePoster"}
+          />
+
+          <TitleCard
+            text="Most Recent"
+            key={1}
+            id={1}
+            name={"movie.originalTitle"}
+            type={"movie.category"}
+            image={"movie.titlePoster"}
+          />
+        </div>
       )}
     </div>
   );
