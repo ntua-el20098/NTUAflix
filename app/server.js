@@ -23,6 +23,6 @@ app.prepare().then(() => {
 
   sslServer.listen(4000, (err) => {
     if (err) throw err;
-    console.log('> Ready on https://localhost:4000');
+    console.log('🚀 Ready on https://localhost:4000');
   });
 });
