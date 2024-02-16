@@ -34,7 +34,7 @@ const PeoplePage: React.FC = () => {
   const fetchData = async () => {
     try {
       const response = await fetch(
-        `http://localhost:9876/ntuaflix_api/searchname?limit=${limit}&page=${currentPage}`,
+        `https://localhost:9876/ntuaflix_api/searchname?limit=${limit}&page=${currentPage}`,
         {
           method: "POST",
           headers: {
@@ -96,7 +96,7 @@ const PeoplePage: React.FC = () => {
   const handleSearch = async () => {
     try {
       const response = await fetch(
-        `http://localhost:9876/ntuaflix_api/searchname?limit=${limit}&page=1`,
+        `https://localhost:9876/ntuaflix_api/searchname?limit=${limit}&page=1`,
         {
           method: "POST",
           headers: {

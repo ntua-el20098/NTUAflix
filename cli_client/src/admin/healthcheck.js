@@ -3,6 +3,7 @@ const errorHandler = require('../../lib/errorHandler');
 const chalk = require('chalk');
 const axios = require('axios');
 const json2csv = require('json2csv').parse;
+const https = require('https');
 
 
 module.exports = function(options) {
@@ -13,6 +14,7 @@ module.exports = function(options) {
         method: 'POST',
         url: url,
         port: 9876,
+        httpsAgent: new https.Agent({ rejectUnauthorized: false })
     };
     if(format === 'json'){
         axios(config)

@@ -4,7 +4,7 @@ info:
   version: 1.0.0
   description: The NTUAflix API provides access to a database of movies, TV shows, actors and film industry professionals. Designed to offer information on titles, cast, crew, production details and user ratings. The API enables developers to integrate this data set into their applications.
 servers:
-  - url: http://localhost:9876/ntuaflix_api
+  - url: https://localhost:9876/ntuaflix_api
     description: Development server
 paths:
   /admin/healhcheck:

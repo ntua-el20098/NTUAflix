@@ -187,6 +187,21 @@ exports.upload_titlebasics = async (req, res, next) => {
   }
 
     try {
+
+    if (!req.file) {
+      if (format === 'json') {
+        return res.status(400).json({ message: 'Invalid input file type. Please upload only TSV files.' });
+    }
+    else {
+        const json2csvParser = new Parser();
+        const csv = json2csvParser.parse({ message: 'Invalid input file type. Please upload only TSV files.' });
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+        res.status(400).send(csv);
+
+    }
+  }
+      
       const baseDirectory = __dirname + '/../uploads';
       const inputFilePath = req.file.path;
       const filePathGenres = `${baseDirectory}/Genres.tsv`;
