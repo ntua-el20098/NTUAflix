@@ -16,7 +16,6 @@ const expected_json_return = {
       ]
     }
   };
-
 it('outputs valid JSON format', (done) => {
     jest.setTimeout(10000);
     shell.exec('se2326 name --nameID nm0615736', { silent: true }, (code, stdout, stderr) => {
@@ -26,8 +25,17 @@ it('outputs valid JSON format', (done) => {
             done(); // Call done() to end the test
             return;
         }
-        const output = JSON.parse(stdout);
-        expect(output).toMatchObject(expected_json_return);
+        // Remove whitespaces from actual output
+        //const actualOutput = JSON.stringify(stdout).replace(/\s/g, '');
+
+        // Remove whitespaces from expected JSON
+        // expectedOutput = JSON.stringify(expected_json_return).replace(/\s/g, '');
+
+
+        const output = JSON.parse(JSON.stringify(stdout));
+        console.log(output);
+        console.log(expected_json_return);
+        expect(output).toMatch(expected_json_return);
         done();
     });
   });
