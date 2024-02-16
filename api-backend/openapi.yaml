@@ -49,7 +49,7 @@ paths:
                   message:
                     type: string
                     description: A message from the server
-                    example: "Invalid format parameter! format should be json or csv', error: err ? err : ''"
+                    example: "Invalid format parameter! format should be json or csv"
         '500':
           description: Internal server error
           content:
@@ -59,10 +59,10 @@ paths:
                 properties:
                   message:
                     type: string
-                    description: A message from the server, error message
-                error:
-                  type: string
-                  description: The error message
+                    description: A message from server, error message
+                  error:
+                    type: string
+                    description: The error message
 
   /admin/resetall:
     post:
@@ -95,11 +95,12 @@ paths:
                 properties:
                   message:
                     type: string
-                    description: A message from the server, error message
+                    description: A message from server, error message
                     example: "All tables have not been reset"
-                error:
-                  type: string
-                  description: The error message
+                  error:
+                    type: string
+                    description: The error message
+
 
   /admin/upload/titlebasics:
     post:
@@ -150,11 +151,11 @@ paths:
                 properties:
                   message:
                     type: string
-                    description: A message from the server, error message
+                    description: A message from server, error message
                     example: "Error uploading/parsing TSV files."
-                error:
-                  type: string
-                  description: The error message
+                  error:
+                    type: string
+                    description: The error message
 
   /admin/upload/titleakas:
     post:
@@ -205,11 +206,11 @@ paths:
                 properties:
                   message:
                     type: string
-                    description: A message from the server, error message
+                    description: A message from server, error message
                     example: "Error uploading/parsing TSV files."
-                error:
-                  type: string
-                  description: The error message
+                  error:
+                    type: string
+                    description: The error message
 
   /admin/upload/namebasics:
     post:
@@ -260,11 +261,11 @@ paths:
                 properties:
                   message:
                     type: string
-                    description: A message from the server, error message
+                    description: A message from server, error message
                     example: "Error uploading/parsing TSV files."
-                error:
-                  type: string
-                  description: The error message
+                  error:
+                    type: string
+                    description: The error message
 
   /admin/upload/titlecrew:
     post:
@@ -315,11 +316,11 @@ paths:
                 properties:
                   message:
                     type: string
-                    description: A message from the server, error message
+                    description: A message from server, error message
                     example: "Error uploading/parsing TSV files."
-                error:
-                  type: string
-                  description: The error message
+                  error:
+                    type: string
+                    description: The error message
 
   /admin/upload/titleepisode:
     post:
@@ -370,11 +371,11 @@ paths:
                 properties:
                   message:
                     type: string
-                    description: A message from the server, error message
+                    description: A message from server, error message
                     example: "Error uploading/parsing TSV files."
-                error:
-                  type: string
-                  description: The error message
+                  error:
+                    type: string
+                    description: The error message
 
   /admin/upload/titleprincipals:
     post:
@@ -425,11 +426,11 @@ paths:
                 properties:
                   message:
                     type: string
-                    description: A message from the server, error message
+                    description: A message from server, error message
                     example: "Error uploading/parsing TSV files."
-                error:
-                  type: string
-                  description: The error message
+                  error:
+                    type: string
+                    description: The error message
 
   /admin/upload/titleratings:
     post:
@@ -480,11 +481,11 @@ paths:
                 properties:
                   message:
                     type: string
-                    description: A message from the server, error message
+                    description: A message from server, error message
                     example: "Error uploading/parsing TSV files."
-                error:
-                  type: string
-                  description: The error message
+                  error:
+                    type: string
+                    description: The error message
 
   /title/{titleID}:
     get:
@@ -625,11 +626,11 @@ paths:
                 properties:
                   message:
                     type: string
-                    description: A message from the server, error message
+                    description: A message from server, error message
                     example: "Error processing title details"
-                error:
-                  type: string
-                  description: The error message
+                  error:
+                    type: string
+                    description: The error message
 
   /searchtitle:
     get:
@@ -664,7 +665,7 @@ paths:
                 type: object
                 properties:
                   titleObject:
-                    type: obrect
+                    type: object
                     properties:
                       titleID:
                         type: string
@@ -775,10 +776,10 @@ paths:
                 properties:
                   message:
                     type: string
-                    description: A message from the server, error message
-                error:
-                  type: string
-                  description: The error message
+                    description: A message from server, error message
+                  error:
+                    type: string
+                    description: The error message
 
   /bygenre:
     get:
@@ -828,7 +829,7 @@ paths:
                 type: object
                 properties:
                   titleObject:
-                    type: obrect
+                    type: object
                     properties:
                       titleID:
                         type: string
@@ -939,10 +940,10 @@ paths:
                 properties:
                   message:
                     type: string
-                    description: A message from the server, error message
-                error:
-                  type: string
-                  description: The error message
+                    description: A message from server, error message
+                  error:
+                    type: string
+                    description: The error message
 
   /name/{nameID}:
     get:
@@ -1042,10 +1043,10 @@ paths:
                 properties:
                   message:
                     type: string
-                    description: A message from the server, error message
-                error:
-                  type: string
-                  description: The error message
+                    description: A message from server, error message
+                  error:
+                    type: string
+                    description: The error message
 
   /searchname:
     get:
@@ -1079,11 +1080,9 @@ paths:
               schema:
                 type: object
                 properties:
-                  nqueryObject:
+                  nameObject:
                     type: object
-                    items:
-                      type: object
-                      properties:
+                    properties:
                         nameID:
                           type: string
                           description: The unique ID of the name
@@ -1156,7 +1155,8 @@ paths:
                 properties:
                   message:
                     type: string
-                    description: A message from the server, error message
-                error:
-                  type: string
-                  description: The error message
+                    description: A message from server, error message
+                  error:
+                    type: string
+                    description: The error message
+
