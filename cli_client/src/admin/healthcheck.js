@@ -9,7 +9,6 @@ const https = require('https');
 module.exports = function(options) {
     let url = constructURL('/admin/', 'healthcheck');
     const format = options.format || 'json';
-    console.log(url);
     let config = {
         method: 'POST',
         url: url,
