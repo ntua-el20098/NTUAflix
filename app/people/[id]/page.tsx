@@ -4,6 +4,7 @@ import MovieCard from "@/components/Moviecard";
 import "bootstrap/dist/css/bootstrap.min.css";
 import TitleCardRating from "@/components/Onetitlecard";
 import TitleCardYear from "@/components/Onetitlecarddate";
+const https = require('https');
 
 interface AppearsIn {
   startYear: string;
@@ -37,7 +38,7 @@ function Page({ params }: { params: { id: string } }) {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:9876/ntuaflix_api/name/${params.id}`
+          `https://localhost:9876/ntuaflix_api/name/${params.id}`
         );
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -61,7 +62,7 @@ function Page({ params }: { params: { id: string } }) {
           const movieDetailsPromises = data.nameObject.nameTitles.map(
             async (title) => {
               const titleResponse = await fetch(
-                `http://localhost:9876/ntuaflix_api/title/${title.titleID}`
+                `https://localhost:9876/ntuaflix_api/title/${title.titleID}`
               );
               if (titleResponse.ok) {
                 const titleData: {

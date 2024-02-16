@@ -31,7 +31,7 @@ const MovieInfo: React.FC = () => {
     const fetchGenres = async () => {
       try {
         const genresResponse = await fetch(
-          "http://localhost:9876/ntuaflix_api/getAllGenres"
+          "https://localhost:9876/ntuaflix_api/getAllGenres"
         );
         const genresData: string[] = await genresResponse.json();
 
@@ -58,7 +58,7 @@ const MovieInfo: React.FC = () => {
 
       // Check if a genre is selected
       if (selectedGenre) {
-        apiUrl = `http://localhost:9876/ntuaflix_api/bygenre?limit=${limit}&page=${currentPage}`;
+        apiUrl = `https://localhost:9876/ntuaflix_api/bygenre?limit=${limit}&page=${currentPage}`;
         requestBody = {
           gqueryObject: {
             qgenre: selectedGenre,
@@ -66,7 +66,7 @@ const MovieInfo: React.FC = () => {
           },
         };
       } else {
-        apiUrl = `http://localhost:9876/ntuaflix_api/searchtitle?limit=${limit}&page=${currentPage}`;
+        apiUrl = `https://localhost:9876/ntuaflix_api/searchtitle?limit=${limit}&page=${currentPage}`;
         requestBody = {
           tqueryObject: {
             titlePart: "",

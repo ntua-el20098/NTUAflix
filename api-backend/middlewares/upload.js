@@ -4,7 +4,8 @@ const tsvFilter = (req, file, cb) => {
   if (file.originalname.endsWith('.tsv')) {
     cb(null, true);
   } else {
-    cb("Please upload only TSV file.", false);
+    //cb("Please upload only TSV file.", false);
+    cb(null, false);
   }
 };
 
@@ -45,6 +46,11 @@ var storage = multer.diskStorage({
   }
 });
 
-const upload = multer({ storage: storage, fileFilter: tsvFilter });
+const upload = multer({ 
+  storage: storage, 
+  fileFilter: tsvFilter,
+  // Accepts only one file with the field name 'file'
+  limits: { files: 1 }
+})
 
 module.exports = upload;

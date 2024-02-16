@@ -45,7 +45,6 @@ exports.healthcheck = async (req, res, next) => {
           host: pool.config.connectionConfig.host,
           user: pool.config.connectionConfig.user,
           database: pool.config.connectionConfig.database,
-          // add any other properties you need
         }
       };
 
@@ -91,14 +90,14 @@ exports.resetall = async (req, res, next) => {
     };
 
     if (format == 'json') {
-        res.json(message);
+        res.status(200).json(message);
     }
     else {
         const json2csvParser = new Parser();
         const csv = json2csvParser.parse(message);
         res.setHeader('Content-Type', 'text/csv');
         res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
-        res.send(csv);
+        res.status(200).send(csv);
     }
   } 
   catch (error) {
@@ -109,14 +108,14 @@ exports.resetall = async (req, res, next) => {
 
     console.error(error);
     if (format == 'json') {
-        res.json(message);
+        res.status(500).json(message);
     }
     else {
         const json2csvParser = new Parser();
         const csv = json2csvParser.parse(message);
         res.setHeader('Content-Type', 'text/csv');
         res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
-        res.send(csv);
+        res.status(500).send(csv);
     }
   }
 };
@@ -188,6 +187,21 @@ exports.upload_titlebasics = async (req, res, next) => {
   }
 
     try {
+
+    if (!req.file) {
+      if (format === 'json') {
+        return res.status(400).json({ message: 'Invalid input file type. Please upload only TSV files.' });
+    }
+    else {
+        const json2csvParser = new Parser();
+        const csv = json2csvParser.parse({ message: 'Invalid input file type. Please upload only TSV files.' });
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+        res.status(400).send(csv);
+
+    }
+  }
+      
       const baseDirectory = __dirname + '/../uploads';
       const inputFilePath = req.file.path;
       const filePathGenres = `${baseDirectory}/Genres.tsv`;
