@@ -51,7 +51,10 @@ function Page({ params }: { params: { id: string } }) {
     Array<{ nameID: string; namePoster: string }>
   >([]);
   const [similarMovies, setSimilarMovies] = useState<SimilarMovies[]>([]);
-  const [showTranslations, setShowTranslations] = useState(false); // Added state
+  const [showTranslations, setShowTranslations] = useState(false);
+  const [error, setError] = useState<{ status: number; message: string } | null>(
+    null
+  ); // Added state for error handling
   const fallbackPosterUrl =
     "https://t3.ftcdn.net/jpg/04/62/93/66/360_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg";
 
@@ -61,9 +64,13 @@ function Page({ params }: { params: { id: string } }) {
         const response = await fetch(
           `https://localhost:9876/ntuaflix_api/title/${params.id}`
         );
+
         if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
+          const errorData: { status: number; message: string } = await response.json();
+          setError(errorData);
+          return;
         }
+
         const data: { titleObject: MovieData } = await response.json();
         setMovieData(data.titleObject);
         console.log("Fetched data:", data.titleObject);
@@ -139,6 +146,7 @@ function Page({ params }: { params: { id: string } }) {
         console.log("Fetched cast data:", validCastResults);
       } catch (error) {
         console.error("Error fetching data:", error);
+        setError({ status: 500, message: "Internal Server Error" });
       }
     };
 
@@ -210,6 +218,14 @@ function Page({ params }: { params: { id: string } }) {
 
   return (
     <div className="relative px-4 md:px-0">
+      {error && (
+        <div className="container mx-auto min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-4xl font-bold">{error.status}</h1>
+            <p className="text-lg">{error.message}</p>
+          </div>
+        </div>
+      )}
       {movieData && (
         <div className="container mx-auto min-h-screen flex items-center justify-center relative">
           <div className="mr-8 mt-4">
