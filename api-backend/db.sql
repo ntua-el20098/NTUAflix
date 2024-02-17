@@ -271,7 +271,6 @@ ALTER TABLE `crewwriters`
 --
 ALTER TABLE `episode`
   ADD CONSTRAINT `episode_ibfk_1` FOREIGN KEY (`tconst`) REFERENCES `title` (`tconst`),
-  -- ADD CONSTRAINT `episode_ibfk_2` FOREIGN KEY (`parentTconst`) REFERENCES `title` (`tconst`);
 
 --
 -- Περιορισμοί για πίνακα `genre`
