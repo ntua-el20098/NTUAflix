@@ -3,6 +3,7 @@ const constructURL = require('../../lib/constructURL');
 const errorHandler = require('../../lib/errorHandler');
 const json2csv = require('json2csv').parse;
 const https = require('https');
+const chalk = require('chalk');
 
 module.exports = function title(options) {
     const titleID = options.titleID

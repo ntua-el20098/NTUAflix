@@ -86,6 +86,17 @@ paths:
                     type: string
                     description: A message from the server
                     example: "All tables have been reset"
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A message from the server
+                    example: "Invalid format parameter! format should be json or csv"
         '500':
           description: Internal server error
           content:

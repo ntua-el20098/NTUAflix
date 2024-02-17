@@ -1,36 +1,156 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
+# NTUAflix
 
-First, run the development server:
+NTUAflix is a film database where users can navigate through a big catalogue of Movies and TV-Series (AKA titles). NTUAflix allows its users to preview movies and TV shows by providing their identifying characteristics. 
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+It has three main use cases. 
+1. The users can browse the provided collection of titles and filter their genre through the “Search By Genre“ button.
+2. The users can look for a title based on its rating by selecting the “Search By Rating” button and then providing the desired minimul rating value.
+3. NTUAflix provides users the option to browse the catalogue through each title’s contributing members with the “Search By Person” button.
+
+    Once a title or a person has been selected, NTUAflix displays a detailed page containing the key characteristics of the selected item (title or person) as well as active links to related content(similar titles and contributors for titles - title appearances, best rated and latest appearance for people).
+
+
+![Logo](https://github.com/ntua-el20098/NTUAflix/blob/main/public/NTUAflix.png?raw=true)
+
+## Table of Contents
+
+- [Authors](#Creators)
+- [Tech Requirements](#Tech Stack)
+- [Installations](#Installation)
+  - [Clone the repository](#Clone the repository)
+  - [Database Setup](#Database Setup)
+  - [CLI Setup](#CLI Setup)
+- [Run Locally](#Run Locally)
+- [Environment Variables](#Environment Variables)
+- [Running Tests](#Running Tests)
+- [Documentation](#Documentation)
+- [License](#License)
+
+
+## Creators
+
+- [Διονύσης Αδαμόπουλος](https://github.com/ntua-el20)
+- [Γεωργιάδη Δάφνη](https://github.com/ntua-el20189)
+- [Καμπουγέρης Χαράλαμπος](https://github.com/ntua-el20098)
+- [Κουστένης Χρίστος](https://github.com/ntua-el20)
+- [Μιτσάκος Άρης](https://github.com/ntua-el20)
+- [Χριστοδουλάκης Σταύρος](https://github.com/ntua-el20890)
+
+
+
+## Tech Stack
+
+**Backend / cli-client:** Node.js 
+
+**Frontend:** Next.js
+
+**Database** MySQL, XAMPP 
+
+**Testing:** Node.js, Postman
+
+
+
+
+## Installation
+
+#### Clone the repository
+
+```sh
+   git clone https://github.com/ntua-el20098/NTUAflix
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+```sh
+   cd NTUAflix
+```
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+```sh
+   npm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+#### Database Setup
 
-## Learn More
+Make sure mySQL is running. (For example make sure XAMPP is running with Apache and MySQL active)
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```sh
+   npm install
+```
+```sh
+   npm install
+```
+```sh
+   npm install
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+#### CLI Setup
 
-## Deploy on Vercel
+```sh
+   cd cli_client
+```
+```sh
+   npm install
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Run Locally
+
+To run NTUAflix Locally we will need to have 2 terminals that:
+
+1. runs the frontend server using the command:
+
+```sh
+   npm start
+```
+
+2. runs the backend server using the command:
+```sh
+   node ./api-backend/server.js
+```
+
+
+Commands:
+  healthcheck|hc [options]   Confirms end-to-end connectivity between the user and the database
+  title|t [options]          Returns the title with the specified tconst
+  searchtitle|st [options]   Returns the title with the specified primaryTitle
+  bygenre|bg [options]       Returns the titles with the specified genre
+  name|n [options]           Returns the name with the specified nconst
+  searchname|sn [options]    Returns the name with the specified primaryName
+  resetall|rsall [options]   Deletes all data from the database
+  newtitles|nt [options]     Adds a new title to the database
+  newakas|na [options]       Adds a new alternate title to the database
+  newnames|nn [options]      Adds a new name to the database
+  newcrew|nc [options]       Adds a new crew member to the database
+  newepisode|ne [options]    Adds a new episode to the database
+  newprincipals|s [options]  Adds a new principal to the database
+  newratings|nr [options]    Adds a new rating to the database
+  help                       Shows help
+## Environment Variables
+
+To run this project, you will need to add the following environment variables to your .env file
+
+`API_KEY`
+
+`ANOTHER_API_KEY`
+
+
+## Running Tests
+
+To run tests, run the following command
+
+```bash
+  npm run test
+```
+
+
+## Documentation
+
+NTUAflix Project [Documentation](https://linktodocumentation)
+
+Our API Documentation is made using OpenAPI and is available through the file  `openapi.yaml` 
+
+You can open the file using a program like Swagger to vizualize the API.
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
+
