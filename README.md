@@ -18,7 +18,7 @@ Once a title or a person has been selected, NTUAflix displays a detailed page co
 
 ## Table of Contents
 
-- [Authors](#Creators)
+- [Creators](#Creators)
 - [Tech Requirements](#Tech-Stack)
 - [Installations](#Installation)
   - [Clone the repository](#Clone-the-repository)
