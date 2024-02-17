@@ -4,7 +4,7 @@ info:
   version: 1.0.0
   description: The NTUAflix API provides access to a database of movies, TV shows, actors and film industry professionals. Designed to offer information on titles, cast, crew, production details and user ratings. The API enables developers to integrate this data set into their applications.
 servers:
-  - url: https://localhost:9876/ntuaflix_api
+  - url: http://localhost:9876/ntuaflix_api
     description: Development server
 paths:
   /admin/healhcheck:
@@ -32,9 +32,10 @@ paths:
                     type: string
                     description: The status of the server can be "OK" or "failed"
                     example: "OK"
-                  message:
+                  dataconnection:
                     type: string
                     description: A message from the server
+                    example: "'host': 'localhost', 'user': 'root', 'database' : 'tl'"
             text/csv:
               schema:
                 type: string
@@ -57,12 +58,14 @@ paths:
               schema:
                 type: object
                 properties:
-                  message:
+                  status:
                     type: string
                     description: A message from server, error message
+                    example: "failed"
                   error:
                     type: string
                     description: The error message
+                    example: "'host': 'localhost', 'user': 'root', 'database' : 'tl'"
 
   /admin/resetall:
     post:
@@ -82,7 +85,7 @@ paths:
                     type: string
                     description: If the reset was successful
                     example: "OK"
-                  message:
+                  dataconnection:
                     type: string
                     description: A message from the server
                     example: "All tables have been reset"
@@ -639,9 +642,6 @@ paths:
                     type: string
                     description: A message from server, error message
                     example: "Error processing title details"
-                  error:
-                    type: string
-                    description: The error message
 
   /searchtitle:
     get:
@@ -663,10 +663,13 @@ paths:
             schema:
               type: object
               properties:
-                titlePart:
-                  type: string
-                  description: The part of the title name to search for
-                  example: "Klebolin"
+                tqueryObject:
+                  type: object
+                  properties:
+                    titlePart:
+                      type: string
+                      description: The part of the title name to search for
+                      example: "Klebolin"
       responses:
         '200':
           description: Titles found matching the search
@@ -788,9 +791,7 @@ paths:
                   message:
                     type: string
                     description: A message from server, error message
-                  error:
-                    type: string
-                    description: The error message
+                    example: "Error processing title details"
 
   /bygenre:
     get:
@@ -952,9 +953,7 @@ paths:
                   message:
                     type: string
                     description: A message from server, error message
-                  error:
-                    type: string
-                    description: The error message
+                    example: "Error processing title details"
 
   /name/{nameID}:
     get:
@@ -1055,9 +1054,7 @@ paths:
                   message:
                     type: string
                     description: A message from server, error message
-                  error:
-                    type: string
-                    description: The error message
+                    example: "Error processing person details"
 
   /searchname:
     get:
@@ -1167,7 +1164,5 @@ paths:
                   message:
                     type: string
                     description: A message from server, error message
-                  error:
-                    type: string
-                    description: The error message
+                    example: "Error processing person details"
 
