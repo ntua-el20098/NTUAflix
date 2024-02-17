@@ -110,7 +110,7 @@ Copy the path.
 
 The full path to the file should look something like this: 
 ```sh
-C:\Program Files\Git\usr\bin\openssl.cnf
+C:\Program Files\Git\usr\ssl\openssl.cnf
 ```
 
 Go to a secure directory or create a new one where you would like to store your self signed ssl key
