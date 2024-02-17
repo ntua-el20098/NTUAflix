@@ -46,7 +46,7 @@ program
     .alias('t')
     .description('Returns the title with the specified tconst')
     .option('-tid, --titleID <tconst>', 'tconst of the title')
-    .option('--format <format>', 'format of the response')
+    .option('--format <format>', 'Format of the response(csv or json)')
     .action(function (options) { title(options) } )
 
 // searchtitle
@@ -54,8 +54,8 @@ program
     .command('searchtitle')
     .alias('st')
     .description('Returns the title with the specified primaryTitle')
-    .option('-tp, --titlePart <primaryTitle>', 'primaryTitle of the title')
-    .option('--format <format>', 'format of the response')
+    .option('-tp, --titlepart <primaryTitle>', 'primaryTitle of the title')
+    .option('--format <format>', 'Format of the response(csv or json)')
     .action( function(options) { searchtitle(options) } )
 
 // bygenre
@@ -67,7 +67,7 @@ program
     .option('-m, --min <minrating>', 'Minimum year of the title')
     .option('-f, --from <fromYear>', 'From year of the title')
     .option('-t, --to <toYear>', 'To year of the title')
-    .option('--format <format>', 'format of the response')
+    .option('--format <format>', 'Format of the response(csv or json)')
     .action( function(options) { bygenre(options) } )
 
 // name
@@ -75,8 +75,8 @@ program
     .command('name')
     .alias('n')
     .description('Returns the name with the specified nconst')
-    .option('-nid, --nameID <nconst>', 'nconst of the name')
-    .option('--format <format>', 'format of the response')
+    .option('-nid, --nameid <nconst>', 'nconst of the name')
+    .option('--format <format>', 'Format of the response(csv or json)')
     .action( function(options) { name(options) } )
 
 // search name
@@ -84,8 +84,8 @@ program
     .command('searchname')
     .alias('sn')
     .description('Returns the name with the specified primaryName')
-    .option('-np, --namePart <primaryName>', 'primaryName of the name')
-    .option('--format <format>', 'format of the response')
+    .option('-n, --name <primaryName>', 'primaryName of the name')
+    .option('--format <format>', 'Format of the response(csv or json)')
     .action( function(options) { searchname(options); } )
 
 
@@ -94,7 +94,7 @@ program
     .command('resetall')
     .alias('rsall')
     .description('Deletes all data from the database')
-    .option('--format <format>', 'format of the response')
+    .option('--format <format>', 'Format of the response(csv or json)')
     .action( function(options) { resetall(options) } )
 
 // newtitles
@@ -102,8 +102,8 @@ program
     .command('newtitles')
     .alias('nt')
     .description('Adds a new title to the database')
-    .option('-f, --filename <file>', 'path to the file')
-    .option('--format <format>', 'format of the response')
+    .requiredOption('-f, --filename <file>', 'Path to the file')
+    .option('--format <format>', 'Format of the response(csv or json)')
     .action( function(options) { newtitles(options) } )
 
 // newakas
@@ -111,25 +111,25 @@ program
     .command('newakas')
     .alias('na')
     .description('Adds a new alternate title to the database')
-    .option('-f, --filename <file>', 'path to the file')
-    .option('--format <format>', 'format of the response')
+    .requiredOption('-f, --filename <file>', 'Path to the file')
+    .option('--format <format>', 'Format of the response(csv or json)')
     .action( function(options) { newakas(options) } )
 // newnames
 program
     .command('newnames')
     .alias('nn')
-    .description('Adds a new name to the database')
-    .option('-f, --filename <file>', 'path to the file')
-    .option('--format <format>', 'format of the response')
+    .description('Adds new names to the database')
+    .requiredOption('-f, --filename <file>', 'Path to the file')
+    .option('--format <format>', 'Format of the response(csv or json)')
     .action( function(options) { newnames(options) } )
 
 // newcrew
 program
     .command('newcrew')
     .alias('nc')
-    .description('Adds a new crew member to the database')
-    .option('-f, --filename <file>', 'path to the file')
-    .option('--format <format>', 'format of the response')
+    .description('Adds a new crew members to the database')
+    .requiredOption('-f, --filename <file>', 'Path to the file')
+    .option('--format <format>', 'Format of the response(csv or json)')
     .action( function(options) { newcrew(options) } )
 
 // newepisode
@@ -137,7 +137,7 @@ program
     .command('newepisode')
     .alias('ne')
     .description('Adds a new episode to the database')
-    .option('-f, --filename <file>', 'path to the file')
+    .requiredOption('-f, --filename <file>', 'Path to the file')
     .option('--format <format>', 'format of the response')
     .action( function(options) { newepisode(options) } )
 
@@ -145,19 +145,18 @@ program
 program
     .command('newprincipals')
     .alias('s')
-    .description('Adds a new principal to the database')
-    .option('-f, --filename <file>', 'path to the file')
-    .option('--format <format>', 'format of the response')
+    .description('Adds new principals to the database')
+    .requiredOption('-f, --filename <file>', 'Path to the file')
+    .option('--format <format>', 'Format of the response(csv or json)')
     .action( function(options) { newprincipals(options) } )
 
 // newratings
 program
     .command('newratings')
     .alias('nr')
-    .description('Adds a new rating to the database')
-    .option('-f, --filename <file>', 'path to the file')
-    .requiredOption('-f, --filename <file>', 'path to the file')
-    .option('--format <format>', 'format of the response')
+    .description('Adds new ratings to the database')
+    .requiredOption('-f, --filename <file>', 'Path to the file')
+    .option('--format <format>', 'Format of the response(csv or json)')
     .action( function(options) { newratings(options) } )
 
 program
