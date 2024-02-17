@@ -103,7 +103,7 @@ Go to a secure directory or create a new one where you would like to store your 
 ```
 Create `key.pem` and  `csr.pem` files
 ```sh
-   openssl genrse -out key.pem
+   openssl genrsa -out key.pem
 ```
 ```sh
    openssl req -new -key key.pem -out csr.pem
