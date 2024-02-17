@@ -8,7 +8,8 @@ It has three main use cases.
 2. The users can look for a title based on its rating by selecting the “Search By Rating” button and then providing the desired minimul rating value.
 3. NTUAflix provides users the option to browse the catalogue through each title’s contributing members with the “Search By Person” button.
 
-    Once a title or a person has been selected, NTUAflix displays a detailed page containing the key characteristics of the selected item (title or person) as well as active links to related content(similar titles and contributors for titles - title appearances, best rated and latest appearance for people).
+
+Once a title or a person has been selected, NTUAflix displays a detailed page containing the key characteristics of the selected item (title or person) as well as active links to related content(similar titles and contributors for titles - title appearances, best rated and latest appearance for people).
 
 
 ![Logo](https://github.com/ntua-el20098/NTUAflix/blob/main/public/NTUAflix.png?raw=true)
