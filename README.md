@@ -97,22 +97,35 @@ populate the database with data
 
 ### Generate a Self Signed SSL key
 
-download openssl from this [url](https://slproweb.com/products/Win32OpenSSL.html)
-donwload Win64 OpenSSL v1.1.1w version 
+Make sure Git is installed in your device and locate the Git Installation Folder.
+It should look something like this: 
+```sh
+C:\Program Files\Git
+```
 
-run this command with the correct path 
-```set OPENSSL_CONF=[path-to-OpenSSL-install-dir]\bin\openssl.cfg```
+Inside it, locate the `usr` folder and then the `bin` folder.
+Make sure a file named openss.cnf is inside the bin folder. 
+Copy the path
+The full path to the file should look something like this: 
+```sh
+C:\Program Files\Git\usr\bin\openssl.cnf
+```
 
 Go to a secure directory or create a new one where you would like to store your self signed ssl key
 ```sh
    cd path_to_your_secure_folder
 ```
+
 Create `key.pem` and  `csr.pem` files
 ```sh
-   openssl genrsa -out key.pem
+   openssl genrsa -out key.pem 
 ```
+
+If you are using a path with spaces, try wrapping it with quotes.
+
+for the next command replace "path" with the path to the `openssl.cnf` file
 ```sh
-   openssl req -new -key key.pem -out csr.pem
+   openssl req -new -key key.pem -out csr.pem -config "path"
 ```
 Generate the key and the `cert.pem` file
 ```sh
