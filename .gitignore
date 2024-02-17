@@ -5,7 +5,3 @@ node_modules
 .vscode
 .env
 .cert
-
-cert/cert.pem
-cert/key.pem
-cert/csr.pem
