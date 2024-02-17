@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const next = require('next');
 const express = require('express');
+const env = require('process')
 
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
@@ -17,9 +18,9 @@ app.prepare().then(() => {
 
   const sslServer = https.createServer(
     {
-        key: fs.readFileSync(path.join(__dirname, process.env.KEY_PATH)),
-        cert: fs.readFileSync(path.join(__dirname, process.env.CERT_PATH))
-    }, app)
+        key: fs.readFileSync((process.env.KEY_PATH)),
+        cert: fs.readFileSync((process.env.CERT_PATH))
+    }, server) // pass the Express server as the request listener
 
   sslServer.listen(4000, (err) => {
     if (err) throw err;
