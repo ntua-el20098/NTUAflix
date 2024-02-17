@@ -37,7 +37,7 @@ Once a title or a person has been selected, NTUAflix displays a detailed page co
 - [Γεωργιάδη Δάφνη](https://github.com/ntua-el20189)
 - [Καμπουγέρης Χαράλαμπος](https://github.com/ntua-el20098)
 - [Κουστένης Χρίστος](https://github.com/ntua-el20227)
-- [Μιτσάκος Άρης](https://github.com/ntua-el20)
+- [Μιτσάκος Άρης](https://github.com/ntua-el20123)
 - [Χριστοδουλάκης Σταύρος](https://github.com/ntua-el20890)
 
 
