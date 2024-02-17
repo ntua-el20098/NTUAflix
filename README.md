@@ -15,10 +15,18 @@ It has three main use cases.
 Once a title or a person has been selected, NTUAflix displays a detailed page containing the key characteristics of the selected item (title or person) as well as active links to related content(similar titles and contributors for titles - title appearances, best rated and latest appearance for people).
 
 
+## Creators
+
+- [Αδαμόπουλος Διονύσης](https://github.com/ntua-el20061)
+- [Γεωργιάδη Δάφνη](https://github.com/ntua-el20189)
+- [Καμπουγέρης Χαράλαμπος](https://github.com/ntua-el20098)
+- [Κουστένης Χρίστος](https://github.com/ntua-el20227)
+- [Μητσάκος Άρης](https://github.com/ntua-el20123)
+- [Χριστοδουλάκης Σταύρος](https://github.com/ntua-el20890)
+
 
 ## Table of Contents
 
-- [Creators](#Creators)
 - [Tech Requirements](#Tech-Stack)
 - [Installations](#Installation)
   - [Clone the repository](#Clone-the-repository)
@@ -30,16 +38,6 @@ Once a title or a person has been selected, NTUAflix displays a detailed page co
 - [Running Tests](#Running-Tests)
 - [Documentation](#Documentation)
 - [License](#License)
-
-
-## Creators
-
-- [Αδαμόπουλος Διονύσης](https://github.com/ntua-el20061)
-- [Γεωργιάδη Δάφνη](https://github.com/ntua-el20189)
-- [Καμπουγέρης Χαράλαμπος](https://github.com/ntua-el20098)
-- [Κουστένης Χρίστος](https://github.com/ntua-el20227)
-- [Μητσάκος Άρης](https://github.com/ntua-el20123)
-- [Χριστοδουλάκης Σταύρος](https://github.com/ntua-el20890)
 
 
 
