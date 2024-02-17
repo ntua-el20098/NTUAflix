@@ -1,5 +1,5 @@
 module.exports = function (scope, param1) {
-    let base = 'http://localhost:9876/ntuaflix_api';
+    let base = 'https://localhost:9876/ntuaflix_api';
 
     // create url with scope
     base = base + scope;

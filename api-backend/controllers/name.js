@@ -3,6 +3,7 @@ const { pool } = require('../utils/database');
 const {body} = require("express/lib/request");
 const axios = require('axios');
 const { Parser } = require('json2csv');
+const https = require('https');
 
 const csv = require('csv-parser');
 const fs = require('fs');
@@ -372,7 +373,7 @@ exports.getSearchPersonByName = async (req, res, err) => {
 // Function to get person details based on nameID using the getPersonDetails endpoint
 async function getPersonDetails(nconst) {
     try {
-        const response = await axios.get(`http://localhost:9876/ntuaflix_api/name/${nconst}`);
+        const response = await axios.get(`https://localhost:9876/ntuaflix_api/name/${nconst}`, { httpsAgent: new https.Agent({ rejectUnauthorized: false }) });
         return response.data;
     } catch (error) {
         console.error('Error fetching name details for', nconst, error.message);

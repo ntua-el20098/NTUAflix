@@ -3,6 +3,7 @@ const { pool } = require('../utils/database');
 const { body } = require("express/lib/request");
 const axios = require('axios');
 const { Parser } = require('json2csv');
+const https = require('https');
 
 const csv = require('csv-parser');
 const fs = require('fs');
@@ -563,7 +564,7 @@ exports.getTitlesByGenre = async (req, res, err) => {
 // Function to get title details based on titleID using the getTitleDetails endpoint
 async function getTitleDetails(tconst) {
     try {
-        const response = await axios.get(`http://localhost:9876/ntuaflix_api/title/${tconst}`);
+        const response = await axios.get(`https://localhost:9876/ntuaflix_api/title/${tconst}`,{ httpsAgent: new https.Agent({ rejectUnauthorized: false }) });
         return response.data;
     } catch (error) {
         console.error('Error fetching title details for', tconst, error.message);

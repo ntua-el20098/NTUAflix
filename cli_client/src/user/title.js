@@ -2,6 +2,7 @@ const axios = require('axios');
 const constructURL = require('../../lib/constructURL');
 const errorHandler = require('../../lib/errorHandler');
 const json2csv = require('json2csv').parse;
+const https = require('https');
 
 module.exports = function title(options) {
     const titleID = options.titleID
@@ -11,6 +12,7 @@ module.exports = function title(options) {
         method: 'GET',
         url: url,
         port: 9876,
+        httpsAgent: new https.Agent({ rejectUnauthorized: false })
     };
     if(format == 'json'){
         axios(config)

@@ -30,7 +30,7 @@ const MovieInfo: React.FC = () => {
       try {
         const minRatingValue = minRating.toString();
         const response = await fetch(
-          `http://localhost:9876/ntuaflix_api/searchbyrating?limit=${limit}&page=${currentPage}`,
+          `https://localhost:9876/ntuaflix_api/searchbyrating?limit=${limit}&page=${currentPage}`,
           {
             method: "POST",
             headers: {
@@ -109,7 +109,7 @@ const MovieInfo: React.FC = () => {
       // Fetch data based on user's input
       try {
         const response = await fetch(
-          `http://localhost:9876/ntuaflix_api/searchbyrating?limit=${limit}&page=1`,
+          `https://localhost:9876/ntuaflix_api/searchbyrating?limit=${limit}&page=1`,
           {
             method: "POST",
             headers: {

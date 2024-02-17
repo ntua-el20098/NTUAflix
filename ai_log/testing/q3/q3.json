@@ -1,0 +1,19 @@
+{
+    "answers": {
+        "phase": "testing",
+        "action": "other testing",
+        "scope": "api",
+        "action experience": "fair",
+        "prog lang":"js",
+        "other prog lang": "<fill in>",
+        "tool": "chat gpt 3.x",
+        "other tool": "<fill in>",
+        "tool option": "free",
+        "tool experience": "some",
+        "time allocated (h)": "0.5",
+        "time saved estimate (h)": "3", 
+        "quality of ai help": "major modifications needed",
+        "generic feeling": "great as-is",
+        "notes": "<fill in>"
+    }
+}

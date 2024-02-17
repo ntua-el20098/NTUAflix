@@ -59,7 +59,7 @@ function Page({ params }: { params: { id: string } }) {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:9876/ntuaflix_api/title/${params.id}`
+          `https://localhost:9876/ntuaflix_api/title/${params.id}`
         );
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -72,7 +72,7 @@ function Page({ params }: { params: { id: string } }) {
           async (person) => {
             try {
               const castResponse = await fetch(
-                `http://localhost:9876/ntuaflix_api/name/${person.nameID}`
+                `https://localhost:9876/ntuaflix_api/name/${person.nameID}`
               );
               if (!castResponse.ok) {
                 throw new Error(`HTTP error! Status: ${castResponse.status}`);
@@ -156,7 +156,7 @@ function Page({ params }: { params: { id: string } }) {
         if (nonEmptyGenres.length > 0) {
           const similarMoviesPromises = nonEmptyGenres.map(async (genre) => {
             const response = await fetch(
-              "http://localhost:9876/ntuaflix_api/bygenre?limit=3",
+              "https://localhost:9876/ntuaflix_api/bygenre?limit=3",
               {
                 method: "POST",
                 headers: {

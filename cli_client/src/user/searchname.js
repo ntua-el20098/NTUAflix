@@ -2,6 +2,7 @@ const axios = require('axios');
 const json2csv = require('json2csv').parse;
 const constructURL = require('../../lib/constructURL');
 const errorHandler = require('../../lib/errorHandler');
+const https = require('https');
 
 module.exports = function searchname(options) {
     console.log(options.namePart);
@@ -16,7 +17,8 @@ module.exports = function searchname(options) {
         method: 'GET',
         url: url,
         port: 9876,
-        data : options
+        data : options,
+        httpsAgent: new https.Agent({ rejectUnauthorized: false })
     };
     if(format === 'json'){
         axios(config)
