@@ -1,7 +1,7 @@
 # NTUAflix
 
 
-![Logo](https://github.com/ntua-el20098/NTUAflix/blob/main/public/NTUAflix.png?raw=true)
+![Logo](https://github.com/ntua-el20098/NTUAflix/blob/main/public/logontuaflix.png?raw=true)
 
 
 NTUAflix is a film database where users can navigate through a big catalogue of Movies and TV-Series (AKA titles). NTUAflix allows its users to preview movies and TV shows by providing their identifying characteristics. 
