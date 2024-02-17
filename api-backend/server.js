@@ -3,11 +3,12 @@ const app = require('./app');
 const https = require('https');
 var fs = require('fs');
 const path = require('path');
+const env = require('process')
 
 const sslServer = https.createServer(
     {
-        key: fs.readFileSync(path.join(__dirname, '../cert', 'key.pem')),
-        cert: fs.readFileSync(path.join(__dirname, '../cert', 'cert.pem'))
+        key: fs.readFileSync(process.env.KEY_PATH),
+        cert: fs.readFileSync(process.env.CERT_PATH)
     }, app)
 
 const PORT = process.env.PORT || 9876;

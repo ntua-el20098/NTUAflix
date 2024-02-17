@@ -17,9 +17,9 @@ app.prepare().then(() => {
 
   const sslServer = https.createServer(
     {
-      key: fs.readFileSync(path.join(__dirname, '../cert', 'key.pem')),
-      cert: fs.readFileSync(path.join(__dirname, '../cert', 'cert.pem'))
-    }, server);
+        key: fs.readFileSync(path.join(__dirname, process.env.KEY_PATH)),
+        cert: fs.readFileSync(path.join(__dirname, process.env.CERT_PATH))
+    }, app)
 
   sslServer.listen(4000, (err) => {
     if (err) throw err;
