@@ -24,6 +24,8 @@ Once a title or a person has been selected, NTUAflix displays a detailed page co
   - [Clone the repository](#Clone-the-repository)
   - [Database Setup](#Database-Setup)
   - [CLI Setup](#CLI-Setup)
+- [Environment Variables](#Environment-Variables)
+- [Environment Variables](#Environment-Variables)
 - [Run Locally](#Run-Locally)
 - [Environment Variables](#Environment-Variables)
 - [Running Tests](#Running-Tests)
@@ -96,23 +98,6 @@ populate the database with data
    npm install
 ```
 
-
-## Run Locally
-
-To run NTUAflix Locally we will need to run 2 terminals that:
-
-1. one is for the frontend server and runs using the command:
-
-```sh
-   npm start
-```
-
-2. the other one is for the backend server and runs using the command:
-```sh
-   node ./api-backend/server.js
-```
-
-
 ## Environment Variables
 
 To run this project, you will need to create an .env file in the root of the project and add the following environment variables in it.
@@ -140,9 +125,27 @@ Generate the key and the `cert.pem` file
 ```
 
 Add the `cert.pem` and `key.pem` paths to the .env file
-it should be like this
-KEY_PATH=/path/to/your/key.pem
-CERT_PATH=/path/to/your/cert.pem
+  it should be like this
+    KEY_PATH=/path/to/your/key.pem
+    CERT_PATH=/path/to/your/cert.pem
+
+## Run Locally
+
+To run NTUAflix Locally we will need to run 2 terminals that:
+
+1. one is for the frontend server and runs using the command:
+
+```sh
+   npm start
+```
+
+2. the other one is for the backend server and runs using the command:
+```sh
+   node ./api-backend/server.js
+```
+
+
+
 
 #### CLI Commands
 The following commands are available for the CLI:
