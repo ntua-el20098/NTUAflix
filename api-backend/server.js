@@ -4,6 +4,7 @@ const https = require('https');
 var fs = require('fs');
 const path = require('path');
 const env = require('process')
+require('dotenv').config();
 
 const sslServer = https.createServer(
     {
