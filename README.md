@@ -164,7 +164,7 @@ Add the `cert.pem` and `key.pem` paths to the .env file. It should be like this:
 KEY_PATH=/path/to/your/key.pem
 CERT_PATH=/path/to/your/cert.pem
 ```
-
+If you are using a path with spaces, try wrapping it with quotes.
 
 
 
