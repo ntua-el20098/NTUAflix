@@ -75,12 +75,13 @@ Once a title or a person has been selected, NTUAflix displays a detailed page co
 
 Make sure mySQL is running. (For example make sure XAMPP is running with Apache and MySQL active)
 
-
+create a new database
 ```sh
    npm install
 ```
+populate the database with data
 ```sh
-   npm install
+   node script.js
 ```
 ```sh
    npm install
