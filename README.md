@@ -59,15 +59,15 @@ Once a title or a person has been selected, NTUAflix displays a detailed page co
 
 ### Clone the repository
 ```sh
-   git clone https://github.com/ntua-el20098/NTUAflix
+git clone https://github.com/ntua-el20098/NTUAflix
 ```
 go to the project directory
 ```sh
-   cd NTUAflix
+cd NTUAflix
 ```
 install dependencies 
 ```sh
-   npm install
+npm install
 ```
 
 ### Database Setup
@@ -76,70 +76,23 @@ Make sure mySQL is running. (For example make sure XAMPP is running with Apache 
 
 create a new database
 ```sh
-   npm install
+npm install
 ```
 populate the database with data
 ```sh
-   node script.js
+node script.js
 ```
 ```sh
-   npm install
+npm install
 ```
 
 ### CLI Setup
 
 ```sh
-   cd cli_client
+cd cli_client
 ```
 ```sh
-   npm install
-```
-
-### Generate a Self Signed SSL key
-
-Make sure Git is installed in your device and locate the Git Installation Folder.
-It should look something like this: 
-```sh
-C:\Program Files\Git
-```
-
-Inside it, locate the `usr` folder and then the `bin` folder.
-Make sure a file named `openss.cnf` is inside the bin folder. 
-Copy the path.
-
-
-The full path to the file should look something like this: 
-```sh
-C:\Program Files\Git\usr\ssl\openssl.cnf
-```
-
-Go to a secure directory or create a new one where you would like to store your self signed ssl key
-```sh
-   cd path_to_your_secure_folder
-```
-
-Create `key.pem` and  `csr.pem` files
-```sh
-   openssl genrsa -out key.pem 
-```
-
-
-for the next command replace "path" with the path to the `openssl.cnf` file
-```sh
-   openssl req -new -key key.pem -out csr.pem -config "path"
-```
-If you are using a path with spaces, try wrapping it with quotes.
-
-
-Generate the key and the `cert.pem` file
-```sh
-   openssl x509 -req -days 365 -in csr.pem -signkey key.pem -out cert.pem
-```
-
-Add the `cert.pem` and `key.pem` paths to the .env file. It should be like this:
-```
-    KEY_PATH=/path/to/your/key.pem
-    CERT_PATH=/path/to/your/cert.pem
+npm install
 ```
 
 ## Environment Variables
@@ -165,6 +118,55 @@ KEY_PATH=/path/to/your/key.pem
 CERT_PATH=/path/to/your/cert.pem
 ```
 
+### Generate a Self Signed SSL key
+
+Make sure Git is installed in your device and locate the Git Installation Folder.
+It should look something like this: 
+```sh
+C:\Program Files\Git
+```
+
+Inside it, locate the `usr` folder and then the `ssl` folder.
+Make sure a file named `openss.cnf` is inside the ssl folder. 
+Copy the path.
+
+
+The full path to the file should look something like this: 
+```sh
+C:\Program Files\Git\usr\ssl\openssl.cnf
+```
+
+Go to a secure directory or create a new one where you would like to store your self signed ssl key
+```sh
+cd path_to_your_secure_folder
+```
+
+Create `key.pem` and  `csr.pem` files
+```sh
+openssl genrsa -out key.pem 
+```
+
+
+for the next command replace "path" with the path to the `openssl.cnf` file
+```sh
+openssl req -new -key key.pem -out csr.pem -config "path"
+```
+If you are using a path with spaces, try wrapping it with quotes.
+
+
+Generate the key and the `cert.pem` file
+```sh
+openssl x509 -req -days 365 -in csr.pem -signkey key.pem -out cert.pem
+```
+
+Add the `cert.pem` and `key.pem` paths to the .env file. It should be like this:
+```
+KEY_PATH=/path/to/your/key.pem
+CERT_PATH=/path/to/your/cert.pem
+```
+
+
+
 
 ## Run locally
 
@@ -173,12 +175,12 @@ To run NTUAflix locally you will need to have 2 terminals open.
 1. One is for the frontend server and it runs using the command:
 
 ```sh
-   npm start
+npm start
 ```
 
 2. The other one is for the backend server and it runs using the command:
 ```sh
-   node ./api-backend/server.js
+node ./api-backend/server.js
 ```
 
 
@@ -209,7 +211,7 @@ Commands:
 To run tests, run the following command
 
 ```bash
-  npm run test
+npm run test
 ```
 
 
