@@ -33,7 +33,7 @@ Once a title or a person has been selected, NTUAflix displays a detailed page co
 
 ## Creators
 
-- [Διονύσης Αδαμόπουλος](https://github.com/ntua-el20)
+- [Αδαμόπουλος Διονύσης](https://github.com/ntua-el20)
 - [Γεωργιάδη Δάφνη](https://github.com/ntua-el20189)
 - [Καμπουγέρης Χαράλαμπος](https://github.com/ntua-el20098)
 - [Κουστένης Χρίστος](https://github.com/ntua-el20)
