@@ -97,7 +97,7 @@ populate the database with data
 
 ### Generate a Self Signed SSL key
 
-Go to a secure directory or create a new one  where you would like to store your self signed ssl key
+Go to a secure directory or create a new one where you would like to store your self signed ssl key
 ```sh
    cd path_to_your_secure_folder
 ```
