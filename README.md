@@ -97,6 +97,12 @@ populate the database with data
 
 ### Generate a Self Signed SSL key
 
+download openssl from this [url](https://slproweb.com/products/Win32OpenSSL.html)
+donwload Win64 OpenSSL v1.1.1w version 
+
+run this command with the correct path 
+```set OPENSSL_CONF=[path-to-OpenSSL-install-dir]\bin\openssl.cfg```
+
 Go to a secure directory or create a new one where you would like to store your self signed ssl key
 ```sh
    cd path_to_your_secure_folder
