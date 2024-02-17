@@ -1,3 +1,5 @@
+# NTUAflix
+
 
 ![Logo](https://github.com/ntua-el20098/NTUAflix/blob/main/public/NTUAflix.png?raw=true)
 
