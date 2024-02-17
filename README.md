@@ -124,10 +124,11 @@ Generate the key and the `cert.pem` file
    openssl x509 -req -days 365 -in csr.pem -signkey key.pem -out cert.pem
 ```
 
-Add the `cert.pem` and `key.pem` paths to the .env file
-  it should be like this
+Add the `cert.pem` and `key.pem` paths to the .env file. It should be like this:
+```
     KEY_PATH=/path/to/your/key.pem
     CERT_PATH=/path/to/your/cert.pem
+```
 
 ## Run Locally
 
