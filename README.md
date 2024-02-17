@@ -1,6 +1,5 @@
 
 # NTUAflix
-![Logo](https://github.com/ntua-el20098/NTUAflix/blob/main/public/NTUAflix.png?raw=true)
 
 NTUAflix is a film database where users can navigate through a big catalogue of Movies and TV-Series (AKA titles). NTUAflix allows its users to preview movies and TV shows by providing their identifying characteristics. 
 
@@ -9,31 +8,34 @@ It has three main use cases.
 2. The users can look for a title based on its rating by selecting the “Search By Rating” button and then providing the desired minimul rating value.
 3. NTUAflix provides users the option to browse the catalogue through each title’s contributing members with the “Search By Person” button.
 
+    Once a title or a person has been selected, NTUAflix displays a detailed page containing the key characteristics of the selected item (title or person) as well as active links to related content(similar titles and contributors for titles - title appearances, best rated and latest appearance for people).
 
-Once a title or a person has been selected, NTUAflix displays a detailed page containing the key characteristics of the selected item (title or person) as well as active links to related content(similar titles and contributors for titles - title appearances, best rated and latest appearance for people).
 
+![Logo](https://github.com/ntua-el20098/NTUAflix/blob/main/public/NTUAflix.png?raw=true)
 
 ## Table of Contents
 
-- [Installation](#installation)
-- [Usage](#usage)
-  - [Back-End](#back-end)
-  - [API Documentation](#api-documentation)
-  - [Front-End](#front-end)
-  - [CLI Client](#cli-client)
-  - [Testing](#testing)
-- [Diagrams](#diagrams)
-- [AI Assistance Log](#ai-assistance-log)
+- [Authors](#Creators)
+- [Tech Requirements](#Tech Stack)
+- [Installations](#Installation)
+  - [Clone the repository](#Clone the repository)
+  - [Database Setup](#Database Setup)
+  - [CLI Setup](#CLI Setup)
+- [Run Locally](#Run Locally)
+- [Environment Variables](#Environment Variables)
+- [Running Tests](#Running Tests)
+- [Documentation](#Documentation)
+- [License](#License)
 
 
 ## Creators
 
-- [Διονύσης Αδαμόπουλος](https://www.github.com/octokatherine)
-- [Γεωργιάδη Δάφνη](https://www.github.com/octokatherine)
-- [Καμπουγέρης Χαράλαμπος](https://www.github.com/octokatherine)
-- [Χρίστος Κουστένης](https://www.github.com/octokatherine)
-- [Άρης Μιτσάκος](https://www.github.com/octokatherine)
-- [Χριστοδουλάκης Σταύρος](https://www.github.com/octokatherine)
+- [Διονύσης Αδαμόπουλος](https://github.com/ntua-el20)
+- [Γεωργιάδη Δάφνη](https://github.com/ntua-el20189)
+- [Καμπουγέρης Χαράλαμπος](https://github.com/ntua-el20098)
+- [Κουστένης Χρίστος](https://github.com/ntua-el20)
+- [Μιτσάκος Άρης](https://github.com/ntua-el20)
+- [Χριστοδουλάκης Σταύρος](https://github.com/ntua-el20890)
 
 
 
