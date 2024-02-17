@@ -113,7 +113,6 @@ To run NTUAflix Locally we will need to run 2 terminals that:
 ```
 
 
-
 ## Environment Variables
 
 To run this project, you will need to create an .env file in the root of the project and add the following environment variables in it.
@@ -121,6 +120,29 @@ To run this project, you will need to create an .env file in the root of the pro
 `API_KEY`
 
 `ANOTHER_API_KEY`
+
+### Generate a Self Signed SSL key
+
+Go to a secure directory where you would like to store your self signed ssl key
+```sh
+   cd path_to_your_secure_folder
+```
+Create `key.pem` and  `csr.pem` files
+```sh
+   openssl genrse -out key.pem
+```
+```sh
+   openssl req -new -key key.pem -out csr.pem
+```
+Generate the key and the `cert.pem` file
+```sh
+   openssl x509 -req -days 365 -in csr.pem -signkey key.pem -out cert.pem
+```
+
+Add the `cert.pem` and `key.pem` paths to the .env file
+it should be like this
+KEY_PATH=/path/to/your/key.pem
+CERT_PATH=/path/to/your/cert.pem
 
 #### CLI Commands
 The following commands are available for the CLI:
