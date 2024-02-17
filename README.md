@@ -25,9 +25,8 @@ Once a title or a person has been selected, NTUAflix displays a detailed page co
   - [Database Setup](#Database-Setup)
   - [CLI Setup](#CLI-Setup)
 - [Environment Variables](#Environment-Variables)
-- [Environment Variables](#Environment-Variables)
+- [Self Signed SSL Key](#Generate-a-Self-Signed-SSL-key)
 - [Run Locally](#Run-Locally)
-- [Environment Variables](#Environment-Variables)
 - [Running Tests](#Running-Tests)
 - [Documentation](#Documentation)
 - [License](#License)
@@ -35,7 +34,7 @@ Once a title or a person has been selected, NTUAflix displays a detailed page co
 
 ## Creators
 
-- [Αδαμόπουλος Διονύσης](https://github.com/ntua-el20)
+- [Αδαμόπουλος Διονύσης](https://github.com/ntua-el20061)
 - [Γεωργιάδη Δάφνη](https://github.com/ntua-el20189)
 - [Καμπουγέρης Χαράλαμπος](https://github.com/ntua-el20098)
 - [Κουστένης Χρίστος](https://github.com/ntua-el20227)
@@ -56,19 +55,17 @@ Once a title or a person has been selected, NTUAflix displays a detailed page co
 
 
 
-
 ## Installation
 
 #### Clone the repository
-
 ```sh
    git clone https://github.com/ntua-el20098/NTUAflix
 ```
-
+go to the project directory
 ```sh
    cd NTUAflix
 ```
-
+install dependencies 
 ```sh
    npm install
 ```
@@ -98,17 +95,9 @@ populate the database with data
    npm install
 ```
 
-## Environment Variables
-
-To run this project, you will need to create an .env file in the root of the project and add the following environment variables in it.
-
-`API_KEY`
-
-`ANOTHER_API_KEY`
-
 ### Generate a Self Signed SSL key
 
-Go to a secure directory where you would like to store your self signed ssl key
+Go to a secure directory or create a new one  where you would like to store your self signed ssl key
 ```sh
    cd path_to_your_secure_folder
 ```
@@ -130,22 +119,44 @@ Add the `cert.pem` and `key.pem` paths to the .env file. It should be like this:
     CERT_PATH=/path/to/your/cert.pem
 ```
 
-## Run Locally
+## Environment Variables
 
-To run NTUAflix Locally we will need to run 2 terminals that:
+To run this project, you will need to create an .env file in the root of the project and add the following environment variables in it.
 
-1. one is for the frontend server and runs using the command:
+`DB_HOST`
+`DB_PORT`
+`DB_USER`
+`DB_PASSWORD`
+`DB_NAME`
+`KEY_PATH`
+`CERT_PATH`
+
+it should look like this: 
+```
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=
+DB_NAME=tl
+KEY_PATH=/path/to/your/key.pem
+CERT_PATH=/path/to/your/cert.pem
+```
+
+
+## Run locally
+
+To run NTUAflix locally you will need to have 2 terminals open.
+
+1. One is for the frontend server and it runs using the command:
 
 ```sh
    npm start
 ```
 
-2. the other one is for the backend server and runs using the command:
+2. The other one is for the backend server and it runs using the command:
 ```sh
    node ./api-backend/server.js
 ```
-
-
 
 
 #### CLI Commands
@@ -168,6 +179,8 @@ Commands:
 -  `newprincipals` | s [options] - Adds a new principal to the database
 -  `newratings` | nr [options]   - Adds a new rating to the database
 -  `help`                     - Shows help
+
+  
 ## Running Tests
 
 To run tests, run the following command
@@ -184,6 +197,7 @@ NTUAflix Project [Documentation](https://linktodocumentation)
 Our API Documentation is made using OpenAPI and is available through the file  `openapi.yaml` 
 
 You can open the file using a program like Swagger to vizualize the API.
+
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
