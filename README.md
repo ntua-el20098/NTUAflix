@@ -57,7 +57,7 @@ Once a title or a person has been selected, NTUAflix displays a detailed page co
 
 ## Installation
 
-#### Clone the repository
+### Clone the repository
 ```sh
    git clone https://github.com/ntua-el20098/NTUAflix
 ```
@@ -70,7 +70,7 @@ install dependencies
    npm install
 ```
 
-#### Database Setup
+### Database Setup
 
 Make sure mySQL is running. (For example make sure XAMPP is running with Apache and MySQL active)
 
@@ -86,7 +86,7 @@ populate the database with data
    npm install
 ```
 
-#### CLI Setup
+### CLI Setup
 
 ```sh
    cd cli_client
@@ -104,8 +104,10 @@ C:\Program Files\Git
 ```
 
 Inside it, locate the `usr` folder and then the `bin` folder.
-Make sure a file named openss.cnf is inside the bin folder. 
-Copy the path
+Make sure a file named `openss.cnf` is inside the bin folder. 
+Copy the path.
+
+
 The full path to the file should look something like this: 
 ```sh
 C:\Program Files\Git\usr\bin\openssl.cnf
@@ -121,12 +123,14 @@ Create `key.pem` and  `csr.pem` files
    openssl genrsa -out key.pem 
 ```
 
-If you are using a path with spaces, try wrapping it with quotes.
 
 for the next command replace "path" with the path to the `openssl.cnf` file
 ```sh
    openssl req -new -key key.pem -out csr.pem -config "path"
 ```
+If you are using a path with spaces, try wrapping it with quotes.
+
+
 Generate the key and the `cert.pem` file
 ```sh
    openssl x509 -req -days 365 -in csr.pem -signkey key.pem -out cert.pem
@@ -178,7 +182,7 @@ To run NTUAflix locally you will need to have 2 terminals open.
 ```
 
 
-#### CLI Commands
+### CLI Commands
 The following commands are available for the CLI:
 
 Commands:
