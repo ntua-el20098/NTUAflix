@@ -72,17 +72,15 @@ npm install
 
 Make sure mySQL is running. (For example make sure XAMPP is running with Apache and MySQL active)
 
-create a new database
+create a new database ( you can also do that from phpmyadmin manually) (for example name it ` tl `
 ```sh
-npm install
+`TBA`
 ```
 populate the database with data
 ```sh
 node script.js
 ```
-```sh
-npm install
-```
+
 
 ### CLI Setup
 
@@ -164,6 +162,11 @@ CERT_PATH=/path/to/your/cert.pem
 ```
 If you are using a path with spaces, try wrapping it with quotes.
 
+
+Go back to the root of the project
+```
+cd ..
+```
 
 
 ## Run locally
