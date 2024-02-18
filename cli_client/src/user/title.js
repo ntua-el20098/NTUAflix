@@ -18,7 +18,7 @@ module.exports = function title(options) {
     if(format == 'json'){
         axios(config)
             .then(res => {
-                console.log(chalk.green((JSON.stringify(res.data, null, 2))));
+                console.log(chalk.green(JSON.stringify(res.data, null, 2)));
             })
             .catch(err => {
                 errorHandler(err);
@@ -28,14 +28,14 @@ module.exports = function title(options) {
         axios(config)
         .then(res => {
             const csvdata = json2csv(res.data);
-            console.log(csvdata);
+            console.log(chalk.green(csvdata));
         })
         .catch(err => {
             errorHandler(err);
         });
     }
     else{
-        console.error('Invalid Format');
+        console.error(chalk.red('Invalid Format! Valid options : json, csv.'));
         process.exit(1);
     }
 }

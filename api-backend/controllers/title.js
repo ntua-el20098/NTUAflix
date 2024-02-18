@@ -4,6 +4,7 @@ const { body } = require("express/lib/request");
 const axios = require('axios');
 const { Parser } = require('json2csv');
 const https = require('https');
+const { isNumber } = require("util");
 
 const csv = require('csv-parser');
 const fs = require('fs');
@@ -429,7 +430,19 @@ exports.getTitlesByGenre = async (req, res, err) => {
             return res.status(400).send(csv);
         }
     }
-
+    // status 400 (bad request) error handling if minrating is not a number
+    if(!isNumber(minrating)){
+        const message = { message: 'minrating should be a number', error: err ? err : ''};
+        if(format === 'json')
+            return res.status(400).json(message);
+        else{
+            const json2csvParser = new Parser();
+            const csv = json2csvParser.parse(message);
+            res.setHeader('Content-Type', 'text/csv');
+            res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+            return res.status(400).send(csv);
+        }
+    }
     const attributes = [qgenre, minrating, yrFrom, yrTo].flat().filter(attr => attr !== undefined);
     const uniqueAttributes = [...new Set(attributes)];
 

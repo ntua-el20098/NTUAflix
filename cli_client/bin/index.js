@@ -102,7 +102,7 @@ program
     .command('newtitles')
     .alias('nt')
     .description('Adds a new title to the database')
-    .requiredOption('-f, --filename <file>', 'Path to the file')
+    .requiredOption('-f, --filename <filepath>', 'Path to the file')
     .option('--format <format>', 'Format of the response(csv or json)')
     .action( function(options) { newtitles(options) } )
 
@@ -111,7 +111,7 @@ program
     .command('newakas')
     .alias('na')
     .description('Adds a new alternate title to the database')
-    .requiredOption('-f, --filename <file>', 'Path to the file')
+    .requiredOption('-f, --filename <filepath>', 'Path to the file')
     .option('--format <format>', 'Format of the response(csv or json)')
     .action( function(options) { newakas(options) } )
 // newnames
@@ -119,7 +119,7 @@ program
     .command('newnames')
     .alias('nn')
     .description('Adds new names to the database')
-    .requiredOption('-f, --filename <file>', 'Path to the file')
+    .requiredOption('-f, --filename <filepath>', 'Path to the file')
     .option('--format <format>', 'Format of the response(csv or json)')
     .action( function(options) { newnames(options) } )
 
@@ -128,7 +128,7 @@ program
     .command('newcrew')
     .alias('nc')
     .description('Adds a new crew members to the database')
-    .requiredOption('-f, --filename <file>', 'Path to the file')
+    .requiredOption('-f, --filename <filepath>', 'Path to the file')
     .option('--format <format>', 'Format of the response(csv or json)')
     .action( function(options) { newcrew(options) } )
 
@@ -137,7 +137,7 @@ program
     .command('newepisode')
     .alias('ne')
     .description('Adds a new episode to the database')
-    .requiredOption('-f, --filename <file>', 'Path to the file')
+    .requiredOption('-f, --filename <filepath>', 'Path to the file')
     .option('--format <format>', 'format of the response')
     .action( function(options) { newepisode(options) } )
 
@@ -146,7 +146,7 @@ program
     .command('newprincipals')
     .alias('s')
     .description('Adds new principals to the database')
-    .requiredOption('-f, --filename <file>', 'Path to the file')
+    .requiredOption('-f, --filename <filepath>', 'Path to the file')
     .option('--format <format>', 'Format of the response(csv or json)')
     .action( function(options) { newprincipals(options) } )
 
@@ -155,7 +155,7 @@ program
     .command('newratings')
     .alias('nr')
     .description('Adds new ratings to the database')
-    .requiredOption('-f, --filename <file>', 'Path to the file')
+    .requiredOption('-f, --filename <filepath>', 'Path to the file')
     .option('--format <format>', 'Format of the response(csv or json)')
     .action( function(options) { newratings(options) } )
 
