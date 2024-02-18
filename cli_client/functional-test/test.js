@@ -112,3 +112,32 @@ it('outputs valid JSON format', (done) => {
         done();
     });
   });
+
+  const  expected_json_return_3 = {
+      status: 'OK',
+      dataconnection: { host: 'localhost', user: 'root', database: 'tl' }
+    };
+
+    it('outputs valid JSON format', (done) => {
+      jest.setTimeout(10000);
+      shell.exec('se2326 healthcheck', { silent: true }, (code, stdout, stderr) => {
+          if (code !== 0) {
+              console.error('Command execution failed:', stderr);
+              // Handle error case appropriately
+              done(); // Call done() to end the test
+              return;
+          }
+          // Remove whitespaces from actual output
+          let output  = stdout.replace(/\s/g, '');
+  
+          //console.log(JSON.stringify(expected_json_return_2));
+          let expected = JSON.stringify(expected_json_return_3).replace(/\s/g, '');
+  
+          console.log(output);
+          console.log(expected);
+  
+          expect(output).toMatch(expected);
+          done();
+      });
+    });  
+  
