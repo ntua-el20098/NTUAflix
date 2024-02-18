@@ -87,6 +87,10 @@ for the following command replace `/path/to/db.sql` with the actual path to the 
 ```
 SOURCE /path/to/db.sql;
 ```
+```
+exit;
+```
+
 populate the database with data
 ```sh
 node script.js
