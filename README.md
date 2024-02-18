@@ -74,7 +74,7 @@ Make sure mySQL is running. (For example make sure XAMPP is running with Apache 
 
 
 ```sh
-mysql -u root
+mysql -u root -p
 ```
 create a new database for this project. 
 ```sh
