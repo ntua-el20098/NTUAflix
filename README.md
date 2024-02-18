@@ -72,17 +72,30 @@ npm install
 
 Make sure mySQL is running. (For example make sure XAMPP is running with Apache and MySQL active)
 
-create a new database
+
 ```sh
-npm install
+mysql -u root -p
 ```
+create a new database for this project. 
+```sh
+create database `your database name`;
+```
+```sh
+use `your database name`;
+```
+for the following command replace `/path/to/db.sql` with the actual path to the sql file which is located in the `utils` folder inside the `api-backend` folder in the root of the project.
+```
+SOURCE /path/to/db.sql;
+```
+```
+exit;
+```
+
 populate the database with data
 ```sh
 node script.js
 ```
-```sh
-npm install
-```
+
 
 ### CLI Setup
 
@@ -164,6 +177,11 @@ CERT_PATH=/path/to/your/cert.pem
 ```
 If you are using a path with spaces, try wrapping it with quotes.
 
+
+Go back to the root of the project
+```
+cd ..
+```
 
 
 ## Run locally
