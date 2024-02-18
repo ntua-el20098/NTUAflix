@@ -72,9 +72,20 @@ npm install
 
 Make sure mySQL is running. (For example make sure XAMPP is running with Apache and MySQL active)
 
-create a new database ( you can also do that from phpmyadmin manually) (for example name it ` tl `
+
 ```sh
-`TBA`
+mysql -u root
+```
+create a new database for this project. 
+```sh
+create database `your database name`;
+```
+```sh
+use `your database name`;
+```
+for the following command replace `/path/to/db.sql` with the actual path to the sql file which is located in the `utils` folder inside the `api-backend` folder in the root of the project.
+```
+SOURCE /path/to/db.sql;
 ```
 populate the database with data
 ```sh
