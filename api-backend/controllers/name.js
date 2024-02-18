@@ -168,8 +168,8 @@ function processPersonResults(results) {
         nameID: results[0].nameID,
         name: results[0].name,
         namePoster: results[0].namePoster,
-        birthYr: results[0].birthYr,
-        deathYr: results[0].deathYr,
+        birthYr: results[0].birthYr.toString(),
+        deathYr: results[0].deathYr.toString(),
         profession: ProfessionsString,
         nameTitles: []
     };
