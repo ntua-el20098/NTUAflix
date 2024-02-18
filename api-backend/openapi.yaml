@@ -107,13 +107,18 @@ paths:
               schema:
                 type: object
                 properties:
-                  message:
+                  status:
                     type: string
                     description: A message from server, error message
-                    example: "All tables have not been reset"
-                  error:
-                    type: string
-                    description: The error message
+                    example: "failed"
+                  reason:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                      code:
+                        type: string
+                        example: "ECONNREFUSED"
 
 
   /admin/upload/titlebasics:
@@ -1165,4 +1170,3 @@ paths:
                     type: string
                     description: A message from server, error message
                     example: "Error processing person details"
-

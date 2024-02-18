@@ -33,7 +33,7 @@ module.exports = function newprincipals(options) {
     if(format === 'json'){
         axios(config)
             .then(res => {
-                console.log(chalk.green(JSON.stringify(res.data, null, 2)));
+                console.log(JSON.stringify(res.data, null, 2));
             })
             .catch(err => {
                 errorHandler(err);
@@ -43,7 +43,7 @@ module.exports = function newprincipals(options) {
         axios(config)
         .then(res => {
             const csvdata = json2csv(res.data);
-            console.log(chalk.green(csvdata));
+            console.log(csvdata);
         })
         .catch(err => {
             errorHandler(err);

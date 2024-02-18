@@ -33,7 +33,7 @@ module.exports = function newakas(options) {
     if(format === 'json'){
         axios(config)
             .then(res => {
-                console.log(chalk.green(JSON.stringify(res.data, null, 2)));
+                console.log(JSON.stringify(res.data, null, 2));
             })
             .catch(err => {
                 errorHandler(err);

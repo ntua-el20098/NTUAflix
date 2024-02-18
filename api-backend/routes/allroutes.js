@@ -1,7 +1,6 @@
 const express = require('express');
 
 const upload = require("../middlewares/upload");
-const sampleController = require('../controllers/admin');
 
 const titleController = require('../controllers/title');   //title controller
 const nameController = require('../controllers/name');     //name controller
