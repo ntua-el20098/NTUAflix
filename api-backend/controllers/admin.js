@@ -11,7 +11,7 @@ const e = require("express");
 
 
 //admin 1
-exports.healthcheck = async (req, res, next) => {
+exports.healthcheck = async (req, res, err) => {
   let format = req.query.format || 'json';
   
   if(!(format === 'json' || format === 'csv')) {
@@ -24,6 +24,7 @@ exports.healthcheck = async (req, res, next) => {
       const message = { status: 'OK',   dataconnection: {
         host: pool.config.connectionConfig.host,
         user: pool.config.connectionConfig.user,
+        password: pool.config.connectionConfig.password,
         database: pool.config.connectionConfig.database,
         // add any other properties you need
       } };
@@ -44,6 +45,7 @@ exports.healthcheck = async (req, res, next) => {
         status: 'failed',  dataconnection: {
           host: pool.config.connectionConfig.host,
           user: pool.config.connectionConfig.user,
+          password: pool.config.connectionConfig.password,
           database: pool.config.connectionConfig.database,
         }
       };
@@ -63,7 +65,7 @@ exports.healthcheck = async (req, res, next) => {
 };
 
 //admin 9
-exports.resetall = async (req, res, next) => {
+exports.resetall = async (req, res, err) => {
   let format = req.query.format || 'json';
 
   if(!(format === 'json' || format === 'csv')) {
@@ -85,8 +87,7 @@ exports.resetall = async (req, res, next) => {
     const [rows11, fields11] = await pool.promise().query('DELETE FROM people');
 
     const message = {
-      status: 'OK',
-      message: 'All tables have been reset',
+      status: 'OK'
     };
 
     if (format == 'json') {
@@ -103,12 +104,11 @@ exports.resetall = async (req, res, next) => {
   catch (error) {
     const message = {
       status: 'failed',
-      message: 'All tables have not been reset',
+      reason: error
     };
 
-    console.error(error);
     if (format == 'json') {
-        res.status(500).json(message);
+      res.status(500).json(message);
     }
     else {
         const json2csvParser = new Parser();
@@ -161,7 +161,7 @@ function parseAndInsertIntoDatabase(filePath, tableName, columnMappings) {
                           reject(err);
                         });
                       } else {
-                        console.log('Transaction Complete.');
+                        //console.log('Transaction Complete.');
                         connection.release();
                         resolve();
                       }
@@ -178,7 +178,7 @@ function parseAndInsertIntoDatabase(filePath, tableName, columnMappings) {
 }
 
 //admin 2
-exports.upload_titlebasics = async (req, res, next) => {
+exports.upload_titlebasics = async (req, res, err) => {
   let format = req.query.format || 'json';
 
   if(!(format === 'json' || format === 'csv')) {
@@ -187,17 +187,18 @@ exports.upload_titlebasics = async (req, res, next) => {
   }
 
     try {
-
+     
     if (!req.file) {
+      const message = { message: "Invalid input file type. Please upload only TSV files." };
       if (format === 'json') {
-        return res.status(400).json({ message: 'Invalid input file type. Please upload only TSV files.' });
+        return res.status(400).json(message);
     }
     else {
-        const json2csvParser = new Parser();
-        const csv = json2csvParser.parse({ message: 'Invalid input file type. Please upload only TSV files.' });
-        res.setHeader('Content-Type', 'text/csv');
-        res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
-        res.status(400).send(csv);
+      const json2csvParser = new Parser();
+      const csv = json2csvParser.parse(message);
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+      return res.status(400).send(csv);
 
     }
   }
@@ -210,9 +211,9 @@ exports.upload_titlebasics = async (req, res, next) => {
       await parseAndInsertIntoDatabase(inputFilePath, 'title', ['tconst', 'titleType', 'primaryTitle', 'originalTitle', 'isAdult','startYear','endYear','runtimeMinutes','img_url_asset']);
       await parseAndInsertIntoDatabase(filePathGenres, 'genre', ['tconst', 'genres']);
 
-      const message = "TSV data inserted into the database successfully.";
+      const message = { message:  "TSV data inserted into the database successfully."};
       if (format === 'json') {
-        res.status(200).json({message});
+        res.status(200).json(message);
       }
       else {
         const json2csvParser = new Parser();
@@ -240,7 +241,7 @@ exports.upload_titlebasics = async (req, res, next) => {
 };
 
 //admin 3
-exports.upload_titleakas = async (req, res, next) => {
+exports.upload_titleakas = async (req, res, err) => {
   let format = req.query.format || 'json';
 
   if(!(format === 'json' || format === 'csv')) {
@@ -249,9 +250,24 @@ exports.upload_titleakas = async (req, res, next) => {
   }
 
     try {
+      if (!req.file) {
+        const message = { message: "Invalid input file type. Please upload only TSV files." };
+        if (format === 'json') {
+          return res.status(400).json(message);
+      }
+      else {
+        const json2csvParser = new Parser();
+        const csv = json2csvParser.parse(message);
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+        return res.status(400).send(csv);
+  
+      }
+    }
+
       await parseAndInsertIntoDatabase(req.file.path, 'akas', ['titleId', 'ordering', 'title', 'region', 'language', 'types', 'attributes', 'isOriginalTitle']);
       
-      const message = "TSV data inserted into the database successfully.";
+      const message = { message:  "TSV data inserted into the database successfully."};
       if (format === 'json') {
         res.status(200).json(message);
       }
@@ -281,7 +297,7 @@ exports.upload_titleakas = async (req, res, next) => {
 }
 
 //admin 4
-exports.upload_namebasics = async (req, res, next) => {
+exports.upload_namebasics = async (req, res, err) => {
   let format = req.query.format || 'json';
 
   if(!(format === 'json' || format === 'csv')) {
@@ -290,6 +306,20 @@ exports.upload_namebasics = async (req, res, next) => {
   }
 
     try {  
+      if (!req.file) {
+        const message = { message: "Invalid input file type. Please upload only TSV files." };
+        if (format === 'json') {
+          return res.status(400).json(message);
+      }
+      else {
+        const json2csvParser = new Parser();
+        const csv = json2csvParser.parse(message);
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+        return res.status(400).send(csv);
+  
+      }
+    }
       const baseDirectory = __dirname + '/../uploads';
       const inputFilePath = req.file.path;
       const filePathProfession = `${baseDirectory}/Profession.tsv`;
@@ -300,8 +330,8 @@ exports.upload_namebasics = async (req, res, next) => {
       await parseAndInsertIntoDatabase(filePathProfession, 'primaryprofession', ['nconst', 'primaryProfession']);
       await parseAndInsertIntoDatabase(filePathTitles, 'knowfortitles', ['nconst', 'knownForTitles']);
 
-      const message = "TSV data inserted into the database successfully.";
-      if (format == 'json') {
+      const message = { message:  "TSV data inserted into the database successfully."};
+      if (format === 'json') {
         res.status(200).json(message);
       }
       else {
@@ -330,7 +360,7 @@ exports.upload_namebasics = async (req, res, next) => {
 };
 
 //admin 5
-exports.upload_titlecrew = async (req, res, next) => {
+exports.upload_titlecrew = async (req, res, err) => {
   let format = req.query.format || 'json';
 
   if(!(format === 'json' || format === 'csv')) {
@@ -339,6 +369,21 @@ exports.upload_titlecrew = async (req, res, next) => {
   }
 
     try {
+      if (!req.file) {
+        const message = { message: "Invalid input file type. Please upload only TSV files." };
+        if (format === 'json') {
+          return res.status(400).json(message);
+      }
+      else {
+        const json2csvParser = new Parser();
+        const csv = json2csvParser.parse(message);
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+        return res.status(400).send(csv);
+  
+      }
+    }
+
       const baseDirectory = __dirname + '/../uploads';
       const inputFilePath = req.file.path;
       const filePathDirectors = `${baseDirectory}/Directors.tsv`;
@@ -348,8 +393,8 @@ exports.upload_titlecrew = async (req, res, next) => {
       await parseAndInsertIntoDatabase(filePathDirectors, 'crewdirectors', ['tconst', 'directors']);
       await parseAndInsertIntoDatabase(filePathWriters, 'crewwriters', ['tconst', 'writers']);
 
-      const message = "TSV data inserted into the database successfully.";
-      if (format == 'json') {
+      const message = { message:  "TSV data inserted into the database successfully."};
+      if (format === 'json') {
         res.status(200).json(message);
       }
       else {
@@ -377,7 +422,7 @@ exports.upload_titlecrew = async (req, res, next) => {
 };
 
 //admin 6
-exports.upload_titleepisode = async (req, res, next) => {
+exports.upload_titleepisode = async (req, res, err) => {
   let format = req.query.format || 'json';
 
   if(!(format === 'json' || format === 'csv')) {
@@ -386,7 +431,21 @@ exports.upload_titleepisode = async (req, res, next) => {
   }
 
     try {
-      //console.log(req.file.path);
+      if (!req.file) {
+        const message = { message: "Invalid input file type. Please upload only TSV files." };
+        if (format === 'json') {
+          return res.status(400).json(message);
+      }
+      else {
+        const json2csvParser = new Parser();
+        const csv = json2csvParser.parse(message);
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+        return res.status(400).send(csv);
+  
+      }
+    }
+
       const baseDirectory = __dirname + '/../uploads';
       const inputFilePath = req.file.path;
       const filePathEpisode = `${baseDirectory}/Episode.tsv`;
@@ -394,8 +453,8 @@ exports.upload_titleepisode = async (req, res, next) => {
 
       await parseAndInsertIntoDatabase(filePathEpisode, 'episode', ['tconst', 'parentTconst', 'seasonNumber', 'episodeNumber']);
 
-      const message = "TSV data inserted into the database successfully.";
-      if (format == 'json') {
+      const message = { message:  "TSV data inserted into the database successfully."};
+      if (format === 'json') {
         res.status(200).json(message);
       }
       else {
@@ -423,7 +482,7 @@ exports.upload_titleepisode = async (req, res, next) => {
 };
 
 //admin 7
-exports.upload_titleprincipals = async (req, res, next) => {
+exports.upload_titleprincipals = async (req, res, err) => {
   let format = req.query.format || 'json';
 
   if(!(format === 'json' || format === 'csv')) {
@@ -432,11 +491,25 @@ exports.upload_titleprincipals = async (req, res, next) => {
   }
 
     try {
-      console.log(req.file.path);
+      if (!req.file) {
+        const message = { message: "Invalid input file type. Please upload only TSV files." };
+        if (format === 'json') {
+          return res.status(400).json(message);
+      }
+      else {
+        const json2csvParser = new Parser();
+        const csv = json2csvParser.parse(message);
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+        return res.status(400).send(csv);
+  
+      }
+    }
+
       await parseAndInsertIntoDatabase(req.file.path, 'principals', ['nconst','tconst', 'ordering', 'category', 'job', 'characters','img_url_asset']);
       
-      const message = "TSV data inserted into the database successfully.";
-      if (format == 'json') {
+      const message = { message:  "TSV data inserted into the database successfully."};
+      if (format === 'json') {
         res.status(200).json(message);
       }
       else {
@@ -464,7 +537,7 @@ exports.upload_titleprincipals = async (req, res, next) => {
 };
 
 //admin 8
-exports.upload_titleratings = async (req, res, next) => {
+exports.upload_titleratings = async (req, res, err) => {
   let format = req.query.format || 'json';
 
   if(!(format === 'json' || format === 'csv')) {
@@ -473,11 +546,26 @@ exports.upload_titleratings = async (req, res, next) => {
   }
 
     try {
-      console.log(req.file.path);
+
+      if (!req.file) {
+        const message = { message: "Invalid input file type. Please upload only TSV files." };
+        if (format === 'json') {
+          return res.status(400).json(message);
+      }
+      else {
+        const json2csvParser = new Parser();
+        const csv = json2csvParser.parse(message);
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', 'attachment; filename=data.csv');
+        return res.status(400).send(csv);
+  
+      }
+    }
+    
       await parseAndInsertIntoDatabase(req.file.path, 'rating', ['tconst', 'averageRating', 'numVotes']);
 
-      const message = "TSV data inserted into the database successfully.";
-      if (format == 'json') {
+      const message = { message:  "TSV data inserted into the database successfully."};
+      if (format === 'json') {
         res.status(200).json(message);
       }
       else {
