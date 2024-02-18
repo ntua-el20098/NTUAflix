@@ -4,8 +4,4 @@ node_modules
 .idea
 .vscode
 .env
-.cert
-
-cert/cert.pem
-cert/key.pem
-cert/csr.pem
+cert
