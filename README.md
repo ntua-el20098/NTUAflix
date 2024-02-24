@@ -233,7 +233,7 @@ npm run test
 
 ## Documentation
 
-NTUAflix Project [Documentation](https://linktodocumentation)
+NTUAflix Project [Documentation](https://github.com/ntua-el20098/NTUAflix/tree/main/documentation)
 
 Our API Documentation is made using OpenAPI and is available through the file  `openapi.yaml` 
 
