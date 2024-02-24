@@ -4,7 +4,6 @@ const {Command} = require("commander");
 const program = new Command();
 
 const chalk = require('chalk');
-const figlet = require('figlet');
 const clear = require('clear');
 
 //Endpoints
@@ -24,13 +23,6 @@ const name = require('../src/user/name');
 const searchname = require('../src/user/searchname');
 
 clear();
-/*
-console.log(
-    chalk.yellow(
-        figlet.textSync('BitsPlease', {horizontalLayout: 'full'})
-    )
-)
-*/
 
 // healthcheck
 program

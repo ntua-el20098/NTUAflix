@@ -12,10 +12,10 @@ const commands = [
     'se2326 newprincipals --filename "../truncated_data/truncated_title.principals.tsv"',
     'se2326 newakas --filename "../truncated_data/truncated_title.akas.tsv"',
     'se2326 title --titleID tt0078006',
-    'se2326 searchtitle --title "Hen"',
-    'se2326 bygenre --genre "Drama" --min 1',
+    'se2326 searchtitle --titlepart "Hen Hop"',
+    'se2326 bygenre --genre horror --min 8',
     'se2326 name --nameid nm0000019',
-    'se2326 searchname --name "Fed"',
+    'se2326 searchname --name "Fede"',
 ];
 
 // Execute each command independently with a delay
