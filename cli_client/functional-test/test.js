@@ -1,26 +1,11 @@
 const shell = require('shelljs');
 
-const expected_json_return_1 = {
-    nameObject: {
-        nameID: "nm0000019",
-        name: "Federico Fellini",
-        namePoster: "https://image.tmdb.org/t/p/{width_variable}/jH2VnHAuI0UbTWsnrjMPro0fC9j.jpg",
-        birthYr: 1920,
-        deathYr: 1993,
-        profession: "actor,director,writer",
-        nameTitles: [
-            {
-                titleID: "tt0098606",
-                category: "director"
-            }
-        ]
-    }
-
-};
+const expected_csv_1  = "nameObject";
+const expected_csv_2 = '{""nameID"":""nm0000372"",""name"":""Amanda Donohoe"",""namePoster"":""https://image.tmdb.org/t/p/{width_variable}/f7s1GhnJMfGJEReVtMRQC6Tju5V.jpg"",""birthYr"":""1962"",""deathYr"":""0"",""profession"":""actress,producer"",""nameTitles"":[{""titleID"":""tt0099992"",""category"":""actress""}]}';
 
 it('outputs valid JSON format', (done) => {
     jest.setTimeout(10000);
-    shell.exec('se2326 name --nameID nm0000019', { silent: true }, (code, stdout, stderr) => {
+    shell.exec('se2326 name --nameid nm0000372 --format csv', { silent: true }, (code, stdout, stderr) => {
         if (code !== 0) {
             console.error('Command execution failed:', stderr);
             // Handle error case appropriately
@@ -28,15 +13,11 @@ it('outputs valid JSON format', (done) => {
             return;
         }
         // Remove whitespaces from actual output
-        let output  = stdout.replace(/\s/g, '');
+        const rows = stdout.trim().split('\n');
 
-        console.log(JSON.stringify(expected_json_return_1));
-        let expected = JSON.stringify(expected_json_return_1).replace(/\s/g, '');
+        expect(rows[0]).toMatch(expected_csv_1);
+        expect(rows[1]).toMatch(expected_csv_2);
 
-        //console.log(output);
-        //console.log(expected);
-
-        expect(output).toMatch(expected);
         done();
     });
   });
@@ -104,8 +85,8 @@ it('outputs valid JSON format', (done) => {
         //console.log(JSON.stringify(expected_json_return_2));
         let expected = JSON.stringify(expected_json_return_2).replace(/\s/g, '');
 
-        //console.log(output);
-        //console.log(expected);
+        console.log(output);
+        console.log(expected);
 
         expect(output).toMatch(expected);
         done();
@@ -194,5 +175,3 @@ it('outputs valid JSON format', (done) => {
                done();
            });
          });  
-    
-
