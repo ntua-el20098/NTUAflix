@@ -39,7 +39,7 @@ async function runCommands() {
         try {
             console.log(`Running command ${i + 1}: ${commands[i]}`);
             const stdout = await execPromise(commands[i]);
-            console.log(`Command ${i + 1} executed successfully:`);
+            console.log(`Command ${i + 1} executed successfully:\n${stdout}`);
         } catch (error) {
             console.error(`Error running command ${i + 1}: ${error.message}`);
         }
