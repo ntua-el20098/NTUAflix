@@ -43,6 +43,7 @@
     "ctype": "^0.5.3",
     "debounce-fn": "^5.1.2",
     "defaults": "^1.0.4",
+    "delay": "^6.0.0",
     "delayed-stream": "^1.0.0",
     "dot-prop": "^8.0.2",
     "emoji-regex": "^8.0.0",

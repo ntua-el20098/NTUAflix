@@ -8,7 +8,7 @@ const https = require('https');
 const chalk = require('chalk');
 
 module.exports = function newtitles(options) {
-    console.log(options.filename)
+
     const format = options.format || 'json';
     const filepath = options.filename;
 

@@ -9,7 +9,6 @@ const chalk = require('chalk');
 
 module.exports = function newratings(options) {
 
-    console.log(options.filename)
     const format = options.format || 'json';
     const filepath = options.filename;
 

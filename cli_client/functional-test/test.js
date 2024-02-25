@@ -85,8 +85,8 @@ it('outputs valid JSON format', (done) => {
         //console.log(JSON.stringify(expected_json_return_2));
         let expected = JSON.stringify(expected_json_return_2).replace(/\s/g, '');
 
-        console.log(output);
-        console.log(expected);
+        //console.log(output);
+        //console.log(expected);
 
         expect(output).toMatch(expected);
         done();

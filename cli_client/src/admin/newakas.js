@@ -9,8 +9,6 @@ const chalk = require('chalk');
 
 module.exports = function newakas(options) {
 
-    console.log(options.filename)
-
     const filepath = options.filename;
 
     // Create a stream to read the file
