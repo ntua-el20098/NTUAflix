@@ -217,7 +217,7 @@ Commands:
 -  `newnames` | nn [options]     - Adds a new name to the database
 -  `newcrew` | nc [options]      - Adds a new crew member to the database
 -  `newepisode` | ne [options]   - Adds a new episode to the database
--  `newprincipals` | s [options] - Adds a new principal to the database
+-  `newprincipals` | np [options] - Adds a new principal to the database
 -  `newratings` | nr [options]   - Adds a new rating to the database
 -  `help`                     - Shows help
 

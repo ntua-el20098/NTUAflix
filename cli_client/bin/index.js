@@ -4,7 +4,6 @@ const {Command} = require("commander");
 const program = new Command();
 
 const chalk = require('chalk');
-const figlet = require('figlet');
 const clear = require('clear');
 
 //Endpoints
@@ -24,13 +23,6 @@ const name = require('../src/user/name');
 const searchname = require('../src/user/searchname');
 
 clear();
-/*
-console.log(
-    chalk.yellow(
-        figlet.textSync('BitsPlease', {horizontalLayout: 'full'})
-    )
-)
-*/
 
 // healthcheck
 program
@@ -129,7 +121,7 @@ program
     .alias('nc')
     .description('Adds a new crew members to the database')
     .requiredOption('-f, --filename <filepath>', 'Path to the file')
-    .option('--format <format>', 'Format of the response(csv or json)')
+    .option(`--format <format>`, 'Format of the response(csv or json)')
     .action( function(options) { newcrew(options) } )
 
 // newepisode
@@ -144,7 +136,7 @@ program
 // newprincipals
 program
     .command('newprincipals')
-    .alias('s')
+    .alias('np')
     .description('Adds new principals to the database')
     .requiredOption('-f, --filename <filepath>', 'Path to the file')
     .option('--format <format>', 'Format of the response(csv or json)')

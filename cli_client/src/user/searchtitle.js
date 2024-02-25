@@ -6,7 +6,6 @@ const https = require('https');
 const chalk = require('chalk');
 
 module.exports = function searchtitle(options) {
-    console.log(options.titlepart);
     const format = options.format || 'json';
     options = {
         tqueryObject: {
