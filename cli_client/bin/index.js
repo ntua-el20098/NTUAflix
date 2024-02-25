@@ -121,7 +121,7 @@ program
     .alias('nc')
     .description('Adds a new crew members to the database')
     .requiredOption('-f, --filename <filepath>', 'Path to the file')
-    .option('--format <format>', 'Format of the response(csv or json)')
+    .option(`--format <format>`, 'Format of the response(csv or json)')
     .action( function(options) { newcrew(options) } )
 
 // newepisode
@@ -136,7 +136,7 @@ program
 // newprincipals
 program
     .command('newprincipals')
-    .alias('s')
+    .alias('np')
     .description('Adds new principals to the database')
     .requiredOption('-f, --filename <filepath>', 'Path to the file')
     .option('--format <format>', 'Format of the response(csv or json)')

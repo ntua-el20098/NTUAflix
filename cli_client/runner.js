@@ -16,6 +16,7 @@ const commands = [
     'se2326 bygenre --genre horror --min 8',
     'se2326 name --nameid nm0000019',
     'se2326 searchname --name "Fede"',
+    'se2326 searchname --name "Fede" --format csv',
 ];
 
 // Execute each command independently with a delay
@@ -32,18 +33,13 @@ function execPromise(command, delayTime) {
 }
 
 async function runCommands() {
-    const delayBetweenCommands = 5000; // 5 seconds
+    //const delayBetweenCommands = 1; // 5 seconds
 
     for (let i = 0; i < commands.length; i++) {
         try {
+            console.log(`Running command ${i + 1}: ${commands[i]}`);
             const stdout = await execPromise(commands[i]);
-            console.log(`Command ${i + 1} executed successfully:\n${stdout}`);
-
-            if (i < commands.length - 1) {
-                // Introduce delay between commands
-                console.log(`Waiting for ${delayBetweenCommands / 1000} seconds before the next command...`);
-                await new Promise(resolve => setTimeout(resolve, delayBetweenCommands));
-            }
+            console.log(`Command ${i + 1} executed successfully:`);
         } catch (error) {
             console.error(`Error running command ${i + 1}: ${error.message}`);
         }
