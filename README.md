@@ -83,9 +83,9 @@ create database `your database name`;
 ```sh
 use `your database name`;
 ```
-for the following command replace `/path/to/db.sql` with the actual path to the sql file which is located in the `utils` folder inside the `api-backend` folder in the root of the project.
+for the following command replace `/path/to/db.sql` with the actual path to the sql file which is located in the `api-backend` folder in the root of the project.
 ```
-SOURCE /path/to/db.sql;
+SOURCE /path/to/db.sql
 ```
 ```
 exit;
